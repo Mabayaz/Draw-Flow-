@@ -1,93 +1,87 @@
-﻿<!DOCTYPE html>
+﻿<!doctype html>
 <html lang="en-US">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>Team Member | Draw Flow</title>
-  <style>
-    :root {
-      --bg-a: #101826;
-      --bg-b: #1b2940;
-      --text: #eef3fb;
-      --accent: #9ad7c2;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: 'Source Sans Pro', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      background: linear-gradient(160deg, var(--bg-a) 0%, var(--bg-b) 100%);
-      color: var(--text);
-      display: grid;
-      place-items: center;
-      padding: 24px;
-    }
-
-    .card {
-      width: min(680px, 100%);
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(214, 226, 248, 0.22);
-      border-radius: 18px;
-      padding: 28px;
-      backdrop-filter: blur(6px);
-    }
-
-    h1 {
-      margin: 0 0 10px;
-      font-size: clamp(28px, 4vw, 42px);
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-    }
-
-    p {
-      margin: 0;
-      line-height: 1.6;
-    }
-
-    .page-nav {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 18px;
-    }
-
-    .page-nav a,
-    .actions a {
-      display: inline-block;
-      color: var(--accent);
-      text-decoration: none;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      font-size: 12px;
-      border: 1px solid rgba(154, 215, 194, 0.35);
-      border-radius: 999px;
-      padding: 8px 12px;
-    }
-
-    .actions {
-      margin-top: 18px;
-    }
-  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/module-pages.css">
 </head>
 <body>
-  <section class="card">
-    <h1>Team Member</h1>
-    <p>This page is ready for your team member content.</p>
-    <nav class="page-nav" aria-label="Quick navigation">
-      <a href="introduction">Introduction</a>
-      <a href="lesson">Lesson</a>
-      <a href="quiz">Quiz</a>
-      <a href="exercises">Exercises</a>
-    </nav>
-    <div class="actions">
-      <a href="../index">Back to Home</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="../index" aria-label="Draw Flow Home">
+        <img src="../assets/images/logo.jpg" alt="Draw Flow logo">
+        <span class="brand-name">DRAW FLOW</span>
+      </a>
+      <nav class="nav-links" aria-label="Module navigation">
+        <a href="../index">Home</a>
+        <a href="introduction">Introduction</a>
+        <a href="objective">Objective</a>
+        <a href="lesson">Lesson</a>
+        <a href="quiz">Quiz</a>
+        <a href="exercises">Exercises</a>
+        <a class="active" href="team-member">Team</a>
+      </nav>
     </div>
-  </section>
+  </header>
+
+  <main class="page">
+    <section class="hero fade-up">
+      <p class="kicker">Draw Flow Team</p>
+      <h1>Meet the 6 Members</h1>
+      <p class="lead">Each member shares a short self-recognition statement about their strengths and the role they bring to the project.</p>
+      <div class="path-links" aria-label="Module links">
+        <a href="introduction">Go to Introduction</a>
+        <a href="../index">Back to Home</a>
+      </div>
+    </section>
+
+    <section class="team-grid fade-up delay-1" aria-label="Team members and self-recognition">
+      <article class="member-card">
+        <h2>Mabaya</h2>
+        <p class="role">Project Lead</p>
+        <p class="recognition">I recognize myself as a focused organizer who keeps the team aligned and ensures our ideas turn into finished output.</p>
+      </article>
+      <article class="member-card">
+        <h2>Angela</h2>
+        <p class="role">Visual Designer</p>
+        <p class="recognition">I recognize my creativity in crafting color, composition, and visual style that makes every learning page easier to enjoy.</p>
+      </article>
+      <article class="member-card">
+        <h2>Joshua</h2>
+        <p class="role">Content Writer</p>
+        <p class="recognition">I recognize my strength in transforming technical topics into clear, friendly explanations for every learner level.</p>
+      </article>
+      <article class="member-card">
+        <h2>Trisha</h2>
+        <p class="role">Front-End Developer</p>
+        <p class="recognition">I recognize my problem-solving mindset in building responsive pages and improving interactions across devices.</p>
+      </article>
+      <article class="member-card">
+        <h2>Mark</h2>
+        <p class="role">Quality Checker</p>
+        <p class="recognition">I recognize my attention to detail in finding issues early and helping the team deliver a polished final product.</p>
+      </article>
+      <article class="member-card">
+        <h2>Lianne</h2>
+        <p class="role">Research and Support</p>
+        <p class="recognition">I recognize my consistency in gathering references, checking facts, and supporting teammates whenever they need help.</p>
+      </article>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>Draw Flow Learning Module</span>
+      <span>Team Member Page</span>
+    </div>
+  </footer>
 </body>
 </html>
 
