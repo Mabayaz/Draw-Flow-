@@ -1,0 +1,813 @@
+﻿<!doctype html>
+<html lang="en-US">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Draw Flow | Learn Solid Drawing</title>
+  <meta name="description" content="Draw Flow helps you master solid drawing with clear lessons, objectives, quizzes, and exercises.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f6f2e9;
+      --surface: #fffdf8;
+      --ink: #1f2a2e;
+      --muted: #5d6669;
+      --line: #d9d0c1;
+      --brand: #0f7b6c;
+      --brand-strong: #095f53;
+      --accent: #f08a2f;
+      --accent-soft: #ffe2c8;
+      --hero-a: #ffe7b3;
+      --hero-b: #ffd0a8;
+      --hero-c: #b7eadf;
+      --shadow: 0 18px 45px rgba(13, 41, 46, 0.12);
+      --radius-lg: 28px;
+      --radius-md: 18px;
+      --radius-sm: 12px;
+      --content: min(1120px, 92vw);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 20% -10%, rgba(240, 138, 47, 0.16) 0%, rgba(240, 138, 47, 0) 35%),
+        radial-gradient(circle at 90% 0%, rgba(15, 123, 108, 0.15) 0%, rgba(15, 123, 108, 0) 40%),
+        var(--bg);
+      font-family: "Plus Jakarta Sans", "Segoe UI", sans-serif;
+      line-height: 1.45;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(246, 242, 233, 0.88);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(93, 102, 105, 0.14);
+    }
+
+    .header-inner {
+      width: var(--content);
+      margin: 0 auto;
+      min-height: 78px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 10px 0;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .brand img {
+      width: 52px;
+      height: 52px;
+      object-fit: cover;
+      border-radius: 14px;
+      box-shadow: 0 8px 16px rgba(13, 41, 46, 0.18);
+    }
+
+    .brand-label {
+      display: grid;
+      gap: 2px;
+    }
+
+    .brand-name {
+      font-family: "Syne", "Trebuchet MS", sans-serif;
+      font-size: 1.22rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+
+    .brand-tag {
+      font-size: 0.74rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--ink);
+      border: 1px solid var(--line);
+      background: rgba(255, 253, 248, 0.9);
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .nav-links a:hover,
+    .nav-links a:focus-visible {
+      transform: translateY(-1px);
+      border-color: var(--brand);
+      background: #ffffff;
+      outline: none;
+    }
+
+    .hero {
+      width: var(--content);
+      margin: 32px auto 24px;
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--radius-lg);
+      background:
+        linear-gradient(145deg, rgba(255, 253, 248, 0.92), rgba(255, 249, 239, 0.95)),
+        linear-gradient(120deg, var(--hero-a), var(--hero-b));
+      border: 1px solid rgba(93, 102, 105, 0.16);
+      box-shadow: var(--shadow);
+    }
+
+    .hero::before,
+    .hero::after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .hero::before {
+      width: 360px;
+      height: 360px;
+      right: -120px;
+      top: -110px;
+      background: radial-gradient(circle, rgba(15, 123, 108, 0.26) 0%, rgba(15, 123, 108, 0) 70%);
+    }
+
+    .hero::after {
+      width: 340px;
+      height: 340px;
+      left: -90px;
+      bottom: -140px;
+      background: radial-gradient(circle, rgba(240, 138, 47, 0.24) 0%, rgba(240, 138, 47, 0) 72%);
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      padding: clamp(26px, 5vw, 60px);
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: clamp(22px, 4vw, 40px);
+      align-items: center;
+    }
+
+    .kicker {
+      display: inline-block;
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--brand-strong);
+      font-weight: 800;
+      background: rgba(183, 234, 223, 0.55);
+      border: 1px solid rgba(15, 123, 108, 0.25);
+      padding: 8px 12px;
+      border-radius: 999px;
+      margin-bottom: 16px;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-family: "Syne", "Trebuchet MS", sans-serif;
+      font-size: clamp(2rem, 6vw, 4.4rem);
+      line-height: 0.95;
+      letter-spacing: 0.01em;
+      text-wrap: balance;
+    }
+
+    .hero p {
+      margin: 18px 0 0;
+      max-width: 50ch;
+      color: var(--muted);
+      font-size: clamp(1rem, 2vw, 1.14rem);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      border-radius: 999px;
+      padding: 12px 20px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      border: 1px solid transparent;
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }
+
+    .btn:hover,
+    .btn:focus-visible {
+      transform: translateY(-1px);
+      filter: brightness(0.98);
+      outline: none;
+    }
+
+    .btn-primary {
+      background: var(--brand);
+      color: #ffffff;
+      box-shadow: 0 10px 20px rgba(15, 123, 108, 0.24);
+    }
+
+    .btn-secondary {
+      border-color: rgba(15, 123, 108, 0.4);
+      color: var(--brand-strong);
+      background: #ffffff;
+    }
+
+    .hero-card {
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(93, 102, 105, 0.18);
+      padding: 20px;
+      box-shadow: 0 14px 30px rgba(13, 41, 46, 0.08);
+    }
+
+    .hero-card h2 {
+      margin: 0;
+      font-size: 1rem;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .hero-list {
+      list-style: none;
+      margin: 14px 0 0;
+      padding: 0;
+      display: grid;
+      gap: 10px;
+    }
+
+    .hero-list li {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 10px;
+      align-items: center;
+      color: #334043;
+      font-size: 0.95rem;
+    }
+
+    .hero-list span {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--accent-soft);
+      border: 1px solid rgba(240, 138, 47, 0.45);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      color: #975211;
+    }
+
+    .section {
+      width: var(--content);
+      margin: 0 auto;
+      padding: 20px 0 14px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    .section h2 {
+      margin: 0;
+      font-family: "Syne", "Trebuchet MS", sans-serif;
+      font-size: clamp(1.4rem, 3.2vw, 2rem);
+      line-height: 1;
+    }
+
+    .section-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .how-it-works {
+      width: var(--content);
+      margin: 20px auto 8px;
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(93, 102, 105, 0.2);
+      background:
+        radial-gradient(circle at 18% 12%, rgba(183, 234, 223, 0.36), rgba(183, 234, 223, 0) 44%),
+        radial-gradient(circle at 88% 88%, rgba(255, 226, 200, 0.42), rgba(255, 226, 200, 0) 45%),
+        #fffdf8;
+      box-shadow: var(--shadow);
+      padding: clamp(20px, 4vw, 34px);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .how-copy {
+      display: grid;
+      gap: 14px;
+      align-content: start;
+    }
+
+    .how-copy h2 {
+      margin: 0;
+      font-family: "Syne", "Trebuchet MS", sans-serif;
+      font-size: clamp(1.45rem, 3.4vw, 2.15rem);
+      line-height: 1.05;
+    }
+
+    .how-copy p {
+      margin: 0;
+      color: #344144;
+      max-width: 56ch;
+    }
+
+    .how-steps {
+      margin: 2px 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 10px;
+    }
+
+    .how-steps li {
+      border: 1px solid rgba(93, 102, 105, 0.22);
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.84);
+      padding: 12px;
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 10px;
+      align-items: start;
+    }
+
+    .how-steps span {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      color: #ffffff;
+      background: linear-gradient(145deg, var(--brand), var(--accent));
+      box-shadow: 0 6px 12px rgba(15, 123, 108, 0.22);
+      font-size: 0.85rem;
+    }
+
+    .how-steps strong {
+      display: block;
+      margin-top: 2px;
+      margin-bottom: 2px;
+      font-size: 0.94rem;
+      letter-spacing: 0.02em;
+    }
+
+    .how-steps p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .media-stack {
+      display: grid;
+      gap: 12px;
+      grid-template-rows: auto auto;
+    }
+
+    .video-frame {
+      border: 1px solid rgba(93, 102, 105, 0.2);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      min-height: 240px;
+      background: #ffffff;
+      box-shadow: 0 10px 20px rgba(13, 41, 46, 0.08);
+    }
+
+    .video-frame iframe,
+    .video-frame video {
+      width: 100%;
+      min-height: 240px;
+      border: 0;
+      display: block;
+    }
+
+    .video-frame video {
+      background: #000000;
+    }
+
+    .sketch-preview {
+      border: 1px solid rgba(93, 102, 105, 0.2);
+      border-radius: var(--radius-md);
+      background: #ffffff;
+      padding: 12px;
+      box-shadow: 0 10px 20px rgba(13, 41, 46, 0.08);
+      display: grid;
+      gap: 8px;
+    }
+
+    .sketch-preview strong {
+      font-size: 0.86rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--brand-strong);
+    }
+
+    .sketch-preview svg {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      border: 1px dashed rgba(15, 123, 108, 0.36);
+      background: linear-gradient(180deg, #fffef9, #fffaf0);
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid rgba(93, 102, 105, 0.2);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      text-decoration: none;
+      color: inherit;
+      box-shadow: 0 10px 20px rgba(13, 41, 46, 0.06);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .card:hover,
+    .card:focus-visible {
+      transform: translateY(-3px);
+      border-color: rgba(15, 123, 108, 0.46);
+      outline: none;
+    }
+
+    .card .eyebrow {
+      font-size: 0.73rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--brand-strong);
+      font-weight: 700;
+    }
+
+    .card h3 {
+      margin: 8px 0;
+      font-size: 1.08rem;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .showcase {
+      width: var(--content);
+      margin: 30px auto 40px;
+      background:
+        linear-gradient(135deg, rgba(15, 123, 108, 0.08), rgba(240, 138, 47, 0.13)),
+        #fffaf2;
+      border: 1px solid rgba(93, 102, 105, 0.2);
+      border-radius: var(--radius-lg);
+      padding: clamp(22px, 4vw, 38px);
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 18px;
+      align-items: center;
+    }
+
+    .showcase h2 {
+      margin: 0;
+      font-family: "Syne", "Trebuchet MS", sans-serif;
+      font-size: clamp(1.5rem, 3.8vw, 2.4rem);
+      line-height: 1.05;
+    }
+
+    .showcase p {
+      margin: 14px 0 0;
+      color: #2e393d;
+      max-width: 46ch;
+    }
+
+    .path-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .path-grid a {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      border-radius: var(--radius-sm);
+      border: 1px dashed rgba(15, 123, 108, 0.36);
+      background: rgba(255, 255, 255, 0.82);
+      padding: 14px;
+      font-weight: 700;
+      transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .path-grid a:hover,
+    .path-grid a:focus-visible {
+      background: #ffffff;
+      transform: translateY(-2px);
+      outline: none;
+    }
+
+    .site-footer {
+      border-top: 1px solid rgba(93, 102, 105, 0.2);
+      padding: 26px 0 32px;
+      background: rgba(255, 253, 248, 0.8);
+    }
+
+    .footer-inner {
+      width: var(--content);
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .fade-up {
+      opacity: 0;
+      transform: translateY(16px);
+      animation: fadeUp 0.62s ease forwards;
+    }
+
+    .fade-up.delay-1 {
+      animation-delay: 0.08s;
+    }
+
+    .fade-up.delay-2 {
+      animation-delay: 0.16s;
+    }
+
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 980px) {
+      .hero-inner,
+      .showcase,
+      .how-it-works {
+        grid-template-columns: 1fr;
+      }
+
+      .cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .header-inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .nav-links {
+        justify-content: flex-start;
+      }
+
+      .cards,
+      .path-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-actions {
+        width: 100%;
+      }
+
+      .hero-actions .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index" aria-label="Draw Flow Home">
+        <img src="assets/images/logo.jpg" alt="Draw Flow logo">
+        <div class="brand-label">
+          <strong class="brand-name">DRAW FLOW</strong>
+          <span class="brand-tag">Solid Drawing Journey</span>
+        </div>
+      </a>
+
+      <nav class="nav-links" aria-label="Home navigation">
+        <a href="pages/introduction">Introduction</a>
+        <a href="pages/objective">Objective</a>
+        <a href="pages/lesson">Lesson</a>
+        <a href="pages/quiz">Quiz</a>
+        <a href="pages/exercises">Exercises</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero fade-up">
+      <div class="hero-inner">
+        <div>
+          <span class="kicker">Learn by drawing, not guessing</span>
+          <h1>Build confident forms and cleaner lines.</h1>
+          <p>Draw Flow helps beginners practice the fundamentals of solid drawing through guided lessons, clear objectives, and focused activities that feel achievable every day.</p>
+
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="pages/introduction">Start Learning</a>
+            <a class="btn btn-secondary" href="pages/lesson">Explore Lessons</a>
+          </div>
+        </div>
+
+        <aside class="hero-card fade-up delay-1" aria-label="What you get">
+          <h2>What You Get</h2>
+          <ul class="hero-list">
+            <li><span>1</span>Step-by-step concepts with plain language</li>
+            <li><span>2</span>Clear objectives for each part of the module</li>
+            <li><span>3</span>Quick quizzes to check your understanding</li>
+            <li><span>4</span>Exercises to turn ideas into drawing habit</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section fade-up delay-1" aria-labelledby="module-tiles-heading">
+      <div class="section-head">
+        <h2 id="module-tiles-heading">Your Drawing Roadmap</h2>
+        <p class="section-note">Jump to any section and keep your momentum.</p>
+      </div>
+
+      <div class="cards">
+        <a class="card" href="pages/introduction">
+          <span class="eyebrow">Step 01</span>
+          <h3>Introduction</h3>
+          <p>Meet the core idea of solid drawing and why it matters.</p>
+        </a>
+
+        <a class="card" href="pages/objective">
+          <span class="eyebrow">Step 02</span>
+          <h3>Objectives</h3>
+          <p>See exactly what skills you should gain by the end.</p>
+        </a>
+
+        <a class="card" href="pages/lesson">
+          <span class="eyebrow">Step 03</span>
+          <h3>Lesson</h3>
+          <p>Study practical examples and methods you can replicate.</p>
+        </a>
+
+        <a class="card" href="pages/quiz">
+          <span class="eyebrow">Step 04</span>
+          <h3>Quiz</h3>
+          <p>Check progress quickly before moving to exercises.</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="how-it-works fade-up delay-2" aria-labelledby="how-it-works-heading">
+      <div class="how-copy">
+        <h2 id="how-it-works-heading">How Draw Flow Works In Real Study Time</h2>
+        <p>Each session is designed to be short, focused, and visual. Watch a quick demo, copy the idea, and immediately apply it in a practice task so your hand memory improves every day.</p>
+
+        <ul class="how-steps">
+          <li>
+            <span>01</span>
+            <div>
+              <strong>Watch the concept once</strong>
+              <p>Start with a small visual explanation so the shape principle is clear before you draw.</p>
+            </div>
+          </li>
+          <li>
+            <span>02</span>
+            <div>
+              <strong>Trace the guide structure</strong>
+              <p>Block in simple forms and perspective lines first, then build details on top.</p>
+            </div>
+          </li>
+          <li>
+            <span>03</span>
+            <div>
+              <strong>Apply in exercises</strong>
+              <p>Repeat with your own object from imagination, then check with quiz and feedback.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="media-stack" aria-label="Visual examples">
+        <div class="video-frame">
+          <video controls preload="metadata" poster="assets/images/logo.jpg" aria-label="Solid drawing fundamentals demo">
+            <source src="assets/video/Agent_video_Pippit_20260324161749.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        </div>
+
+        <div class="sketch-preview">
+          <strong>Mini Shape Breakdown Example</strong>
+          <svg viewBox="0 0 460 170" role="img" aria-label="Step example from basic box to cleaned solid form">
+            <rect x="1" y="1" width="458" height="168" fill="none" stroke="rgba(15,123,108,0.18)" />
+            <text x="38" y="24" fill="#697477" font-size="11" font-family="Plus Jakarta Sans, Segoe UI, sans-serif">Guide Box</text>
+            <rect x="28" y="38" width="98" height="78" fill="none" stroke="#9cb3b7" stroke-width="2" stroke-dasharray="6 5"/>
+            <line x1="28" y1="38" x2="62" y2="20" stroke="#9cb3b7" stroke-width="2" stroke-dasharray="6 5"/>
+            <line x1="126" y1="38" x2="160" y2="20" stroke="#9cb3b7" stroke-width="2" stroke-dasharray="6 5"/>
+            <line x1="126" y1="116" x2="160" y2="98" stroke="#9cb3b7" stroke-width="2" stroke-dasharray="6 5"/>
+            <line x1="160" y1="20" x2="160" y2="98" stroke="#9cb3b7" stroke-width="2" stroke-dasharray="6 5"/>
+            <line x1="62" y1="20" x2="160" y2="20" stroke="#9cb3b7" stroke-width="2" stroke-dasharray="6 5"/>
+            <line x1="62" y1="98" x2="160" y2="98" stroke="#9cb3b7" stroke-width="2" stroke-dasharray="6 5"/>
+
+            <text x="194" y="24" fill="#697477" font-size="11" font-family="Plus Jakarta Sans, Segoe UI, sans-serif">Solid Edges</text>
+            <path d="M195 58 L239 32 L320 32 L277 58 Z" fill="none" stroke="#0f7b6c" stroke-width="3"/>
+            <path d="M195 58 L195 113 L277 113 L277 58" fill="none" stroke="#0f7b6c" stroke-width="3"/>
+            <path d="M277 58 L320 32 L320 86 L277 113" fill="none" stroke="#0f7b6c" stroke-width="3"/>
+            <line x1="195" y1="113" x2="239" y2="86" stroke="#f08a2f" stroke-width="2"/>
+            <line x1="239" y1="32" x2="239" y2="86" stroke="#f08a2f" stroke-width="2"/>
+
+            <text x="346" y="24" fill="#697477" font-size="11" font-family="Plus Jakarta Sans, Segoe UI, sans-serif">Final Read</text>
+            <path d="M347 58 L390 33 L432 57 L389 82 Z" fill="#ffe2c8" stroke="#975211" stroke-width="2"/>
+            <path d="M347 58 L347 112 L389 136 L389 82 Z" fill="#b7eadf" stroke="#0f7b6c" stroke-width="2"/>
+            <path d="M389 82 L432 57 L432 112 L389 136 Z" fill="#d9f4ed" stroke="#0f7b6c" stroke-width="2"/>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <section class="showcase fade-up delay-2" aria-labelledby="next-step-heading">
+      <div>
+        <h2 id="next-step-heading">Ready to turn theory into drawing mileage?</h2>
+        <p>Use the lesson and exercises pages as your daily practice loop. Even 20 focused minutes can level up your shape confidence and visual structure.</p>
+      </div>
+
+      <div class="path-grid" aria-label="Quick actions">
+        <a href="pages/lesson">Open Today Lesson</a>
+        <a href="pages/exercises">Do Practice Exercises</a>
+        <a href="pages/quiz">Take a Progress Quiz</a>
+        <a href="pages/team-member">Meet the Team</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>Draw Flow Learning Module</span>
+      <span>Copyright <span id="year"></span></span>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var yearEl = document.getElementById("year");
+      if (yearEl) {
+        yearEl.textContent = String(new Date().getFullYear());
+      }
+    })();
+  </script>
+</body>
+</html>
+

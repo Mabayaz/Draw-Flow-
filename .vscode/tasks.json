@@ -1,0 +1,15 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run Website (Python)",
+      "type": "shell",
+      "command": "py",
+      "args": [
+        "scripts/run_server.py"
+      ],
+      "isBackground": true,
+      "problemMatcher": []
+    }
+  ]
+}
