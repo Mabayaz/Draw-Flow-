@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Draw Flow Five-Step Visual Guide</title>
+  <desc id="desc">A five-panel guide showing Frame, Build, Flow, Depth, and Refine for drawing practice.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fff5dd"/>
+      <stop offset="100%" stop-color="#e6f6f2"/>
+    </linearGradient>
+    <linearGradient id="head" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0f7b6c"/>
+      <stop offset="100%" stop-color="#f08a2f"/>
+    </linearGradient>
+    <style>
+      .title { font: 800 40px 'Plus Jakarta Sans', 'Segoe UI', sans-serif; fill: #183036; }
+      .subtitle { font: 500 20px 'Plus Jakarta Sans', 'Segoe UI', sans-serif; fill: #36525a; }
+      .stepno { font: 800 18px 'Plus Jakarta Sans', 'Segoe UI', sans-serif; fill: #0f7b6c; }
+      .stept { font: 800 24px 'Plus Jakarta Sans', 'Segoe UI', sans-serif; fill: #1f2a2e; }
+      .body { font: 500 16px 'Plus Jakarta Sans', 'Segoe UI', sans-serif; fill: #415258; }
+      .line { stroke: #22414a; stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .helper { stroke: #7ea3ad; stroke-width: 2; stroke-dasharray: 6 7; fill: none; }
+      .strong { stroke: #0f7b6c; stroke-width: 4; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .accent { stroke: #f08a2f; stroke-width: 4; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .label { font: 700 14px 'Plus Jakarta Sans', 'Segoe UI', sans-serif; fill: #35515a; }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="1200" height="760" rx="24" fill="url(#bg)"/>
+
+  <rect x="36" y="30" width="1128" height="106" rx="20" fill="#ffffff" opacity="0.92"/>
+  <rect x="36" y="30" width="1128" height="14" rx="7" fill="url(#head)"/>
+  <text x="62" y="86" class="title">Draw Flow Visual Guide</text>
+  <text x="62" y="116" class="subtitle">Follow these five steps while sketching one reference subject.</text>
+
+  <g transform="translate(36,160)">
+    <rect x="0" y="0" width="210" height="560" rx="18" fill="#ffffff" opacity="0.94"/>
+    <text x="18" y="38" class="stepno">STEP 1</text>
+    <text x="18" y="70" class="stept">Frame</text>
+    <text x="18" y="96" class="body">Mark the drawing</text>
+    <text x="18" y="118" class="body">boundaries first.</text>
+    <rect x="26" y="150" width="156" height="220" rx="12" class="line"/>
+    <line x1="26" y1="260" x2="182" y2="260" class="helper"/>
+    <line x1="104" y1="150" x2="104" y2="370" class="helper"/>
+    <circle cx="104" cy="260" r="52" class="helper"/>
+    <text x="26" y="412" class="label">Keep this stage light.</text>
+    <text x="26" y="434" class="label">No details yet.</text>
+  </g>
+
+  <g transform="translate(260,160)">
+    <rect x="0" y="0" width="210" height="560" rx="18" fill="#ffffff" opacity="0.94"/>
+    <text x="18" y="38" class="stepno">STEP 2</text>
+    <text x="18" y="70" class="stept">Build</text>
+    <text x="18" y="96" class="body">Break into box,</text>
+    <text x="18" y="118" class="body">cylinder, sphere.</text>
+    <polygon points="34,318 98,288 162,318 98,348" class="line"/>
+    <line x1="34" y1="318" x2="34" y2="242" class="line"/>
+    <line x1="98" y1="288" x2="98" y2="212" class="line"/>
+    <line x1="162" y1="318" x2="162" y2="242" class="line"/>
+    <polygon points="34,242 98,212 162,242 98,272" class="line"/>
+    <ellipse cx="98" cy="422" rx="46" ry="20" class="line"/>
+    <line x1="52" y1="422" x2="52" y2="486" class="line"/>
+    <line x1="144" y1="422" x2="144" y2="486" class="line"/>
+    <ellipse cx="98" cy="486" rx="46" ry="20" class="line"/>
+    <text x="26" y="528" class="label">Think in volume, not outline.</text>
+  </g>
+
+  <g transform="translate(484,160)">
+    <rect x="0" y="0" width="210" height="560" rx="18" fill="#ffffff" opacity="0.94"/>
+    <text x="18" y="38" class="stepno">STEP 3</text>
+    <text x="18" y="70" class="stept">Flow</text>
+    <text x="18" y="96" class="body">Connect forms with</text>
+    <text x="18" y="118" class="body">directional lines.</text>
+    <path d="M34 330 C70 272, 128 266, 172 228" class="strong"/>
+    <path d="M36 376 C82 342, 132 338, 172 304" class="line"/>
+    <path d="M34 428 C78 448, 124 446, 172 426" class="accent"/>
+    <path d="M52 238 C90 212, 124 212, 160 230" class="line"/>
+    <circle cx="70" cy="512" r="24" class="helper"/>
+    <circle cx="122" cy="508" r="16" class="helper"/>
+    <circle cx="162" cy="500" r="10" class="helper"/>
+    <text x="26" y="542" class="label">Guide the eye through motion.</text>
+  </g>
+
+  <g transform="translate(708,160)">
+    <rect x="0" y="0" width="210" height="560" rx="18" fill="#ffffff" opacity="0.94"/>
+    <text x="18" y="38" class="stepno">STEP 4</text>
+    <text x="18" y="70" class="stept">Depth</text>
+    <text x="18" y="96" class="body">Use overlap and</text>
+    <text x="18" y="118" class="body">cross-contours.</text>
+    <ellipse cx="92" cy="304" rx="56" ry="38" class="line"/>
+    <ellipse cx="132" cy="336" rx="56" ry="38" class="strong"/>
+    <path d="M76 292 C90 300, 104 304, 120 306" class="helper"/>
+    <path d="M70 318 C92 326, 110 330, 138 332" class="helper"/>
+    <path d="M112 364 C146 366, 170 380, 180 408" class="accent"/>
+    <path d="M40 466 C84 442, 136 438, 178 460" class="line"/>
+    <path d="M50 492 C92 472, 130 470, 170 490" class="line"/>
+    <text x="26" y="542" class="label">Front edges get priority.</text>
+  </g>
+
+  <g transform="translate(932,160)">
+    <rect x="0" y="0" width="210" height="560" rx="18" fill="#ffffff" opacity="0.94"/>
+    <text x="18" y="38" class="stepno">STEP 5</text>
+    <text x="18" y="70" class="stept">Refine</text>
+    <text x="18" y="96" class="body">Clean silhouette,</text>
+    <text x="18" y="118" class="body">strong key edges.</text>
+    <path d="M52 480 C40 420, 52 318, 90 264 C112 232, 150 224, 170 250 C194 280, 182 330, 160 356 C148 372, 136 382, 120 398 C104 416, 100 450, 110 486" class="strong"/>
+    <path d="M76 462 C74 420, 84 360, 108 324 C122 302, 146 298, 160 316" class="line"/>
+    <path d="M122 400 C134 390, 146 378, 154 362" class="accent"/>
+    <text x="26" y="532" class="label">Darken only final decisions.</text>
+    <text x="26" y="554" class="label">Erase or ignore helpers.</text>
+  </g>
+</svg>
