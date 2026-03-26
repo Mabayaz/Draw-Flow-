@@ -415,6 +415,28 @@
     .media-stack {
       display: grid;
       gap: 12px;
+      grid-template-rows: auto auto;
+    }
+
+    .video-frame {
+      border: 1px solid rgba(93, 102, 105, 0.2);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      min-height: 240px;
+      background: #ffffff;
+      box-shadow: 0 10px 20px rgba(13, 41, 46, 0.08);
+    }
+
+    .video-frame iframe,
+    .video-frame video {
+      width: 100%;
+      min-height: 240px;
+      border: 0;
+      display: block;
+    }
+
+    .video-frame video {
+      background: #000000;
     }
 
     .sketch-preview {
@@ -720,6 +742,13 @@
       </div>
 
       <div class="media-stack" aria-label="Visual examples">
+        <div class="video-frame">
+          <video controls preload="metadata" poster="assets/images/logo.jpg" aria-label="Solid drawing fundamentals demo">
+            <source src="assets/video/Agent_video_Pippit_20260324161749.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        </div>
+
         <div class="sketch-preview">
           <strong>Mini Shape Breakdown Example</strong>
           <svg viewBox="0 0 460 170" role="img" aria-label="Step example from basic box to cleaned solid form">
