@@ -16,6 +16,8 @@
     .home-progress { border: 1px solid #d9d5c9; border-radius: 1.25rem; background: rgba(255, 253, 248, .72); padding: 1.25rem; }
     .home-progress__track { height: .55rem; overflow: hidden; border-radius: 999px; background: #e8e2d7; }
     .home-progress__fill { width: 0%; height: 100%; border-radius: inherit; background: #e86f45; transition: width .35s ease; }
+    .lesson-status { display: inline-flex; align-items: center; border-radius: 999px; background: #e8e2d7; padding: .3rem .55rem; color: #68716c; font-family: 'DM Mono', monospace; font-size: .58rem; letter-spacing: .04em; text-transform: uppercase; }
+    .lesson-status.is-complete { background: rgba(47, 137, 108, .14); color: #2f896c; }
   </style>
 </head>
 <body class="bg-background text-foreground antialiased selection:bg-accent selection:text-background">
@@ -161,10 +163,10 @@
         <div class="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           
           <!-- Card 1: Form -->
-          <a href="pages/form.html" class="group relative overflow-hidden rounded-2xl border border-card-border bg-card p-6 transition-all duration-300 hover:border-accent hover:shadow-xl cursor-crosshair">
+          <a href="pages/form.html" data-lesson-card="form" class="group relative overflow-hidden rounded-2xl border border-card-border bg-card p-6 transition-all duration-300 hover:border-accent hover:shadow-xl cursor-crosshair">
             <div class="flex items-center justify-between">
               <p class="font-mono text-xs font-bold text-accent">Lesson 01</p>
-              <svg class="w-4 h-4 text-muted-foreground group-hover:text-accent transition-colors" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+              <span class="flex items-center gap-3"><span data-lesson-status class="lesson-status">Not started</span><span class="text-xl leading-none text-muted-foreground group-hover:text-accent">+</span></span>
             </div>
             <h3 class="mt-3 font-display text-2xl font-bold">Form</h3>
             <!-- Definition visible on hover -->
@@ -176,10 +178,10 @@
           </a>
 
           <!-- Card 2: Shadow -->
-          <a href="pages/shadow.html" class="group relative overflow-hidden rounded-2xl border border-card-border bg-card p-6 transition-all duration-300 hover:border-accent hover:shadow-xl cursor-crosshair">
+          <a href="pages/shadow.html" data-lesson-card="shadow" class="group relative overflow-hidden rounded-2xl border border-card-border bg-card p-6 transition-all duration-300 hover:border-accent hover:shadow-xl cursor-crosshair">
             <div class="flex items-center justify-between">
               <p class="font-mono text-xs font-bold text-accent">Lesson 02</p>
-              <svg class="w-4 h-4 text-muted-foreground group-hover:text-accent transition-colors" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+              <span class="flex items-center gap-3"><span data-lesson-status class="lesson-status">Not started</span><span class="text-xl leading-none text-muted-foreground group-hover:text-accent">+</span></span>
             </div>
             <h3 class="mt-3 font-display text-2xl font-bold">Shadow</h3>
             <!-- Definition visible on hover -->
@@ -191,10 +193,10 @@
           </a>
 
           <!-- Card 3: Perspective -->
-          <a href="pages/perspective.html" class="group relative overflow-hidden rounded-2xl border border-card-border bg-card p-6 transition-all duration-300 hover:border-accent hover:shadow-xl cursor-crosshair">
+          <a href="pages/perspective.html" data-lesson-card="perspective" class="group relative overflow-hidden rounded-2xl border border-card-border bg-card p-6 transition-all duration-300 hover:border-accent hover:shadow-xl cursor-crosshair">
             <div class="flex items-center justify-between">
               <p class="font-mono text-xs font-bold text-accent">Lesson 03</p>
-              <svg class="w-4 h-4 text-muted-foreground group-hover:text-accent transition-colors" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+              <span class="flex items-center gap-3"><span data-lesson-status class="lesson-status">Not started</span><span class="text-xl leading-none text-muted-foreground group-hover:text-accent">+</span></span>
             </div>
             <h3 class="mt-3 font-display text-2xl font-bold">Perspective</h3>
             <!-- Definition visible on hover -->
@@ -206,10 +208,10 @@
           </a>
 
           <!-- Card 4: Depth -->
-          <a href="pages/depth.html" class="group relative overflow-hidden rounded-2xl border border-card-border bg-card p-6 transition-all duration-300 hover:border-accent hover:shadow-xl cursor-crosshair">
+          <a href="pages/depth.html" data-lesson-card="depth" class="group relative overflow-hidden rounded-2xl border border-card-border bg-card p-6 transition-all duration-300 hover:border-accent hover:shadow-xl cursor-crosshair">
             <div class="flex items-center justify-between">
               <p class="font-mono text-xs font-bold text-accent">Lesson 04</p>
-              <svg class="w-4 h-4 text-muted-foreground group-hover:text-accent transition-colors" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+              <span class="flex items-center gap-3"><span data-lesson-status class="lesson-status">Not started</span><span class="text-xl leading-none text-muted-foreground group-hover:text-accent">+</span></span>
             </div>
             <h3 class="mt-3 font-display text-2xl font-bold">Depth</h3>
             <!-- Definition visible on hover -->
@@ -249,6 +251,12 @@
       if (fill) fill.style.width = `${percentage}%`;
       if (label) label.textContent = `${count} of ${lessons.length} complete`;
       track?.setAttribute('aria-valuenow', String(percentage));
+      document.querySelectorAll('[data-lesson-card]').forEach((card) => {
+        const complete = completed.includes(card.dataset.lessonCard);
+        const status = card.querySelector('[data-lesson-status]');
+        status.textContent = complete ? 'Completed' : 'Not started';
+        status.classList.toggle('is-complete', complete);
+      });
     })();
   </script>
 </body>
