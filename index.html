@@ -294,7 +294,7 @@
 
               <div class="mt-9 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
                 <!-- Card 1 -->
-                <a data-testid="card-lesson-visual-language" href="#practice" class="focus-ring group relative flex min-h-[14rem] flex-col justify-between overflow-hidden rounded-2xl border p-6 transition duration-300 hover:-translate-y-1 hover:shadow-lift border-primary bg-primary text-primary-foreground">
+                <a data-testid="card-lesson-visual-language" href="#practice" data-study="Visual language" data-study-description="A 12-minute study of shape, scale, and contrast. Start by finding three objects that communicate their purpose without words." class="focus-ring group relative flex min-h-[14rem] flex-col justify-between overflow-hidden rounded-2xl border p-6 transition duration-300 hover:-translate-y-1 hover:shadow-lift border-primary bg-primary text-primary-foreground">
                   <div class="absolute -right-8 -top-8 h-28 w-28 rounded-full border-[16px] border-accent/80"></div>
                   <div>
                     <div class="mb-8 flex items-center justify-between">
@@ -330,7 +330,7 @@
                 </a>
 
                 <!-- Card 2 -->
-                <a data-testid="card-lesson-shape-memory" href="#practice" class="focus-ring group relative flex min-h-[14rem] flex-col justify-between overflow-hidden rounded-2xl border p-6 transition duration-300 hover:-translate-y-1 hover:shadow-lift border-card-border bg-card">
+                <a data-testid="card-lesson-shape-memory" href="#practice" data-study="The memory of shape" data-study-description="A 15-minute study for collecting forms that stay with you. Sketch one silhouette from memory, then compare it with the original." class="focus-ring group relative flex min-h-[14rem] flex-col justify-between overflow-hidden rounded-2xl border p-6 transition duration-300 hover:-translate-y-1 hover:shadow-lift border-card-border bg-card">
                   <div>
                     <div class="mb-8 flex items-center justify-between">
                       <span class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-muted-foreground">Foundations · 02</span>
@@ -365,7 +365,7 @@
                 </a>
 
                 <!-- Card 3 -->
-                <a data-testid="card-lesson-color-relationships" href="#studies" class="focus-ring group relative flex min-h-[14rem] flex-col justify-between overflow-hidden rounded-2xl border p-6 transition duration-300 hover:-translate-y-1 hover:shadow-lift border-card-border bg-card">
+                <button type="button" data-testid="card-lesson-color-relationships" data-coming-soon class="focus-ring group relative flex min-h-[14rem] w-full flex-col justify-between overflow-hidden rounded-2xl border p-6 text-left transition duration-300 hover:-translate-y-1 hover:shadow-lift border-card-border bg-card">
                   <div>
                     <div class="mb-8 flex items-center justify-between">
                       <span class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-muted-foreground">Foundations · 03</span>
@@ -388,7 +388,7 @@
                     </span>
                     <span class="text-xs text-muted-foreground">Coming soon</span>
                   </div>
-                </a>
+                </button>
               </div>
             </section>
 
@@ -433,6 +433,20 @@
       <div role="region" aria-label="Notifications (F8)" tabindex="-1" style="pointer-events: none;">
         <ol tabindex="-1" class="fixed top-0 z-[100] flex max-h-screen w-full flex-col-reverse p-4 sm:bottom-0 sm:right-0 sm:top-auto sm:flex-col md:max-w-[420px]"></ol>
       </div>
+
+      <div id="study-dialog" class="fixed inset-0 z-[90] hidden items-center justify-center bg-foreground/45 p-5" role="dialog" aria-modal="true" aria-labelledby="study-dialog-title">
+        <div class="w-full max-w-lg rounded-2xl border border-border bg-card p-7 text-foreground shadow-lift">
+          <div class="flex items-start justify-between gap-5">
+            <div>
+              <p class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Studio study</p>
+              <h2 id="study-dialog-title" class="mt-3 font-display text-4xl leading-none"></h2>
+            </div>
+            <button type="button" data-close-dialog aria-label="Close study" class="focus-ring grid h-9 w-9 place-items-center rounded-full border border-border text-xl leading-none">&times;</button>
+          </div>
+          <p id="study-dialog-description" class="mt-5 text-sm leading-7 text-muted-foreground"></p>
+          <button type="button" data-start-study class="focus-ring mt-7 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-bold text-primary-foreground">Start study <span aria-hidden="true">&rarr;</span></button>
+        </div>
+      </div>
     </div>
 
     <script>
@@ -441,6 +455,12 @@
       const menuToggle = document.querySelector('[data-testid="button-mobile-menu"]');
       const navigation = document.querySelector('nav');
       const restartButton = document.querySelector('[data-testid="button-restart-progress"]');
+      const studyDialog = document.querySelector('#study-dialog');
+      const studyTitle = document.querySelector('#study-dialog-title');
+      const studyDescription = document.querySelector('#study-dialog-description');
+      const closeDialogButton = document.querySelector('[data-close-dialog]');
+      const startStudyButton = document.querySelector('[data-start-study]');
+      let activeStudy = '';
 
       themeToggle?.addEventListener('click', () => {
         root.classList.toggle('dark-mode');
@@ -456,6 +476,45 @@
         navigation.classList.toggle('bg-background', isOpen);
         navigation.classList.toggle('p-3', isOpen);
         menuToggle.setAttribute('aria-expanded', String(isOpen));
+      });
+
+      document.querySelectorAll('[data-study]').forEach((studyCard) => {
+        studyCard.addEventListener('click', (event) => {
+          event.preventDefault();
+          activeStudy = studyCard.dataset.study;
+          studyTitle.textContent = activeStudy;
+          studyDescription.textContent = studyCard.dataset.studyDescription;
+          studyDialog.classList.remove('hidden');
+          studyDialog.classList.add('flex');
+          closeDialogButton.focus();
+        });
+      });
+
+      document.querySelector('[data-coming-soon]')?.addEventListener('click', () => {
+        activeStudy = 'Color in company';
+        studyTitle.textContent = activeStudy;
+        studyDescription.textContent = 'This study is still being prepared. Check back soon for a guided exploration of tension, harmony, and the colors between colors.';
+        startStudyButton.textContent = 'Got it';
+        studyDialog.classList.remove('hidden');
+        studyDialog.classList.add('flex');
+        closeDialogButton.focus();
+      });
+
+      const closeStudyDialog = () => {
+        studyDialog.classList.add('hidden');
+        studyDialog.classList.remove('flex');
+        startStudyButton.textContent = 'Start study →';
+      };
+      closeDialogButton?.addEventListener('click', closeStudyDialog);
+      studyDialog?.addEventListener('click', (event) => {
+        if (event.target === studyDialog) closeStudyDialog();
+      });
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') closeStudyDialog();
+      });
+      startStudyButton?.addEventListener('click', () => {
+        closeStudyDialog();
+        document.querySelector('[data-testid="progress-path-progress"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       });
 
       restartButton?.addEventListener('click', () => {
