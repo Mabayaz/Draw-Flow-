@@ -115,10 +115,10 @@
       <nav aria-label="Lesson contents" class="lesson-contents sticky z-30 -mx-5 mb-12 overflow-x-auto border-y border-border bg-background/90 px-5 py-3 backdrop-blur-md sm:-mx-8 sm:px-8">
         <div class="flex min-w-max items-center gap-2 text-xs font-semibold">
           <span class="mr-2 font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Jump to</span>
-          <a href="#form" data-lesson-link="form" class="focus-ring rounded-full border border-border px-3 py-2 hover:border-accent hover:text-accent">01 Form</a>
-          <a href="#perspective" data-lesson-link="perspective" class="focus-ring rounded-full border border-border px-3 py-2 hover:border-accent hover:text-accent">02 Perspective</a>
-          <a href="#shadow" data-lesson-link="shadow" class="focus-ring rounded-full border border-border px-3 py-2 hover:border-accent hover:text-accent">03 Shadow</a>
-          <a href="#depth" data-lesson-link="depth" class="focus-ring rounded-full border border-border px-3 py-2 hover:border-accent hover:text-accent">04 Depth</a>
+          <a href="form.html" class="focus-ring rounded-full border border-border px-3 py-2 hover:border-accent hover:text-accent">01 Form</a>
+          <a href="perspective.html" class="focus-ring rounded-full border border-border px-3 py-2 hover:border-accent hover:text-accent">02 Perspective</a>
+          <a href="shadow.html" class="focus-ring rounded-full border border-border px-3 py-2 hover:border-accent hover:text-accent">03 Shadow</a>
+          <a href="depth.html" class="focus-ring rounded-full border border-border px-3 py-2 hover:border-accent hover:text-accent">04 Depth</a>
         </div>
       </nav>
 
@@ -366,12 +366,14 @@
         progressLabel.textContent = `${boundedPercentage}% read`;
         progressTrack.setAttribute('aria-valuenow', String(boundedPercentage));
 
-        const readingLine = window.scrollY + window.innerHeight * .3;
-        let activeSection = lessonSections[0];
-        lessonSections.forEach((item) => {
-          if (item.section.offsetTop <= readingLine) activeSection = item;
-        });
-        lessonSections.forEach(({ link }) => link.classList.toggle('is-reading', link === activeSection.link));
+        if (lessonSections.length) {
+          const readingLine = window.scrollY + window.innerHeight * .3;
+          let activeSection = lessonSections[0];
+          lessonSections.forEach((item) => {
+            if (item.section.offsetTop <= readingLine) activeSection = item;
+          });
+          lessonSections.forEach(({ link }) => link.classList.toggle('is-reading', link === activeSection.link));
+        }
         ticking = false;
       };
 

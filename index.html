@@ -12,6 +12,11 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="assets/js/tailwind-config.js"></script>
   <link rel="stylesheet" href="assets/css/site.css">
+  <style>
+    .home-progress { border: 1px solid #d9d5c9; border-radius: 1.25rem; background: rgba(255, 253, 248, .72); padding: 1.25rem; }
+    .home-progress__track { height: .55rem; overflow: hidden; border-radius: 999px; background: #e8e2d7; }
+    .home-progress__fill { width: 0%; height: 100%; border-radius: inherit; background: #e86f45; transition: width .35s ease; }
+  </style>
 </head>
 <body class="bg-background text-foreground antialiased selection:bg-accent selection:text-background">
   <div class="texture min-h-[100dvh] flex flex-col justify-between">
@@ -148,10 +153,15 @@
         <h2 class="font-display text-3xl font-bold">What You'll Learn</h2>
         <p class="text-xs text-muted-foreground mt-1">Hover over any card to reveal its core definition.</p>
 
+        <div class="home-progress mt-7" aria-label="Overall lesson progress">
+          <div class="mb-2 flex items-center justify-between gap-3 font-mono text-[10px] uppercase tracking-[.12em] text-muted-foreground"><span>Your learning path</span><span id="home-progress-label">0 of 4 complete</span></div>
+          <div class="home-progress__track" role="progressbar" aria-label="Overall lesson progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="home-progress-fill" class="home-progress__fill"></div></div>
+        </div>
+
         <div class="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           
           <!-- Card 1: Form -->
-          <a href="pages/lessons.html#form" class="group relative overflow-hidden rounded-2xl border border-card-border bg-card p-6 transition-all duration-300 hover:border-accent hover:shadow-xl cursor-crosshair">
+          <a href="pages/form.html" class="group relative overflow-hidden rounded-2xl border border-card-border bg-card p-6 transition-all duration-300 hover:border-accent hover:shadow-xl cursor-crosshair">
             <div class="flex items-center justify-between">
               <p class="font-mono text-xs font-bold text-accent">Lesson 01</p>
               <svg class="w-4 h-4 text-muted-foreground group-hover:text-accent transition-colors" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
@@ -166,7 +176,7 @@
           </a>
 
           <!-- Card 2: Shadow -->
-          <a href="pages/lessons.html#shadow" class="group relative overflow-hidden rounded-2xl border border-card-border bg-card p-6 transition-all duration-300 hover:border-accent hover:shadow-xl cursor-crosshair">
+          <a href="pages/shadow.html" class="group relative overflow-hidden rounded-2xl border border-card-border bg-card p-6 transition-all duration-300 hover:border-accent hover:shadow-xl cursor-crosshair">
             <div class="flex items-center justify-between">
               <p class="font-mono text-xs font-bold text-accent">Lesson 02</p>
               <svg class="w-4 h-4 text-muted-foreground group-hover:text-accent transition-colors" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
@@ -181,7 +191,7 @@
           </a>
 
           <!-- Card 3: Perspective -->
-          <a href="pages/lessons.html#perspective" class="group relative overflow-hidden rounded-2xl border border-card-border bg-card p-6 transition-all duration-300 hover:border-accent hover:shadow-xl cursor-crosshair">
+          <a href="pages/perspective.html" class="group relative overflow-hidden rounded-2xl border border-card-border bg-card p-6 transition-all duration-300 hover:border-accent hover:shadow-xl cursor-crosshair">
             <div class="flex items-center justify-between">
               <p class="font-mono text-xs font-bold text-accent">Lesson 03</p>
               <svg class="w-4 h-4 text-muted-foreground group-hover:text-accent transition-colors" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
@@ -196,7 +206,7 @@
           </a>
 
           <!-- Card 4: Depth -->
-          <a href="pages/lessons.html#depth" class="group relative overflow-hidden rounded-2xl border border-card-border bg-card p-6 transition-all duration-300 hover:border-accent hover:shadow-xl cursor-crosshair">
+          <a href="pages/depth.html" class="group relative overflow-hidden rounded-2xl border border-card-border bg-card p-6 transition-all duration-300 hover:border-accent hover:shadow-xl cursor-crosshair">
             <div class="flex items-center justify-between">
               <p class="font-mono text-xs font-bold text-accent">Lesson 04</p>
               <svg class="w-4 h-4 text-muted-foreground group-hover:text-accent transition-colors" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
@@ -227,5 +237,19 @@
   </div>
   
   <script src="assets/js/site.js"></script>
+  <script>
+    (() => {
+      const lessons = ['form', 'shadow', 'perspective', 'depth'];
+      const completed = JSON.parse(localStorage.getItem('drawflow-completed-lessons') || '[]');
+      const count = lessons.filter((lesson) => completed.includes(lesson)).length;
+      const percentage = (count / lessons.length) * 100;
+      const fill = document.querySelector('#home-progress-fill');
+      const label = document.querySelector('#home-progress-label');
+      const track = document.querySelector('.home-progress__track');
+      if (fill) fill.style.width = `${percentage}%`;
+      if (label) label.textContent = `${count} of ${lessons.length} complete`;
+      track?.setAttribute('aria-valuenow', String(percentage));
+    })();
+  </script>
 </body>
 </html>

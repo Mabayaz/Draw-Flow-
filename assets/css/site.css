@@ -58,6 +58,61 @@ body::before {
   padding: 5rem 0 3rem;
 }
 
+.lesson-reader-progress {
+  position: fixed;
+  top: 4.5rem;
+  right: 0;
+  left: 0;
+  z-index: 45;
+  border-bottom: 1px solid rgba(217, 213, 201, .8);
+  background: rgba(245, 241, 232, .92);
+  padding: .4rem max(1.25rem, calc((100vw - 1120px) / 2));
+  backdrop-filter: blur(10px);
+}
+
+.lesson-reader-progress__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: .75rem;
+  margin-bottom: .3rem;
+  color: #68716c;
+  font-family: 'DM Mono', monospace;
+  font-size: .62rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.lesson-reader-progress__track {
+  height: .24rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e8e2d7;
+}
+
+.lesson-reader-progress__track > div {
+  width: 0%;
+  height: 100%;
+  border-radius: inherit;
+  background: #e86f45;
+  transition: width .12s ease-out;
+}
+
+.lesson-reader-content {
+  margin-top: 1rem;
+}
+
+.lesson-reader-content .is-complete {
+  background: #2f896c;
+}
+
+@media (max-width: 640px) {
+  .lesson-reader-progress { padding-right: 1.25rem; padding-left: 1.25rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lesson-reader-progress__track > div { transition: none; }
+}
+
 [data-reveal] {
   opacity: 0;
   transform: translateY(18px);
