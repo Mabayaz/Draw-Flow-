@@ -1,265 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-    <title>DrawFlow — Solid Drawing for 2D Animation</title>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+  <title>DrawFlow — Solid Drawing for 2D Animation</title>
+  <meta name="description" content="DrawFlow is a supplementary educational platform helping 2D animation students master Solid Drawing: Form, Shadow, Perspective, and Depth.">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="assets/js/tailwind-config.js"></script>
+  <link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body class="bg-background text-foreground antialiased selection:bg-accent selection:text-background">
+  <div class="texture min-h-[100dvh] flex flex-col justify-between">
     
-    <!-- SEO & Metadata -->
-    <meta name="description" content="DrawFlow is a supplementary educational website to help 2D animation students master Solid Drawing principles: Form, Shadow, Perspective, and Depth.">
-    <meta name="robots" content="index, follow">
-    
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="DrawFlow — Master Solid Drawing">
-    <meta property="og:description" content="Learn the fundamentals of Solid Drawing through structured lessons, exercises, and interactive self-checks.">
-    <meta property="og:url" content="https://drawflow.site">
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-50 border-b border-border/80 bg-background/90 backdrop-blur-md">
+      <div class="mx-auto flex h-[4.5rem] max-w-7xl items-center justify-between px-5 sm:px-8">
+        <a href="index.html" class="focus-ring flex items-center gap-3 rounded-md">
+          <span class="grid h-10 w-10 place-items-center rounded-xl bg-primary text-primary-foreground shadow-md">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 21h8"/><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg>
+          </span>
+          <span class="font-display text-2xl tracking-tight">DrawFlow<span class="text-accent">.</span></span>
+        </a>
 
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="DrawFlow — Solid Drawing for 2D Animation">
-    <meta name="twitter:description" content="Learn the fundamentals of Solid Drawing through structured lessons, exercises, and interactive self-checks.">
+        <nav class="hidden items-center gap-2 md:flex" aria-label="Main navigation">
+          <a href="index.html" class="focus-ring flex items-center gap-2 rounded-full bg-muted px-4 py-2 text-sm font-semibold text-foreground">Home</a>
+          <a href="pages/lessons.html" class="focus-ring flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted/70 hover:text-foreground transition-all">Lessons</a>
+          <a href="pages/exercises.html" class="focus-ring flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted/70 hover:text-foreground transition-all">Exercises</a>
+          <a href="pages/self-check.html" class="focus-ring flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted/70 hover:text-foreground transition-all">Self-Check</a>
+          <a href="pages/game.html" class="focus-ring flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-accent hover:bg-accent/10 transition-all">Perspective Challenge 🎮</a>
+          <a href="pages/about.html" class="focus-ring flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted/70 hover:text-foreground transition-all">About Us</a>
+        </nav>
 
-    <!-- Assets & Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="assets/js/tailwind-config.js"></script>
-    <link rel="stylesheet" href="assets/css/site.css">
-  </head>
-  <body>
-    <div id="root">
-      <div class="texture min-h-[100dvh] bg-background text-foreground">
-        
-        <!-- Header -->
-        <header class="sticky top-0 z-40 border-b border-border/80 bg-background/90 backdrop-blur-md">
-          <div class="mx-auto flex h-[4.5rem] max-w-7xl items-center justify-between px-5 sm:px-8">
-            <a data-testid="link-brand" href="index.html" class="focus-ring flex items-center gap-3 rounded-md">
-              <span class="grid h-9 w-9 place-items-center rounded-[11px] bg-primary text-primary-foreground">
-                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pen-line" aria-hidden="true">
-                  <path d="M13 21h8"></path>
-                  <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"></path>
-                </svg>
-              </span>
-              <span class="font-display text-[1.45rem] tracking-[-.02em]">DrawFlow<span class="text-accent">.</span></span>
+        <div class="flex items-center gap-3">
+          <button type="button" aria-label="Switch Theme" data-testid="button-theme-toggle" class="focus-ring grid h-10 w-10 place-items-center rounded-full border border-border bg-card text-muted-foreground hover:border-accent hover:text-accent transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+          </button>
+          <button type="button" aria-label="Open menu" data-testid="button-mobile-menu" class="focus-ring grid h-10 w-10 place-items-center rounded-full border border-border md:hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="mx-auto max-w-7xl px-5 sm:px-8 flex-1">
+      <section class="grid gap-12 pb-20 pt-12 lg:grid-cols-2 lg:items-center lg:pt-20">
+        <div>
+          <p class="font-mono text-xs font-semibold uppercase tracking-widest text-accent">Educational Studio Platform</p>
+          <h1 class="mt-4 font-display text-5xl font-bold leading-[0.95] tracking-tight sm:text-7xl">Where your drawing <span class="text-accent">journey starts.</span></h1>
+          <p class="mt-6 text-base leading-relaxed text-muted-foreground max-w-lg">Master the core foundation of 2D animation: Solid Drawing. Learn form, perspective, shading, and depth using structured lessons and real-time interactive challenges.</p>
+
+          <div class="mt-8 flex flex-wrap items-center gap-4">
+            <a href="pages/game.html" class="focus-ring inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground shadow-lg hover:bg-primary/90 transition-all">
+              Play Cube Challenge 🎮
             </a>
-            
-            <nav class="hidden items-center gap-1 md:flex" aria-label="Main navigation">
-              <a data-testid="link-nav-home" href="index.html" class="focus-ring group flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-colors bg-muted text-foreground">
-                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-compass text-accent" aria-hidden="true">
-                  <path d="m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z"></path>
-                  <circle cx="12" cy="12" r="10"></circle>
-                </svg>
-                Home
-              </a>
-              <a data-testid="link-nav-lessons" href="pages/lessons.html" class="focus-ring group flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-colors text-muted-foreground hover:bg-muted/70 hover:text-foreground">
-                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open" aria-hidden="true">
-                  <path d="M12 7v14"></path>
-                  <path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"></path>
-                </svg>
-                Lessons
-              </a>
-              <a data-testid="link-nav-exercises" href="pages/exercises.html" class="focus-ring group flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-colors text-muted-foreground hover:bg-muted/70 hover:text-foreground">
-                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pen-line" aria-hidden="true">
-                  <path d="M13 21h8"></path>
-                  <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"></path>
-                </svg>
-                Exercises
-              </a>
-              <a data-testid="link-nav-about-us" href="pages/about.html" class="focus-ring group flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-colors text-muted-foreground hover:bg-muted/70 hover:text-foreground">
-                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-info" aria-hidden="true">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <path d="M12 16v-4"></path>
-                  <path d="M12 8h.01"></path>
-                </svg>
-                About Us
-              </a>
-            </nav>
+            <a href="pages/lessons.html" class="focus-ring rounded-full border border-border px-6 py-3.5 text-sm font-bold hover:bg-muted transition-all">Explore Lessons</a>
+          </div>
+        </div>
 
-            <div class="flex items-center gap-2">
-              <button type="button" aria-label="Switch to night mode" data-testid="button-theme-toggle" class="focus-ring grid h-10 w-10 place-items-center rounded-full border border-border bg-card text-muted-foreground transition hover:border-accent hover:text-accent">
-                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-moon" aria-hidden="true">
-                  <path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"></path>
-                </svg>
-              </button>
-              <button type="button" aria-label="Open menu" aria-expanded="false" data-testid="button-mobile-menu" class="focus-ring grid h-10 w-10 place-items-center rounded-full border border-border md:hidden">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right rotate-90" aria-hidden="true">
-                  <path d="m9 18 6-6-6-6"></path>
-                </svg>
-              </button>
+        <div class="relative min-h-[24rem] overflow-hidden rounded-3xl border border-border bg-card/60 p-8 shadow-2xl backdrop-blur-sm">
+          <div class="absolute -top-10 -right-10 h-40 w-40 rounded-full bg-accent/20 blur-2xl"></div>
+          <div class="relative z-10 flex h-full flex-col justify-between">
+            <div>
+              <span class="rounded-full bg-accent/10 px-3 py-1 font-mono text-xs font-semibold text-accent">Solid Drawing Rule</span>
+              <h2 class="mt-4 font-display text-3xl font-bold">Constructing Volume</h2>
+              <p class="mt-3 text-sm text-muted-foreground leading-relaxed">Solid drawing isn't just about flat shapes; it's the technique of projecting weight, spatial depth, and three-dimensional form onto a two-dimensional screen.</p>
+            </div>
+            <div class="mt-8 rounded-2xl border border-card-border bg-background/80 p-4">
+              <div class="flex items-center justify-between text-xs font-mono text-muted-foreground">
+                <span>Core Pillar: PERSPECTIVE</span>
+                <span class="text-accent">100% Interactive</span>
+              </div>
             </div>
           </div>
-        </header>
+        </div>
+      </section>
 
-        <!-- Main Content -->
-        <main>
-          <div class="mx-auto max-w-7xl px-5 pb-10 sm:px-8">
-            
-            <!-- Hero Section -->
-            <section class="grid gap-10 pb-20 pt-14 lg:grid-cols-[1.12fr_.88fr] lg:items-center lg:pt-24">
-              <div class="animate-[fade-up_.7s_ease-out_both]">
-                <p class="font-mono-draw text-[10px] font-medium uppercase tracking-[.18em] text-accent">Welcome to DrawFlow</p>
-                <h1 class="mt-3 max-w-3xl font-display text-[4.2rem] leading-[.87] tracking-[-.045em] sm:text-[6.5rem]">Where your Drawing<br><em class="text-accent">Journey Starts.</em></h1>
-                <p class="mt-7 max-w-md text-base leading-7 text-muted-foreground">Welcome to DrawFlow—where your Solid Drawing journey begins. Start by learning the fundamentals, explore essential drawing techniques, and put your skills into practice through interactive exercises. Learn the basics. Practice your skills. Grow as an animator.</p>
-                <div class="mt-8 flex flex-wrap items-center gap-3">
-                  <a data-testid="link-continue-lesson" href="pages/lessons.html" class="focus-ring inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-bold text-primary-foreground transition hover:-translate-y-0.5 hover:shadow-lift">
-                    Explore Lessons
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right" aria-hidden="true">
-                      <path d="M5 12h14"></path>
-                      <path d="m12 5 7 7-7 7"></path>
-                    </svg>
-                  </a>
-                  <a data-testid="link-explore-courses" href="pages/exercises.html" class="focus-ring rounded-full px-4 py-3 text-sm font-bold underline decoration-accent underline-offset-4">Interactive Exercises</a>
-                </div>
-              </div>
+      <!-- Modules Section -->
+      <section class="py-12 border-t border-border">
+        <h2 class="font-display text-3xl font-bold">Learning Modules</h2>
+        <div class="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <a href="pages/lessons.html#form" class="group rounded-2xl border border-card-border bg-card p-6 transition hover:border-accent hover:shadow-lg">
+            <p class="font-mono text-xs text-accent">Module 01</p>
+            <h3 class="mt-2 font-display text-2xl font-bold">Form</h3>
+            <p class="mt-2 text-xs text-muted-foreground leading-relaxed">Construct 3D objects using spheres, cylinders, and primitive boxes.</p>
+          </a>
+          <a href="pages/lessons.html#perspective" class="group rounded-2xl border border-card-border bg-card p-6 transition hover:border-accent hover:shadow-lg">
+            <p class="font-mono text-xs text-accent">Module 02</p>
+            <h3 class="mt-2 font-display text-2xl font-bold">Perspective</h3>
+            <p class="mt-2 text-xs text-muted-foreground leading-relaxed">Master 1-point, 2-point, and 3-point grid systems and horizon lines.</p>
+          </a>
+          <a href="pages/lessons.html#shadow" class="group rounded-2xl border border-card-border bg-card p-6 transition hover:border-accent hover:shadow-lg">
+            <p class="font-mono text-xs text-accent">Module 03</p>
+            <h3 class="mt-2 font-display text-2xl font-bold">Shadow</h3>
+            <p class="mt-2 text-xs text-muted-foreground leading-relaxed">Understand light origin, core shadows, and cast occlusion shadows.</p>
+          </a>
+          <a href="pages/lessons.html#depth" class="group rounded-2xl border border-card-border bg-card p-6 transition hover:border-accent hover:shadow-lg">
+            <p class="font-mono text-xs text-accent">Module 04</p>
+            <h3 class="mt-2 font-display text-2xl font-bold">Depth</h3>
+            <p class="mt-2 text-xs text-muted-foreground leading-relaxed">Apply depth of field, parallax, and atmospheric fading techniques.</p>
+          </a>
+        </div>
+      </section>
+    </main>
 
-              <!-- Principle Prompt Box -->
-              <div class="relative min-h-[22rem] overflow-hidden rounded-[2rem] border border-border bg-secondary/60 p-7 shadow-soft sm:min-h-[26rem]">
-                <div class="absolute left-8 top-8 h-3 w-3 rounded-full bg-accent"></div>
-                <div class="absolute bottom-[-5rem] right-[-3rem] h-64 w-64 rounded-full border-[34px] border-primary/90"></div>
-                <div class="absolute right-10 top-12 h-32 w-32 rotate-12 border border-primary/40"></div>
-                <div class="absolute bottom-12 left-12 h-20 w-32 -rotate-6 bg-background/70"></div>
-                <div class="absolute bottom-16 left-16 h-20 w-32 rotate-6 border border-accent"></div>
-                <div class="relative z-10 mt-20 max-w-[16rem]">
-                  <p class="font-mono-draw text-[10px] uppercase tracking-[.16em] text-muted-foreground">What is Solid Drawing?</p>
-                  <p class="mt-3 font-display text-2xl leading-[1.1]">The skill of conveying a 3D character or object in a 2D drawing.</p>
-                  <p class="mt-3 text-xs leading-5 text-muted-foreground">It emphasizes drawing what will appear solid, balanced, and believable by demonstrating form, weight, proportion, structure, and depth.</p>
-                </div>
-                <div class="absolute bottom-6 right-7 font-mono-draw text-[10px] text-muted-foreground">DrawFlow / 2026</div>
-              </div>
-            </section>
-
-            <!-- Objectives Section -->
-            <section class="border-y border-border py-12">
-              <p class="font-mono-draw text-[10px] font-medium uppercase tracking-[.18em] text-accent">Learning Goals</p>
-              <h2 class="mt-3 font-display text-4xl leading-[.95] tracking-[-.025em] sm:text-5xl">Website Objectives</h2>
-              <p class="mt-4 max-w-xl text-sm leading-7 text-muted-foreground">After using the DrawFlow website, learners should be able to:</p>
-              
-              <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                <div class="rounded-2xl border border-card-border bg-card p-6">
-                  <strong class="font-display text-3xl text-accent">01</strong>
-                  <p class="mt-3 text-sm text-muted-foreground">Understand the basic principles and concepts of Solid Drawing in 2D animation.</p>
-                </div>
-                <div class="rounded-2xl border border-card-border bg-card p-6">
-                  <strong class="font-display text-3xl text-accent">02</strong>
-                  <p class="mt-3 text-sm text-muted-foreground">Identify the use of form, shadow, perspective, and depth in creating solid drawings.</p>
-                </div>
-                <div class="rounded-2xl border border-card-border bg-card p-6">
-                  <strong class="font-display text-3xl text-accent">03</strong>
-                  <p class="mt-3 text-sm text-muted-foreground">Apply Solid Drawing techniques through guided lessons and interactive exercises.</p>
-                </div>
-                <div class="rounded-2xl border border-card-border bg-card p-6">
-                  <strong class="font-display text-3xl text-accent">04</strong>
-                  <p class="mt-3 text-sm text-muted-foreground">Practice creating drawings that show proper form, proportion, volume, and depth.</p>
-                </div>
-                <div class="rounded-2xl border border-card-border bg-card p-6 sm:col-span-2 lg:col-span-2">
-                  <strong class="font-display text-3xl text-accent">05</strong>
-                  <p class="mt-3 text-sm text-muted-foreground">Develop confidence and creativity in applying Solid Drawing skills to animation.</p>
-                </div>
-              </div>
-            </section>
-
-            <!-- 4 Core Modules Section -->
-            <section class="py-16">
-              <div class="flex items-end justify-between">
-                <div class="max-w-2xl">
-                  <p class="font-mono-draw text-[10px] font-medium uppercase tracking-[.18em] text-accent">4 Simple Cards</p>
-                  <h2 class="mt-3 font-display text-4xl leading-[.95] tracking-[-.025em] sm:text-5xl">What You'll Learn</h2>
-                </div>
-                <a data-testid="link-more-studies" href="pages/lessons.html" class="hidden items-center gap-2 text-sm font-bold sm:flex">
-                  View all lessons
-                  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right" aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
-                </a>
-              </div>
-
-              <div class="mt-9 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-                <!-- Form -->
-                <a href="pages/lessons.html#form" class="focus-ring group relative flex min-h-[14rem] flex-col justify-between overflow-hidden rounded-2xl border p-6 transition duration-300 hover:-translate-y-1 hover:shadow-lift border-primary bg-primary text-primary-foreground">
-                  <div>
-                    <div class="mb-8 flex items-center justify-between">
-                      <span class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-primary-foreground/65">Lesson 01</span>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right text-accent" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg>
-                    </div>
-                    <h3 class="font-display text-3xl leading-[.98]">Form</h3>
-                    <p class="mt-3 text-xs leading-5 text-primary-foreground/70">Learn how to create solid and believable shapes using basic forms.</p>
-                  </div>
-                  <span class="mt-6 inline-flex text-xs font-bold text-accent">Study module &rarr;</span>
-                </a>
-
-                <!-- Shadow -->
-                <a href="pages/lessons.html#shadow" class="focus-ring group relative flex min-h-[14rem] flex-col justify-between overflow-hidden rounded-2xl border p-6 transition duration-300 hover:-translate-y-1 hover:shadow-lift border-card-border bg-card">
-                  <div>
-                    <div class="mb-8 flex items-center justify-between">
-                      <span class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-muted-foreground">Lesson 02</span>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right text-accent" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg>
-                    </div>
-                    <h3 class="font-display text-3xl leading-[.98]">Shadow</h3>
-                    <p class="mt-3 text-xs leading-5 text-muted-foreground">Understand how light and shadow give your drawings depth and volume.</p>
-                  </div>
-                  <span class="mt-6 inline-flex text-xs font-bold text-accent">Study module &rarr;</span>
-                </a>
-
-                <!-- Perspective -->
-                <a href="pages/lessons.html#perspective" class="focus-ring group relative flex min-h-[14rem] flex-col justify-between overflow-hidden rounded-2xl border p-6 transition duration-300 hover:-translate-y-1 hover:shadow-lift border-card-border bg-card">
-                  <div>
-                    <div class="mb-8 flex items-center justify-between">
-                      <span class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-muted-foreground">Lesson 03</span>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right text-accent" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg>
-                    </div>
-                    <h3 class="font-display text-3xl leading-[.98]">Perspective</h3>
-                    <p class="mt-3 text-xs leading-5 text-muted-foreground">Learn how to show objects and characters correctly in space.</p>
-                  </div>
-                  <span class="mt-6 inline-flex text-xs font-bold text-accent">Study module &rarr;</span>
-                </a>
-
-                <!-- Depth -->
-                <a href="pages/lessons.html#depth" class="focus-ring group relative flex min-h-[14rem] flex-col justify-between overflow-hidden rounded-2xl border p-6 transition duration-300 hover:-translate-y-1 hover:shadow-lift border-card-border bg-card">
-                  <div>
-                    <div class="mb-8 flex items-center justify-between">
-                      <span class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-muted-foreground">Lesson 04</span>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right text-accent" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg>
-                    </div>
-                    <h3 class="font-display text-3xl leading-[.98]">Depth</h3>
-                    <p class="mt-3 text-xs leading-5 text-muted-foreground">Discover how to create a sense of distance and space in your drawings.</p>
-                  </div>
-                  <span class="mt-6 inline-flex text-xs font-bold text-accent">Study module &rarr;</span>
-                </a>
-              </div>
-            </section>
-
-            <!-- Callout / CTA Section -->
-            <section class="mb-10 rounded-2xl border border-accent/40 bg-accent/10 p-6 sm:flex sm:items-center sm:justify-between sm:p-8">
-              <div class="flex items-start gap-4">
-                <span class="mt-1">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-quote text-accent" aria-hidden="true"><path d="M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"></path><path d="M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"></path></svg>
-                </span>
-                <div>
-                  <p class="font-display text-2xl">"Let Your Creativity Flow"</p>
-                  <p class="mt-2 text-xs text-muted-foreground">Learn the lessons step by step and practice each technique.</p>
-                </div>
-              </div>
-              <a data-testid="link-open-practice" href="pages/exercises.html" class="focus-ring mt-5 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-bold text-primary-foreground sm:mt-0">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-play" aria-hidden="true"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"></path></svg> 
-                Open practice
-              </a>
-            </section>
-
-          </div>
-        </main>
-
-        <!-- Footer -->
-        <footer class="mx-auto mt-24 flex max-w-7xl flex-col gap-4 border-t border-border px-5 py-8 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-8">
-          <span class="font-display text-lg text-foreground">DrawFlow<span class="text-accent">.</span></span>
-          <span>DrawFlow — est. 2026</span>
-          <div class="flex flex-wrap items-center gap-4">
-            <a href="pages/about.html" class="focus-ring rounded text-foreground underline decoration-accent/70 underline-offset-4">About Us</a>
-          </div>
-        </footer>
-
+    <!-- Footer -->
+    <footer class="border-t border-border py-8">
+      <div class="mx-auto max-w-7xl px-5 text-center sm:px-8 text-xs text-muted-foreground flex flex-col sm:flex-row justify-between items-center gap-4">
+        <span>DrawFlow Educational Platform &copy; 2026. All rights reserved.</span>
+        <div class="flex items-center gap-6">
+          <a href="pages/about.html" class="hover:text-foreground">About Research</a>
+          <a href="pages/game.html" class="text-accent hover:underline">Launch Canvas Game</a>
+        </div>
       </div>
-    </div>
-
-    <script src="assets/js/site.js"></script>
-  </body>
+    </footer>
+  </div>
+  
+  <script src="assets/js/site.js"></script>
+</body>
 </html>
