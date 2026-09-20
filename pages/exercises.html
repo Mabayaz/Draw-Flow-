@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Exercises | DrawFlow</title>
-  <meta name="description" content="Practice small, focused drawing exercises with DrawFlow.">
+  <title>Exercises & Self-Check | DrawFlow</title>
+  <meta name="description" content="Practice drawing skills and evaluate your knowledge with the Solid Drawing Self-Check quiz.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
@@ -29,16 +29,17 @@
 
     <main class="mx-auto max-w-7xl px-5 pb-16 sm:px-8">
       <section class="page-intro">
-        <p class="font-mono-draw text-[10px] uppercase tracking-[.18em] text-accent">The practice room</p>
+        <p class="font-mono-draw text-[10px] uppercase tracking-[.18em] text-accent">The practice room[cite: 1]</p>
         <h1 class="mt-4 max-w-3xl font-display text-6xl leading-[.9] sm:text-8xl">Make looking a habit.</h1>
-        <p class="mt-7 max-w-2xl text-base leading-7 text-muted-foreground">Choose a small constraint, set a timer, and let your attention do the work. There is no perfect result to chase here.</p>
+        <p class="mt-7 max-w-2xl text-base leading-7 text-muted-foreground">Choose a small constraint, set a timer, and let your attention do the work[cite: 1]. Apply your learning through practice activities and the Self-Check assessment[cite: 1].</p>
       </section>
 
+      <!-- Timed Practice -->
       <section class="grid gap-5 lg:grid-cols-3">
         <article class="rounded-2xl border border-primary bg-primary p-7 text-primary-foreground lg:col-span-2">
-          <p class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Daily exercise / 01</p>
+          <p class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Daily exercise / 01[cite: 1]</p>
           <h2 class="mt-12 max-w-xl font-display text-5xl leading-none">Notice what repeats.</h2>
-          <p class="mt-5 max-w-xl text-sm leading-7 text-primary-foreground/70">Spend ten minutes finding one repeated shape, line, or color in the room around you. Draw only that pattern.</p>
+          <p class="mt-5 max-w-xl text-sm leading-7 text-primary-foreground/70">Spend ten minutes finding one repeated shape, line, or color in the room around you. Draw only that pattern to build your spatial awareness and form control[cite: 1].</p>
           <div class="mt-10 flex flex-wrap gap-3"><button type="button" data-timer="10" class="focus-ring rounded-full bg-accent px-5 py-3 text-sm font-bold text-foreground">Start 10-minute timer</button><button type="button" data-reset-timer class="focus-ring rounded-full border border-primary-foreground/30 px-5 py-3 text-sm font-bold">Reset</button></div>
           <p class="mt-6 font-mono-draw text-sm text-primary-foreground/70" data-timer-display>10:00</p>
         </article>
@@ -46,6 +47,112 @@
           <p class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Small rules</p>
           <ul class="mt-8 space-y-5 text-sm leading-6 text-muted-foreground"><li><strong class="text-foreground">01.</strong> Keep the tool simple.</li><li><strong class="text-foreground">02.</strong> Stop before the idea gets comfortable.</li><li><strong class="text-foreground">03.</strong> Write one sentence about what you noticed.</li></ul>
         </aside>
+      </section>
+
+      <!-- Self-Check Quiz -->
+      <section class="mt-16 rounded-2xl border border-card-border bg-card p-7 sm:p-10">
+        <p class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Assessment[cite: 1]</p>
+        <h2 class="mt-2 font-display text-4xl mb-2">SELF-CHECK[cite: 1]</h2>
+        <p class="text-xs text-muted-foreground mb-8">Choose the best answer for each question[cite: 1].</p>
+
+        <form id="quiz-form" class="space-y-8 text-sm">
+          <!-- Q1 -->
+          <div class="space-y-2">
+            <p class="font-bold text-foreground">1. What makes a form different from a shape?[cite: 1]</p>
+            <label class="block"><input type="radio" name="q1" value="A" class="mr-2"> A. Form is always flat.[cite: 1]</label>
+            <label class="block"><input type="radio" name="q1" value="B" class="mr-2"> B. Form has the appearance of three dimensions.[cite: 1]</label>
+            <label class="block"><input type="radio" name="q1" value="C" class="mr-2"> C. Shape always has depth.[cite: 1]</label>
+            <label class="block"><input type="radio" name="q1" value="D" class="mr-2"> D. Shape is always larger than form.[cite: 1]</label>
+          </div>
+
+          <!-- Q2 -->
+          <div class="space-y-2">
+            <p class="font-bold text-foreground">2. Which of the following helps create the appearance of form?[cite: 1]</p>
+            <label class="block"><input type="radio" name="q2" value="A" class="mr-2"> A. Lines and shapes[cite: 1]</label>
+            <label class="block"><input type="radio" name="q2" value="B" class="mr-2"> B. Text and letters[cite: 1]</label>
+            <label class="block"><input type="radio" name="q2" value="C" class="mr-2"> C. Sound and music[cite: 1]</label>
+            <label class="block"><input type="radio" name="q2" value="D" class="mr-2"> D. Frames and timing[cite: 1]</label>
+          </div>
+
+          <!-- Q3 -->
+          <div class="space-y-2">
+            <p class="font-bold text-foreground">3. What is the main purpose of perspective in Solid Drawing?[cite: 1]</p>
+            <label class="block"><input type="radio" name="q3" value="A" class="mr-2"> A. To add color to drawings[cite: 1]</label>
+            <label class="block"><input type="radio" name="q3" value="B" class="mr-2"> B. To make drawings look flatter[cite: 1]</label>
+            <label class="block"><input type="radio" name="q3" value="C" class="mr-2"> C. To create the illusion of depth and space[cite: 1]</label>
+            <label class="block"><input type="radio" name="q3" value="D" class="mr-2"> D. To remove details from objects[cite: 1]</label>
+          </div>
+
+          <!-- Q4 -->
+          <div class="space-y-2">
+            <p class="font-bold text-foreground">4. What is a vanishing point?[cite: 1]</p>
+            <label class="block"><input type="radio" name="q4" value="A" class="mr-2"> A. The darkest part of a drawing[cite: 1]</label>
+            <label class="block"><input type="radio" name="q4" value="B" class="mr-2"> B. The point where light comes from[cite: 1]</label>
+            <label class="block"><input type="radio" name="q4" value="C" class="mr-2"> C. The center of an object[cite: 1]</label>
+            <label class="block"><input type="radio" name="q4" value="D" class="mr-2"> D. The point where parallel lines appear to converge[cite: 1]</label>
+          </div>
+
+          <!-- Q5 -->
+          <div class="space-y-2">
+            <p class="font-bold text-foreground">5. Which type of perspective uses two vanishing points?[cite: 1]</p>
+            <label class="block"><input type="radio" name="q5" value="A" class="mr-2"> A. One-point perspective[cite: 1]</label>
+            <label class="block"><input type="radio" name="q5" value="B" class="mr-2"> B. Three-point perspective[cite: 1]</label>
+            <label class="block"><input type="radio" name="q5" value="C" class="mr-2"> C. Two-point perspective[cite: 1]</label>
+            <label class="block"><input type="radio" name="q5" value="D" class="mr-2"> D. Atmospheric perspective[cite: 1]</label>
+          </div>
+
+          <!-- Q6 -->
+          <div class="space-y-2">
+            <p class="font-bold text-foreground">6. What causes a shadow?[cite: 1]</p>
+            <label class="block"><input type="radio" name="q6" value="A" class="mr-2"> A. An object blocking light[cite: 1]</label>
+            <label class="block"><input type="radio" name="q6" value="B" class="mr-2"> B. An object changing its shape[cite: 1]</label>
+            <label class="block"><input type="radio" name="q6" value="C" class="mr-2"> C. A drawing becoming smaller[cite: 1]</label>
+            <label class="block"><input type="radio" name="q6" value="D" class="mr-2"> D. A vanishing point moving[cite: 1]</label>
+          </div>
+
+          <!-- Q7 -->
+          <div class="space-y-2">
+            <p class="font-bold text-foreground">7. Which part of a shadow is usually the darkest area on the object?[cite: 1]</p>
+            <label class="block"><input type="radio" name="q7" value="A" class="mr-2"> A. Highlight[cite: 1]</label>
+            <label class="block"><input type="radio" name="q7" value="B" class="mr-2"> B. Light area[cite: 1]</label>
+            <label class="block"><input type="radio" name="q7" value="C" class="mr-2"> C. Core shadow[cite: 1]</label>
+            <label class="block"><input type="radio" name="q7" value="D" class="mr-2"> D. Reflective light[cite: 1]</label>
+          </div>
+
+          <!-- Q8 -->
+          <div class="space-y-2">
+            <p class="font-bold text-foreground">8. Why are shadows important in Solid Drawing?[cite: 1]</p>
+            <label class="block"><input type="radio" name="q8" value="A" class="mr-2"> A. They make objects look flat.[cite: 1]</label>
+            <label class="block"><input type="radio" name="q8" value="B" class="mr-2"> B. They help show form, depth, and the direction of light.[cite: 1]</label>
+            <label class="block"><input type="radio" name="q8" value="C" class="mr-2"> C. They remove the need for perspective.[cite: 1]</label>
+            <label class="block"><input type="radio" name="q8" value="D" class="mr-2"> D. They make every object the same color.[cite: 1]</label>
+          </div>
+
+          <!-- Q9 -->
+          <div class="space-y-2">
+            <p class="font-bold text-foreground">9. What is the parallax effect used for in animation?[cite: 1]</p>
+            <label class="block"><input type="radio" name="q9" value="A" class="mr-2"> A. To change a 2D drawing into a 3D model[cite: 1]</label>
+            <label class="block"><input type="radio" name="q9" value="B" class="mr-2"> B. To make all objects move at the same speed[cite: 1]</label>
+            <label class="block"><input type="radio" name="q9" value="C" class="mr-2"> C. To remove the background from a scene[cite: 1]</label>
+            <label class="block"><input type="radio" name="q9" value="D" class="mr-2"> D. To create the illusion of depth as the camera moves[cite: 1]</label>
+          </div>
+
+          <!-- Q10 -->
+          <div class="space-y-2">
+            <p class="font-bold text-foreground">10. From an atmospheric perspective, how do distant objects usually appear?[cite: 1]</p>
+            <label class="block"><input type="radio" name="q10" value="A" class="mr-2"> A. More detailed and more saturated[cite: 1]</label>
+            <label class="block"><input type="radio" name="q10" value="B" class="mr-2"> B. Darker and sharper[cite: 1]</label>
+            <label class="block"><input type="radio" name="q10" value="C" class="mr-2"> C. Less detailed and lower in contrast[cite: 1]</label>
+            <label class="block"><input type="radio" name="q10" value="D" class="mr-2"> D. Larger and more defined[cite: 1]</label>
+          </div>
+
+          <button type="button" id="check-answers-btn" class="focus-ring rounded-full bg-primary px-6 py-3 font-bold text-primary-foreground">Check Answers</button>
+        </form>
+
+        <div id="results-box" class="mt-6 hidden p-5 border border-accent/40 rounded-xl bg-accent/10">
+          <strong class="block text-lg font-display text-foreground">Score Summary</strong>
+          <p id="score-text" class="text-sm mt-1 text-muted-foreground"></p>
+        </div>
       </section>
     </main>
 
@@ -65,6 +172,32 @@
       timerId = setInterval(() => { remainingSeconds = Math.max(remainingSeconds - 1, 0); renderTimer(); if (!remainingSeconds) clearInterval(timerId); }, 1000);
     });
     document.querySelector('[data-reset-timer]')?.addEventListener('click', () => { clearInterval(timerId); remainingSeconds = 600; renderTimer(); });
+
+    // Answer Key Evaluation[cite: 1]
+    const answerKey = {
+      q1: 'B',
+      q2: 'A',
+      q3: 'C',
+      q4: 'D',
+      q5: 'C',
+      q6: 'A',
+      q7: 'C',
+      q8: 'B',
+      q9: 'D',
+      q10: 'C'
+    };
+
+    document.getElementById('check-answers-btn')?.addEventListener('click', () => {
+      let score = 0;
+      const form = new FormData(document.getElementById('quiz-form'));
+      for (let i = 1; i <= 10; i++) {
+        if (form.get(`q${i}`) === answerKey[`q${i}`]) {
+          score++;
+        }
+      }
+      document.getElementById('results-box').classList.remove('hidden');
+      document.getElementById('score-text').textContent = `You scored ${score} out of 10!`;
+    });
   </script>
 </body>
 </html>
