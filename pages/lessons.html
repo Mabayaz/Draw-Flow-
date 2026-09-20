@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lessons | DrawFlow</title>
+  <meta name="description" content="Follow DrawFlow lessons that build visual observation one focused study at a time.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="../assets/js/tailwind-config.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body>
+  <div class="texture page-shell bg-background text-foreground">
+    <header class="sticky top-0 z-40 border-b border-border/80 bg-background/90 backdrop-blur-md">
+      <div class="mx-auto flex h-[4.5rem] max-w-7xl items-center justify-between px-5 sm:px-8">
+        <a href="../index.html" class="focus-ring flex items-center gap-3 rounded-md">
+          <span class="grid h-9 w-9 place-items-center rounded-[11px] bg-primary text-primary-foreground">DF</span>
+          <span class="font-display text-[1.45rem]">DrawFlow<span class="text-accent">.</span></span>
+        </a>
+        <nav class="hidden items-center gap-1 md:flex" aria-label="Main navigation">
+          <a href="../index.html" class="focus-ring rounded-full px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted">Home</a>
+          <a href="lessons.html" aria-current="page" class="focus-ring rounded-full bg-muted px-4 py-2 text-sm font-semibold">Lessons</a>
+          <a href="exercises.html" class="focus-ring rounded-full px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted">Exercises</a>
+          <a href="about.html" class="focus-ring rounded-full px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted">About Us</a>
+        </nav>
+        <div class="flex items-center gap-2">
+          <button type="button" aria-label="Switch to night mode" data-testid="button-theme-toggle" class="focus-ring grid h-10 w-10 place-items-center rounded-full border border-border bg-card text-muted-foreground">&#9790;</button>
+          <button type="button" aria-label="Open menu" aria-expanded="false" data-testid="button-mobile-menu" class="focus-ring grid h-10 w-10 place-items-center rounded-full border border-border md:hidden">&#9776;</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-7xl px-5 pb-16 sm:px-8">
+      <section class="page-intro">
+        <p class="font-mono-draw text-[10px] uppercase tracking-[.18em] text-accent">The notebook</p>
+        <h1 class="mt-4 max-w-3xl font-display text-6xl leading-[.9] sm:text-8xl">Lessons for seeing clearly.</h1>
+        <p class="mt-7 max-w-2xl text-base leading-7 text-muted-foreground">Short, deliberate studies for noticing form, rhythm, scale, and the relationships that make an image feel alive.</p>
+      </section>
+
+      <section class="grid gap-5 md:grid-cols-2">
+        <a href="../index.html#practice" class="focus-ring group rounded-2xl border border-primary bg-primary p-7 text-primary-foreground transition hover:-translate-y-1 hover:shadow-lift">
+          <p class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-primary-foreground/65">Foundations / 01</p>
+          <h2 class="mt-14 font-display text-4xl">Visual language</h2>
+          <p class="mt-3 max-w-md text-sm leading-6 text-primary-foreground/70">How shape, scale, and contrast speak before words arrive.</p>
+          <span class="mt-10 inline-flex text-sm font-bold text-accent">Open study &rarr;</span>
+        </a>
+        <a href="../index.html#practice" class="focus-ring group rounded-2xl border border-card-border bg-card p-7 transition hover:-translate-y-1 hover:shadow-lift">
+          <p class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-muted-foreground">Foundations / 02</p>
+          <h2 class="mt-14 font-display text-4xl">The memory of shape</h2>
+          <p class="mt-3 max-w-md text-sm leading-6 text-muted-foreground">Build a visual vocabulary by collecting forms that stay with you.</p>
+          <span class="mt-10 inline-flex text-sm font-bold text-accent">Open study &rarr;</span>
+        </a>
+        <button type="button" data-coming-soon class="focus-ring rounded-2xl border border-card-border bg-card p-7 text-left transition hover:-translate-y-1 hover:shadow-lift">
+          <p class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-muted-foreground">Foundations / 03</p>
+          <h2 class="mt-14 font-display text-4xl">Color in company</h2>
+          <p class="mt-3 max-w-md text-sm leading-6 text-muted-foreground">A study in tension, harmony, and the colors between colors.</p>
+          <span class="mt-10 inline-flex text-sm font-bold text-muted-foreground">Coming soon</span>
+        </button>
+      </section>
+    </main>
+
+    <footer class="mx-auto flex max-w-7xl flex-col gap-4 border-t border-border px-5 py-8 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-8">
+      <span class="font-display text-lg text-foreground">DrawFlow<span class="text-accent">.</span></span>
+      <a href="about.html" class="focus-ring text-foreground underline decoration-accent underline-offset-4">Our approach</a>
+    </footer>
+  </div>
+  <script src="../assets/js/site.js"></script>
+</body>
+</html>

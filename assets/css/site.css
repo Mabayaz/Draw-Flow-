@@ -1,0 +1,46 @@
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: #f5f1e8;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.texture {
+  background-image: radial-gradient(rgba(23, 62, 54, .055) .7px, transparent .7px);
+  background-size: 7px 7px;
+}
+
+.font-mono-draw {
+  font-family: 'DM Mono', monospace;
+}
+
+.focus-ring:focus-visible {
+  outline: 3px solid #e86f45;
+  outline-offset: 4px;
+}
+
+.dark-mode {
+  color-scheme: dark;
+  filter: invert(.9) hue-rotate(180deg);
+}
+
+.dark-mode img,
+.dark-mode video {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+.page-shell {
+  min-height: 100dvh;
+}
+
+.page-intro {
+  max-width: 48rem;
+  padding: 5rem 0 3rem;
+}
