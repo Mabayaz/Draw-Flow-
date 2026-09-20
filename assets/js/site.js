@@ -9,6 +9,34 @@ const studyDescription = document.querySelector('#study-dialog-description');
 const closeDialogButton = document.querySelector('[data-close-dialog]');
 const startStudyButton = document.querySelector('[data-start-study]');
 
+const savedTheme = localStorage.getItem('drawflow-theme');
+if (savedTheme === 'dark') root.classList.add('dark-mode');
+
+const updatePageProgress = () => {
+  const pageHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = pageHeight > 0 ? Math.min(window.scrollY / pageHeight, 1) * 100 : 100;
+  root.style.setProperty('--page-progress', `${progress}%`);
+};
+
+const revealObserver = 'IntersectionObserver' in window
+  ? new IntersectionObserver((entries, observer) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: .12 })
+  : null;
+
+document.querySelectorAll('main section, main article, main aside').forEach((element) => {
+  element.setAttribute('data-reveal', '');
+  if (revealObserver) revealObserver.observe(element);
+});
+
+window.addEventListener('scroll', updatePageProgress, { passive: true });
+window.addEventListener('resize', updatePageProgress);
+updatePageProgress();
+
 const closeStudyDialog = () => {
   if (!studyDialog) return;
   studyDialog.classList.add('hidden');
@@ -18,8 +46,14 @@ const closeStudyDialog = () => {
 
 themeToggle?.addEventListener('click', () => {
   root.classList.toggle('dark-mode');
-  themeToggle.setAttribute('aria-label', root.classList.contains('dark-mode') ? 'Switch to day mode' : 'Switch to night mode');
+  const isDark = root.classList.contains('dark-mode');
+  localStorage.setItem('drawflow-theme', isDark ? 'dark' : 'light');
+  themeToggle.setAttribute('aria-label', isDark ? 'Switch to day mode' : 'Switch to night mode');
 });
+
+if (themeToggle) {
+  themeToggle.setAttribute('aria-label', root.classList.contains('dark-mode') ? 'Switch to day mode' : 'Switch to night mode');
+}
 
 menuToggle?.addEventListener('click', () => {
   const isOpen = navigation.classList.toggle('!flex');
@@ -30,6 +64,13 @@ menuToggle?.addEventListener('click', () => {
   navigation.classList.toggle('bg-background', isOpen);
   navigation.classList.toggle('p-3', isOpen);
   menuToggle.setAttribute('aria-expanded', String(isOpen));
+});
+
+navigation?.querySelectorAll('a').forEach((link) => {
+  link.addEventListener('click', () => {
+    if (!menuToggle || !navigation.classList.contains('!flex')) return;
+    menuToggle.click();
+  });
 });
 
 document.querySelectorAll('[data-study]').forEach((studyCard) => {
