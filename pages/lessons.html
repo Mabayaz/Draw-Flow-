@@ -11,6 +11,66 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="../assets/js/tailwind-config.js"></script>
   <link rel="stylesheet" href="../assets/css/site.css">
+  <style>
+    .reading-progress {
+      position: fixed;
+      top: 4.5rem;
+      right: 0;
+      left: 0;
+      z-index: 45;
+      border-bottom: 1px solid rgba(217, 213, 201, .8);
+      background: rgba(245, 241, 232, .92);
+      padding: .4rem max(1.25rem, calc((100vw - 1120px) / 2));
+      backdrop-filter: blur(10px);
+    }
+
+    .reading-progress__meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .75rem;
+      margin-bottom: .3rem;
+      color: #68716c;
+      font-family: 'DM Mono', monospace;
+      font-size: .62rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .reading-progress__track {
+      height: .24rem;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e8e2d7;
+    }
+
+    .reading-progress__fill {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: #e86f45;
+      transition: width .12s ease-out;
+    }
+
+    .lesson-contents {
+      top: 5.35rem;
+    }
+
+    .lesson-contents a.is-reading {
+      border-color: #e86f45;
+      background: rgba(232, 111, 69, .1);
+      color: #e86f45;
+    }
+
+    @media (max-width: 640px) {
+      .reading-progress { padding-right: 1.25rem; padding-left: 1.25rem; }
+      .lesson-contents { top: 5.35rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reading-progress__fill { transition: none; }
+    }
+  </style>
 </head>
 <body>
   <div class="texture page-shell bg-background text-foreground">
@@ -35,6 +95,16 @@
       </div>
     </header>
 
+    <section class="reading-progress" aria-label="Lesson reading progress">
+      <div class="reading-progress__meta">
+        <span>Reading progress</span>
+        <span id="reading-progress-label">0% read</span>
+      </div>
+      <div class="reading-progress__track" role="progressbar" aria-label="Lesson reading progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div id="reading-progress-fill" class="reading-progress__fill"></div>
+      </div>
+    </section>
+
     <main class="mx-auto max-w-7xl px-5 pb-16 sm:px-8">
       <section class="page-intro">
         <p class="font-mono-draw text-[10px] uppercase tracking-[.18em] text-accent">Solid Drawing Content</p>
@@ -42,13 +112,13 @@
         <p class="mt-7 max-w-3xl text-base leading-7 text-muted-foreground">In this section, you will learn the basic principles of Solid Drawing through four lessons: Form, Shadow, Perspective, and Depth. Each lesson provides simple explanations, visual examples, and video tutorials to help you understand how these principles are used in 2D animation. Read and watch each lesson carefully, then apply what you have learned in the exercises provided. Try to complete each lesson in order to build your Solid Drawing skills step by step.</p>
       </section>
 
-      <nav aria-label="Lesson contents" class="sticky top-[4.5rem] z-30 -mx-5 mb-12 overflow-x-auto border-y border-border bg-background/90 px-5 py-3 backdrop-blur-md sm:-mx-8 sm:px-8">
+      <nav aria-label="Lesson contents" class="lesson-contents sticky z-30 -mx-5 mb-12 overflow-x-auto border-y border-border bg-background/90 px-5 py-3 backdrop-blur-md sm:-mx-8 sm:px-8">
         <div class="flex min-w-max items-center gap-2 text-xs font-semibold">
           <span class="mr-2 font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Jump to</span>
-          <a href="#form" class="focus-ring rounded-full border border-border px-3 py-2 hover:border-accent hover:text-accent">01 Form</a>
-          <a href="#perspective" class="focus-ring rounded-full border border-border px-3 py-2 hover:border-accent hover:text-accent">02 Perspective</a>
-          <a href="#shadow" class="focus-ring rounded-full border border-border px-3 py-2 hover:border-accent hover:text-accent">03 Shadow</a>
-          <a href="#depth" class="focus-ring rounded-full border border-border px-3 py-2 hover:border-accent hover:text-accent">04 Depth</a>
+          <a href="#form" data-lesson-link="form" class="focus-ring rounded-full border border-border px-3 py-2 hover:border-accent hover:text-accent">01 Form</a>
+          <a href="#perspective" data-lesson-link="perspective" class="focus-ring rounded-full border border-border px-3 py-2 hover:border-accent hover:text-accent">02 Perspective</a>
+          <a href="#shadow" data-lesson-link="shadow" class="focus-ring rounded-full border border-border px-3 py-2 hover:border-accent hover:text-accent">03 Shadow</a>
+          <a href="#depth" data-lesson-link="depth" class="focus-ring rounded-full border border-border px-3 py-2 hover:border-accent hover:text-accent">04 Depth</a>
         </div>
       </nav>
 
@@ -275,5 +345,46 @@
     </footer>
   </div>
   <script src="../assets/js/site.js"></script>
+  <script>
+    (() => {
+      const progressFill = document.querySelector('#reading-progress-fill');
+      const progressLabel = document.querySelector('#reading-progress-label');
+      const progressTrack = document.querySelector('.reading-progress__track');
+      const lessonSections = [...document.querySelectorAll('[data-lesson-link]')]
+        .map((link) => ({ link, section: document.getElementById(link.dataset.lessonLink) }))
+        .filter(({ section }) => section);
+      let ticking = false;
+
+      const updateReadingProgress = () => {
+        const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const percentage = scrollableHeight > 0
+          ? Math.round((window.scrollY / scrollableHeight) * 100)
+          : 100;
+        const boundedPercentage = Math.max(0, Math.min(100, percentage));
+
+        progressFill.style.width = `${boundedPercentage}%`;
+        progressLabel.textContent = `${boundedPercentage}% read`;
+        progressTrack.setAttribute('aria-valuenow', String(boundedPercentage));
+
+        const readingLine = window.scrollY + window.innerHeight * .3;
+        let activeSection = lessonSections[0];
+        lessonSections.forEach((item) => {
+          if (item.section.offsetTop <= readingLine) activeSection = item;
+        });
+        lessonSections.forEach(({ link }) => link.classList.toggle('is-reading', link === activeSection.link));
+        ticking = false;
+      };
+
+      const requestProgressUpdate = () => {
+        if (ticking) return;
+        ticking = true;
+        window.requestAnimationFrame(updateReadingProgress);
+      };
+
+      window.addEventListener('scroll', requestProgressUpdate, { passive: true });
+      window.addEventListener('resize', requestProgressUpdate);
+      updateReadingProgress();
+    })();
+  </script>
 </body>
 </html>
