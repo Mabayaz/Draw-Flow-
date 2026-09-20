@@ -34,6 +34,7 @@
 
   window.addEventListener('scroll', updateProgress, { passive: true });
   window.addEventListener('resize', updateProgress);
+  window.addEventListener('lessoncontentloaded', updateProgress);
   updateProgress();
   renderCompletion();
 })();
