@@ -8,8 +8,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="../assets/js/tailwind-config.js"></script>
+  <script src="https://cdn.tailwindcss.com">
+</script>
+  <script src="../assets/js/tailwind-config.js">
+</script>
   <link rel="stylesheet" href="../assets/css/site.css">
   <style>
     .module-card { border: 1px solid #d9d5c9; border-radius: 1.25rem; background: #fffdf8; padding: 1.75rem; transition: border-color .25s ease, box-shadow .25s ease, opacity .25s ease; }
@@ -40,30 +42,207 @@
   <div class="texture page-shell bg-background text-foreground">
     <header class="sticky top-0 z-40 border-b border-border/80 bg-background/90 backdrop-blur-md">
       <div class="mx-auto flex h-[4.5rem] max-w-7xl items-center justify-between px-5 sm:px-8">
-        <a href="../index.html" class="focus-ring flex items-center gap-3 rounded-md"><span class="grid h-9 w-9 place-items-center rounded-[11px] bg-primary font-bold text-primary-foreground">DF</span><span class="font-display text-[1.45rem]">DrawFlow<span class="text-accent">.</span></span></a>
-        <nav class="hidden items-center gap-1 md:flex" aria-label="Main navigation"><a href="../index.html" class="focus-ring rounded-full px-3 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted">Home</a><a href="lessons.html" class="focus-ring rounded-full px-3 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted">Lessons</a><a href="exercises.html" aria-current="page" class="focus-ring rounded-full bg-muted px-3 py-2 text-sm font-semibold">Exercises</a><a href="self-check.html" class="focus-ring rounded-full px-3 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted">Self-Check</a><a href="game.html" class="focus-ring rounded-full px-3 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted">Cube Challenge</a><a href="about.html" class="focus-ring rounded-full px-3 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted">About</a></nav>
-        <div class="flex items-center gap-2"><button type="button" aria-label="Switch to night mode" data-testid="button-theme-toggle" class="focus-ring grid h-10 w-10 place-items-center rounded-full border border-border bg-card text-muted-foreground">&#9790;</button><button type="button" aria-label="Open menu" aria-expanded="false" data-testid="button-mobile-menu" class="focus-ring grid h-10 w-10 place-items-center rounded-full border border-border md:hidden">&#9776;</button></div>
+        <a href="../index.html" class="focus-ring flex items-center gap-3 rounded-md">
+<span class="grid h-9 w-9 place-items-center rounded-[11px] bg-primary font-bold text-primary-foreground">DF</span>
+<span class="font-display text-[1.45rem]">DrawFlow<span class="text-accent">.</span>
+</span>
+</a>
+        <nav class="hidden items-center gap-1 md:flex" aria-label="Main navigation">
+<a href="../index.html" class="focus-ring rounded-full px-3 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted">Home</a>
+<a href="lessons.html" class="focus-ring rounded-full px-3 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted">Lessons</a>
+<a href="exercises.html" aria-current="page" class="focus-ring rounded-full bg-muted px-3 py-2 text-sm font-semibold">Exercises</a>
+<a href="self-check.html" class="focus-ring rounded-full px-3 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted">Self-Check</a>
+<a href="game.html" class="focus-ring rounded-full px-3 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted">Cube Challenge</a>
+<a href="about.html" class="focus-ring rounded-full px-3 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted">About</a>
+</nav>
+        <div class="flex items-center gap-2">
+<button type="button" aria-label="Switch to night mode" data-testid="button-theme-toggle" class="focus-ring grid h-10 w-10 place-items-center rounded-full border border-border bg-card text-muted-foreground">&#9790;</button>
+<button type="button" aria-label="Open menu" aria-expanded="false" data-testid="button-mobile-menu" class="focus-ring grid h-10 w-10 place-items-center rounded-full border border-border md:hidden">&#9776;</button>
+</div>
       </div>
     </header>
 
     <main class="mx-auto max-w-5xl px-5 pb-20 sm:px-8">
-      <section class="page-intro"><p class="font-mono-draw text-[10px] uppercase tracking-[.18em] text-accent">Progressive practice</p><h1 class="mt-4 max-w-4xl font-display text-6xl leading-[.9] sm:text-8xl">Build the form, then make it believable.</h1><p class="mt-7 max-w-3xl text-base leading-7 text-muted-foreground">Move through three focused stages. Each exercise gives you one idea to test, one action to complete, and a clear next step.</p></section>
-      <section class="mb-8 rounded-2xl border border-border bg-card p-5 sm:p-7" aria-label="Learning progress"><div class="flex flex-wrap items-end justify-between gap-4"><div><p class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Your path</p><h2 class="mt-2 font-display text-3xl">Solid Drawing foundations</h2></div><p id="progress-label" class="font-mono-draw text-xs text-muted-foreground">1 of 3 stages unlocked</p></div><div class="progress-track mt-5"><div id="progress-fill" class="progress-fill"></div></div><div class="mt-3 flex justify-between text-[10px] font-semibold uppercase tracking-[.12em] text-muted-foreground"><span>Form</span><span>Perspective</span><span>Shadow &amp; Depth</span></div></section>
+      <section class="page-intro">
+<p class="font-mono-draw text-[10px] uppercase tracking-[.18em] text-accent">Progressive practice</p>
+<h1 class="mt-4 max-w-4xl font-display text-6xl leading-[.9] sm:text-8xl">Build the form, then make it believable.</h1>
+         <p class="mt-7 max-w-3xl text-base leading-7 text-muted-foreground">Move through four focused stages. Each exercise gives you one idea to test, one action to complete, and a clear next step.</p>
+</section>
+      <section class="mb-8 rounded-2xl border border-border bg-card p-5 sm:p-7" aria-label="Learning progress">
+<div class="flex flex-wrap items-end justify-between gap-4">
+<div>
+<p class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Your path</p>
+<h2 class="mt-2 font-display text-3xl">Solid Drawing foundations</h2>
+</div>
+<p id="progress-label" class="font-mono-draw text-xs text-muted-foreground">1 of 4 stages unlocked</p>
+</div>
+<div class="progress-track mt-5">
+<div id="progress-fill" class="progress-fill">
+</div>
+</div>
+<div class="mt-3 flex justify-between text-[10px] font-semibold uppercase tracking-[.12em] text-muted-foreground">
+<span>Form</span>
+<span>Perspective</span>
+<span>Shadow</span>
+<span>Depth</span>
+</div>
+</section>
 
       <div class="space-y-5">
-        <section id="stage-form" class="module-card is-active" data-stage="1"><div class="flex flex-col justify-between gap-5 sm:flex-row sm:items-start"><div class="flex gap-4"><span class="stage-number">01</span><div><p class="stage-label font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Stage one / unlocked</p><h2 class="mt-2 font-display text-4xl">Form and volume</h2><p class="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">Turn flat marks into objects with weight. Start with the primitive forms that support almost every character, prop, and environment.</p></div></div><span class="stage-state rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-secondary-foreground">Ready to practice</span></div><div class="shape-grid"><div class="shape-tile"><div class="shape-cube" aria-hidden="true"></div><span class="sr-only">Cube</span></div><div class="shape-tile"><div class="shape-sphere" aria-hidden="true"></div><span class="sr-only">Sphere</span></div><div class="shape-tile"><div class="shape-cylinder" aria-hidden="true"></div><span class="sr-only">Cylinder</span></div></div><div class="mt-6 space-y-4"><div class="exercise-item"><h3 class="font-display text-xl">Exercise A: Primitive inventory</h3><p class="mt-2 text-sm leading-6 text-muted-foreground">Draw a cube, sphere, and cylinder from three angles. Add a centerline to each one so the volume remains clear when it turns.</p></div><div class="exercise-item"><h3 class="font-display text-xl">Exercise B: Combine the forms</h3><p class="mt-2 text-sm leading-6 text-muted-foreground">Build a simple object from at least two primitives. Keep the overlaps visible and check that the parts share the same scale.</p></div></div><div class="mt-7 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-5"><p class="text-xs text-muted-foreground">Complete both studies before moving to perspective.</p><button type="button" class="completion-button" data-complete="1">Mark Form complete <span aria-hidden="true">&rarr;</span></button></div></section>
+        <section id="stage-form" class="module-card is-active" data-stage="1">
+<div class="flex flex-col justify-between gap-5 sm:flex-row sm:items-start">
+<div class="flex gap-4">
+<span class="stage-number">01</span>
+<div>
+<p class="stage-label font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Stage one / unlocked</p>
+<h2 class="mt-2 font-display text-4xl">Form and volume</h2>
+<p class="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">Turn flat marks into objects with weight. Start with the primitive forms that support almost every character, prop, and environment.</p>
+</div>
+</div>
+<span class="stage-state rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-secondary-foreground">Ready to practice</span>
+</div>
+<div class="shape-grid">
+<div class="shape-tile">
+<div class="shape-cube" aria-hidden="true">
+</div>
+<span class="sr-only">Cube</span>
+</div>
+<div class="shape-tile">
+<div class="shape-sphere" aria-hidden="true">
+</div>
+<span class="sr-only">Sphere</span>
+</div>
+<div class="shape-tile">
+<div class="shape-cylinder" aria-hidden="true">
+</div>
+<span class="sr-only">Cylinder</span>
+</div>
+</div>
+<div class="mt-6 space-y-4">
+<div class="exercise-item">
+<h3 class="font-display text-xl">Exercise A: Primitive inventory</h3>
+<p class="mt-2 text-sm leading-6 text-muted-foreground">Draw a cube, sphere, and cylinder from three angles. Add a centerline to each one so the volume remains clear when it turns.</p>
+</div>
+<div class="exercise-item">
+<h3 class="font-display text-xl">Exercise B: Combine the forms</h3>
+<p class="mt-2 text-sm leading-6 text-muted-foreground">Build a simple object from at least two primitives. Keep the overlaps visible and check that the parts share the same scale.</p>
+</div>
+</div>
+<div class="mt-7 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-5">
+<p class="text-xs text-muted-foreground">Complete both studies before moving to perspective.</p>
+<button type="button" class="completion-button" data-complete="1">Mark Form complete <span aria-hidden="true">&rarr;</span>
+</button>
+</div>
+</section>
 
-        <section id="stage-perspective" class="module-card is-locked" data-stage="2" aria-disabled="true"><div class="flex flex-col justify-between gap-5 sm:flex-row sm:items-start"><div class="flex gap-4"><span class="stage-number">02</span><div><p class="stage-label font-mono-draw text-[10px] uppercase tracking-[.15em] text-muted-foreground">Stage two / locked</p><h2 class="mt-2 font-display text-4xl">Perspective and space</h2><p class="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">Use horizon lines and vanishing points to place your forms inside a believable world.</p></div></div><span class="stage-state rounded-full bg-muted px-3 py-1 text-xs font-semibold text-muted-foreground">Locked</span></div><div class="lock-note mt-6"><span aria-hidden="true">&#128274;</span><span>Complete Stage 1 to unlock this exercise.</span></div><div class="mt-6 grid gap-4 sm:grid-cols-2"><div class="prompt-box"><strong class="block text-foreground">One-point practice</strong><span>Draw a box facing you. Send every depth edge toward one vanishing point on the horizon.</span></div><div class="prompt-box"><strong class="block text-foreground">Two-point practice</strong><span>Turn the box. Establish left and right vanishing points before drawing its top and bottom edges.</span></div></div><div class="mt-7 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-5"><p class="text-xs text-muted-foreground">The Cube Challenge is a useful warm-up for this stage.</p><a href="game.html" class="focus-ring rounded-full border border-border px-4 py-3 text-xs font-bold hover:border-accent hover:text-accent">Open Cube Challenge</a><button type="button" class="completion-button" data-complete="2" disabled>Mark Perspective complete <span aria-hidden="true">&rarr;</span></button></div></section>
+        <section id="stage-perspective" class="module-card is-locked" data-stage="2" aria-disabled="true">
+<div class="flex flex-col justify-between gap-5 sm:flex-row sm:items-start">
+<div class="flex gap-4">
+<span class="stage-number">02</span>
+<div>
+<p class="stage-label font-mono-draw text-[10px] uppercase tracking-[.15em] text-muted-foreground">Stage two / locked</p>
+<h2 class="mt-2 font-display text-4xl">Perspective and space</h2>
+<p class="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">Use horizon lines and vanishing points to place your forms inside a believable world.</p>
+</div>
+</div>
+<span class="stage-state rounded-full bg-muted px-3 py-1 text-xs font-semibold text-muted-foreground">Locked</span>
+</div>
+<div class="lock-note mt-6">
+<span aria-hidden="true">&#128274;</span>
+<span>Complete Stage 1 to unlock this exercise.</span>
+</div>
+<div class="mt-6 grid gap-4 sm:grid-cols-2">
+<div class="prompt-box">
+<strong class="block text-foreground">One-point practice</strong>
+<span>Draw a box facing you. Send every depth edge toward one vanishing point on the horizon.</span>
+</div>
+<div class="prompt-box">
+<strong class="block text-foreground">Two-point practice</strong>
+<span>Turn the box. Establish left and right vanishing points before drawing its top and bottom edges.</span>
+</div>
+</div>
+<div class="mt-7 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-5">
+<p class="text-xs text-muted-foreground">The Cube Challenge is a useful warm-up for this stage.</p>
+<a href="game.html" class="focus-ring rounded-full border border-border px-4 py-3 text-xs font-bold hover:border-accent hover:text-accent">Open Cube Challenge</a>
+<button type="button" class="completion-button" data-complete="2" disabled>Mark Perspective complete <span aria-hidden="true">&rarr;</span>
+</button>
+</div>
+</section>
 
-        <section id="stage-shadow-depth" class="module-card is-locked" data-stage="3" aria-disabled="true"><div class="flex flex-col justify-between gap-5 sm:flex-row sm:items-start"><div class="flex gap-4"><span class="stage-number">03</span><div><p class="stage-label font-mono-draw text-[10px] uppercase tracking-[.15em] text-muted-foreground">Stage three / locked</p><h2 class="mt-2 font-display text-4xl">Shadow and depth</h2><p class="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">Finish the illusion with light logic: identify the source, describe the form shadow, and place the cast shadow.</p></div></div><span class="stage-state rounded-full bg-muted px-3 py-1 text-xs font-semibold text-muted-foreground">Locked</span></div><div class="lock-note mt-6"><span aria-hidden="true">&#128274;</span><span>Complete Stage 2 to unlock this exercise.</span></div><div class="mt-6 grid gap-4 sm:grid-cols-3"><div class="rounded-xl border border-border bg-background p-4"><strong class="font-display">Core shadow</strong><p class="mt-2 text-xs leading-5 text-muted-foreground">Find the turning point where the form faces away from the light.</p></div><div class="rounded-xl border border-border bg-background p-4"><strong class="font-display">Cast shadow</strong><p class="mt-2 text-xs leading-5 text-muted-foreground">Project the object’s shadow across the receiving surface.</p></div><div class="rounded-xl border border-border bg-background p-4"><strong class="font-display">Light source</strong><p class="mt-2 text-xs leading-5 text-muted-foreground">Keep highlight, half-tone, and shadow consistent with one direction.</p></div></div><div class="mt-7 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-5"><p class="text-xs text-muted-foreground">Use the Self-Check after completing this stage.</p><a href="self-check.html" class="focus-ring rounded-full border border-border px-4 py-3 text-xs font-bold hover:border-accent hover:text-accent">Open Self-Check</a><button type="button" class="completion-button" data-complete="3" disabled>Mark Shadow &amp; Depth complete <span aria-hidden="true">&rarr;</span></button></div></section>
+        <section id="stage-shadow" class="module-card is-locked" data-stage="3" aria-disabled="true">
+<div class="flex flex-col justify-between gap-5 sm:flex-row sm:items-start">
+<div class="flex gap-4">
+<span class="stage-number">03</span>
+<div>
+<p class="stage-label font-mono-draw text-[10px] uppercase tracking-[.15em] text-muted-foreground">Stage three / locked</p>
+<h2 class="mt-2 font-display text-4xl">Shadow</h2>
+<p class="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">Use a clear light source to describe core shadows, form shadows, and cast shadows without flattening the object.</p>
+</div>
+</div>
+<span class="stage-state rounded-full bg-muted px-3 py-1 text-xs font-semibold text-muted-foreground">Locked</span>
+</div>
+<div class="lock-note mt-6">
+<span aria-hidden="true">&#128274;</span>
+<span>Complete Stage 2 to unlock this exercise.</span>
+</div>
+<div class="mt-6 grid gap-4 sm:grid-cols-3">
+<div class="rounded-xl border border-border bg-background p-4">
+<strong class="font-display">Core shadow</strong>
+<p class="mt-2 text-xs leading-5 text-muted-foreground">Find the turning point where the form faces away from the light.</p>
+</div>
+<div class="rounded-xl border border-border bg-background p-4">
+<strong class="font-display">Cast shadow</strong>
+<p class="mt-2 text-xs leading-5 text-muted-foreground">Project the object’s shadow across the receiving surface.</p>
+</div>
+<div class="rounded-xl border border-border bg-background p-4">
+<strong class="font-display">Light source</strong>
+<p class="mt-2 text-xs leading-5 text-muted-foreground">Keep highlight, half-tone, and shadow consistent with one direction.</p>
+</div>
+</div>
+<div class="mt-7 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-5">
+<p class="text-xs text-muted-foreground">Identify the light source before you shade.</p>
+<button type="button" class="completion-button" data-complete="3" disabled>Mark Shadow complete <span aria-hidden="true">&rarr;</span>
+</button>
+</div>
+</section>
+
+<section id="stage-depth" class="module-card is-locked" data-stage="4" aria-disabled="true">
+<div class="flex flex-col justify-between gap-5 sm:flex-row sm:items-start">
+<div class="flex gap-4">
+<span class="stage-number">04</span>
+<div>
+<p class="stage-label font-mono-draw text-[10px] uppercase tracking-[.15em] text-muted-foreground">Stage four / locked</p>
+<h2 class="mt-2 font-display text-4xl">Depth</h2>
+<p class="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">Combine scale, overlap, atmospheric perspective, and parallax to make a 2D scene feel deep and spatial.</p>
+</div>
+</div>
+<span class="stage-state rounded-full bg-muted px-3 py-1 text-xs font-semibold text-muted-foreground">Locked</span>
+</div>
+<div class="lock-note mt-6"><span aria-hidden="true">&#128274;</span><span>Complete Stage 3 to unlock this exercise.</span></div>
+<div class="mt-6 grid gap-4 sm:grid-cols-3"><div class="rounded-xl border border-border bg-background p-4"><strong class="font-display">Scale</strong><p class="mt-2 text-xs leading-5 text-muted-foreground">Make distant objects smaller while keeping their structure believable.</p></div><div class="rounded-xl border border-border bg-background p-4"><strong class="font-display">Overlap</strong><p class="mt-2 text-xs leading-5 text-muted-foreground">Use foreground shapes to hide and reveal space between layers.</p></div><div class="rounded-xl border border-border bg-background p-4"><strong class="font-display">Atmosphere</strong><p class="mt-2 text-xs leading-5 text-muted-foreground">Reduce contrast and detail as forms move farther into the scene.</p></div></div>
+<div class="mt-7 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-5"><p class="text-xs text-muted-foreground">Finish with the Self-Check to review all four principles.</p><a href="self-check.html" class="focus-ring rounded-full border border-border px-4 py-3 text-xs font-bold hover:border-accent hover:text-accent">Open Self-Check</a><button type="button" class="completion-button" data-complete="4" disabled>Mark Depth complete <span aria-hidden="true">&rarr;</span></button></div>
+</section>
       </div>
 
-      <section class="mt-8 rounded-2xl border border-accent/40 bg-accent/10 p-5 sm:p-6"><div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center"><div><p class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Need a reset?</p><p class="mt-2 text-sm text-muted-foreground">Clear your saved module progress and start the sequence again.</p></div><button type="button" data-reset-progress class="focus-ring rounded-full border border-border bg-card px-4 py-3 text-xs font-bold hover:border-accent">Reset progress</button></div></section>
+      <section class="mt-8 rounded-2xl border border-accent/40 bg-accent/10 p-5 sm:p-6">
+<div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+<div>
+<p class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Need a reset?</p>
+<p class="mt-2 text-sm text-muted-foreground">Clear your saved module progress and start the sequence again.</p>
+</div>
+<button type="button" data-reset-progress class="focus-ring rounded-full border border-border bg-card px-4 py-3 text-xs font-bold hover:border-accent">Reset progress</button>
+</div>
+</section>
     </main>
 
-    <footer class="mx-auto flex w-full max-w-5xl flex-col gap-4 border-t border-border px-5 py-8 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-8"><span class="font-display text-lg text-foreground">DrawFlow<span class="text-accent">.</span></span><a href="lessons.html" class="focus-ring text-foreground underline decoration-accent underline-offset-4">Review lessons</a></footer>
+    <footer class="mx-auto flex w-full max-w-5xl flex-col gap-4 border-t border-border px-5 py-8 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-8">
+<span class="font-display text-lg text-foreground">DrawFlow<span class="text-accent">.</span>
+</span>
+<a href="lessons.html" class="focus-ring text-foreground underline decoration-accent underline-offset-4">Review lessons</a>
+</footer>
   </div>
-  <script src="../assets/js/site.js"></script>
+  <script src="../assets/js/site.js">
+</script>
   <script>
     const progressKey = 'drawflow-exercise-stages';
     const stages = [...document.querySelectorAll('[data-stage]')];
@@ -84,13 +263,15 @@
         stage.classList.toggle('is-active', unlocked && !completed);
         stage.classList.toggle('is-complete', completed);
         stage.setAttribute('aria-disabled', String(!unlocked));
+        const lockNote = stage.querySelector('.lock-note');
+        if (lockNote) lockNote.hidden = unlocked;
         if (state) state.textContent = completed ? 'Complete' : unlocked ? 'Ready to practice' : 'Locked';
-        if (label) label.textContent = `Stage ${stageNumber === 1 ? 'one' : stageNumber === 2 ? 'two' : 'three'} / ${completed ? 'complete' : unlocked ? 'unlocked' : 'locked'}`;
-        if (button) { button.disabled = !unlocked || completed; button.classList.toggle('is-complete', completed); button.innerHTML = completed ? 'Completed &#10003;' : `Mark ${stageNumber === 1 ? 'Form' : stageNumber === 2 ? 'Perspective' : 'Shadow &amp; Depth'} complete <span aria-hidden="true">&rarr;</span>`; }
+        if (label) label.textContent = `Stage ${['', 'one', 'two', 'three', 'four'][stageNumber]} / ${completed ? 'complete' : unlocked ? 'unlocked' : 'locked'}`;
+        if (button) { button.disabled = !unlocked || completed; button.classList.toggle('is-complete', completed); button.innerHTML = completed ? 'Completed &#10003;' : `Mark ${['', 'Form', 'Perspective', 'Shadow', 'Depth'][stageNumber]} complete <span aria-hidden="true">&rarr;</span>`; }
       });
       const unlockedCount = stages.filter((stage) => Number(stage.dataset.stage) === 1 || completedStages.has(Number(stage.dataset.stage) - 1)).length;
-      progressLabel.textContent = `${unlockedCount} of 3 stages unlocked`;
-      progressFill.style.width = `${(unlockedCount / 3) * 100}%`;
+      progressLabel.textContent = `${unlockedCount} of 4 stages unlocked`;
+      progressFill.style.width = `${(unlockedCount / 4) * 100}%`;
     };
 
     completeButtons.forEach((button) => button.addEventListener('click', () => {
@@ -98,7 +279,7 @@
       completedStages.add(stage);
       localStorage.setItem(progressKey, JSON.stringify([...completedStages]));
       renderStages();
-      document.querySelector(`[data-stage="${Math.min(stage + 1, 3)}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      document.querySelector(`[data-stage="${Math.min(stage + 1, 4)}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }));
     document.querySelector('[data-reset-progress]')?.addEventListener('click', () => { completedStages = new Set(); localStorage.removeItem(progressKey); renderStages(); });
     renderStages();
