@@ -102,6 +102,12 @@ document.addEventListener('click', (event) => {
   closeMobileMenu();
 });
 
+document.addEventListener('focusin', (event) => {
+  if (!menuToggle || !navigation || !navigation.classList.contains('!flex')) return;
+  if (navigation.contains(event.target) || menuToggle.contains(event.target)) return;
+  closeMobileMenu();
+});
+
 document.querySelectorAll('[data-study]').forEach((studyCard) => {
   studyCard.addEventListener('click', (event) => {
     event.preventDefault();

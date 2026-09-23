@@ -54,7 +54,7 @@ class CubeGame {
       this.render();
     });
     document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape') this.hideModal(this.evaluateButton);
+      if (event.key === 'Escape' && this.isModalOpen()) this.hideModal(this.evaluateButton);
     });
   }
 
@@ -150,6 +150,10 @@ class CubeGame {
     this.modal?.classList.remove('hidden');
     this.modal?.classList.add('flex');
     this.nextButton?.focus();
+  }
+
+  isModalOpen() {
+    return Boolean(this.modal && !this.modal.classList.contains('hidden'));
   }
 
   hideModal(focusTarget = null) {
