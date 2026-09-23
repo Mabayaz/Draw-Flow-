@@ -602,11 +602,11 @@
             ctx.lineJoin = 'round';
             ctx.beginPath();
 
-            // Bottom floor notch (Left corner -> Bottom point -> Right corner -> Center corner -> Left corner)
+            // Bottom floor notch
             ctx.moveTo(100, 440);
             ctx.lineTo(310, 560);
             ctx.lineTo(520, 440);
-            ctx.lineTo(310, 370); // Center floor corner meeting inner cube base
+            ctx.lineTo(310, 370);
             ctx.lineTo(100, 440);
 
             // Left outer vertical panel
@@ -633,19 +633,19 @@
             ctx.lineTo(520, 200);
             ctx.lineTo(520, 440);
 
-            // Center-back vertical axis (stops at top peak of central cube)
+            // Center vertical axis line
             ctx.moveTo(310, 80);
             ctx.lineTo(310, 200);
 
-            // Inner Floating Cube
+            // Inner Central Floating Cube
             ctx.moveTo(310, 370);
-            ctx.lineTo(310, 270); // Center front vertical edge
+            ctx.lineTo(310, 270);
 
             ctx.moveTo(205, 310);
-            ctx.lineTo(205, 210); // Left vertical edge
+            ctx.lineTo(205, 210);
 
             ctx.moveTo(415, 310);
-            ctx.lineTo(415, 210); // Right vertical edge
+            ctx.lineTo(415, 210);
 
             // Top diamond cap of central cube
             ctx.moveTo(310, 270);
@@ -654,7 +654,7 @@
             ctx.lineTo(415, 210);
             ctx.closePath();
 
-            // Back top diamond extension connecting to back wall axis
+            // Connection to back wall
             ctx.moveTo(310, 150);
             ctx.lineTo(310, 200);
 
