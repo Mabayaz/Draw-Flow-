@@ -87,8 +87,10 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     guideCanvas.style.opacity = stage === 'trace' ? opacityInput.value : stage === 'compare' ? '1' : '.25';
     differenceCanvas.style.opacity = stage === 'compare' ? '1' : '0';
     submitButton.disabled = stage === 'compare';
-    submitButton.textContent = stage === 'trace' ? 'Proceed to Freehand' : stage === 'freehand' ? 'Submit & Evaluate' : 'Evaluation Complete';
+    submitButton.textContent = stage === 'trace' ? 'Proceed to Freehand' : stage === 'freehand' ? 'Judge / Evaluate' : 'Evaluation Complete';
     nextButton.disabled = stage !== 'compare' || level >= 3 || formProgress.unlocked <= level;
+    studyButton.disabled = stage !== 'compare';
+    replayButton.disabled = stage !== 'compare' || strokes.length === 0;
     messageOutput.textContent = stage === 'trace' ? 'Trace the guide, then proceed when ready.' : stage === 'freehand' ? 'The guide is hidden. Draw the form from memory.' : 'Review the red marks and compare your drawing with the complete reference.';
     updateProgress();
   };
@@ -104,6 +106,8 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     setCanvasSize(trace);
     drawImage(guideContext, trace);
     clearDrawing();
+    strokes = [];
+    studyMode = false;
     differenceContext.clearRect(0, 0, differenceCanvas.width, differenceCanvas.height);
     stage = levelRecord().freehand >= 70 ? 'compare' : levelRecord().trace >= 75 ? 'freehand' : 'trace';
     if (stage === 'freehand') drawImage(guideContext, blank);
