@@ -204,6 +204,7 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
 
   const updateProgress = () => {
     progressOutput.textContent = `Round ${level}`;
+    [...levelSelect.options].forEach((option) => { option.disabled = Number(option.value) > formProgress.unlocked; });
   };
 
   const renderStage = () => {
@@ -345,7 +346,7 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     const intersectionHeight = Math.max(0, Math.min(referenceMaxY, drawingMaxY) - Math.max(referenceMinY, drawingMinY));
     const unionArea = referenceArea + drawingArea - intersectionWidth * intersectionHeight;
     const boundsScore = unionArea ? (intersectionWidth * intersectionHeight) / unionArea : 0;
-    const densityScore = Math.min(referenceCount, drawn) / Math.max(referenceCount, drawn, 1);
+    const densityScore = Math.min(expected, drawn) / Math.max(expected, drawn, 1);
     const score = Math.round((recall * .45 + precision * .3 + boundsScore * .15 + densityScore * .1) * 100);
     if (scoreOutput) scoreOutput.textContent = `${score}%`;
     rankOutput.textContent = `Rank ${score >= 95 ? 'S' : score >= 85 ? 'A' : score >= 70 ? 'B' : score >= 50 ? 'C' : 'D'}`;
