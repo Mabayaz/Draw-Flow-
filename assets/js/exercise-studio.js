@@ -218,8 +218,8 @@ if (subjectSelect && levelSelect && drawingCanvas && referenceCanvas && differen
     const point = getPoint(event);
     drawingContext.lineCap = 'round';
     drawingContext.lineJoin = 'round';
-    drawingContext.lineWidth = Math.max(3, drawingCanvas.width / 180);
-    drawingContext.strokeStyle = erasing ? '#ffffff' : '#173e36';
+    drawingContext.lineWidth = Number(brushSizeInput.value);
+    drawingContext.strokeStyle = erasing ? '#ffffff' : brushColorInput.value;
     drawingContext.globalCompositeOperation = erasing ? 'destination-out' : 'source-over';
     if (!drawing) drawingContext.moveTo(point.x, point.y);
     drawingContext.lineTo(point.x, point.y);
@@ -275,15 +275,38 @@ if (subjectSelect && levelSelect && drawingCanvas && referenceCanvas && differen
     const precision = drawingCount ? matchedDrawing / drawingCount : 0;
     const score = Math.round((recall * .65 + precision * .35) * 100);
     scoreOutput.textContent = `${score}%`;
-    if (currentStep === 'trace' && score >= 70) { tracePassed = true; scoreMessage.textContent = 'Trace passed. Freehand practice is unlocked.'; }
-    else if (currentStep === 'freehand' && score >= 70) { freehandPassed = true; scoreMessage.textContent = 'Level complete. Compare your work with the reference.'; }
-    else if (score < 70) scoreMessage.textContent = 'Keep practicing. A score of 70% unlocks the next step.';
+    differenceContext.clearRect(0, 0, differenceCanvas.width, differenceCanvas.height);
+    differenceContext.fillStyle = 'rgba(220, 60, 45, .78)';
+    const split = Number(splitInput.value) / 100;
+    for (let y = 0; y < offscreen.height; y += 4) {
+      for (let x = 0; x < offscreen.width; x += 4) {
+        const index = (y * offscreen.width + x) * 4;
+        const missing = isInk(referencePixels, index) && !hasInkNear(drawingPixels, x, y);
+        const extra = isInk(drawingPixels, index) && !hasInkNear(referencePixels, x, y);
+        if ((missing && x / offscreen.width <= split) || (extra && x / offscreen.width > split)) differenceContext.fillRect(x, y, 4, 4);
+      }
+    }
+    if (currentStep === 'trace' && score >= TRACE_THRESHOLD) {
+      tracePassed = true;
+      progress[levelKey()] = { ...(progress[levelKey()] || {}), trace: score };
+      saveProgress();
+      scoreMessage.textContent = 'Trace passed. Freehand practice is unlocked.';
+    } else if (currentStep === 'freehand' && score >= FREEHAND_THRESHOLD) {
+      freehandPassed = true;
+      progress[levelKey()] = { ...(progress[levelKey()] || {}), freehand: score };
+      saveProgress();
+      scoreMessage.textContent = 'Level complete. Compare your work with the reference.';
+    } else if (score < (currentStep === 'trace' ? TRACE_THRESHOLD : FREEHAND_THRESHOLD)) {
+      scoreMessage.textContent = `Keep practicing. A score of ${currentStep === 'trace' ? TRACE_THRESHOLD : FREEHAND_THRESHOLD}% unlocks the next step.`;
+    }
+    refreshSubjectLocks();
     updateControls();
   };
 
   subjectSelect.addEventListener('change', () => { populateLevels(); loadLevel(); });
   levelSelect.addEventListener('change', loadLevel);
   opacityInput.addEventListener('input', updateControls);
+  splitInput.addEventListener('input', () => { if (currentStep === 'compare') scoreDrawing(); });
   stepButtons.forEach((button) => button.addEventListener('click', () => setStep(button.dataset.studioStep)));
   checkButton.addEventListener('click', scoreDrawing);
   undoButton.addEventListener('click', () => { if (historyIndex > 0) { historyIndex -= 1; restoreSnapshot(history[historyIndex]); } });
