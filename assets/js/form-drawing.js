@@ -48,7 +48,6 @@ const coverageBar = document.querySelector('#form-coverage-bar');
 const coverageLabel = document.querySelector('#form-coverage-label');
 const peekTimer = document.querySelector('#form-peek-timer');
 const guideOpacityControl = document.querySelector('#form-guide-opacity-control');
-const splitInput = document.querySelector('#form-review-split');
 const readyBanner = document.querySelector('#form-ready-banner');
 const stageBadge = document.querySelector('#form-stage-badge');
 const hintBanner = document.querySelector('#form-hint-banner');
@@ -287,7 +286,6 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     const near = (pixels, x, y) => { for (let dy = -radius; dy <= radius; dy += 1) for (let dx = -radius; dx <= radius; dx += 1) { const nx = x + dx; const ny = y + dy; if (nx >= 0 && ny >= 0 && nx < drawingCanvas.width && ny < drawingCanvas.height && ink(pixels, (ny * drawingCanvas.width + nx) * 4)) return true; } return false; };
     let expected = 0; let matched = 0; let drawn = 0; let aligned = 0;
     differenceContext.clearRect(0, 0, differenceCanvas.width, differenceCanvas.height);
-    const split = Number(splitInput.value) / 100;
     for (let y = 0; y < drawingCanvas.height; y += 2) for (let x = 0; x < drawingCanvas.width; x += 2) {
       const index = (y * drawingCanvas.width + x) * 4;
       const expectedInk = ink(referencePixels, index);
@@ -302,7 +300,7 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
         differenceContext.fillStyle = 'rgba(47, 137, 108, .8)';
         differenceContext.fillRect(x, y, 4, 4);
       }
-      if ((missing && x / drawingCanvas.width <= split) || (extra && x / drawingCanvas.width > split)) {
+      if (missing || extra) {
         differenceContext.fillStyle = 'rgba(220, 60, 90, .85)';
         differenceContext.fillRect(x, y, 4, 4);
       }
@@ -410,7 +408,6 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
   });
   penButton.addEventListener('click', () => { tool = 'pen'; penButton.classList.add('primary'); eraserButton.classList.remove('primary'); });
   eraserButton.addEventListener('click', () => { tool = 'eraser'; eraserButton.classList.add('primary'); penButton.classList.remove('primary'); });
-  splitInput.addEventListener('input', () => { if (stage === 'compare') scoreCanvas(); });
   evaluationSplitInput.addEventListener('input', () => { if (stage === 'compare') loadImage(images.complete).then(renderEvaluation); });
   document.querySelector('#form-clear').addEventListener('click', () => { clearDrawing(); if (stage === 'trace') updateTraceCoverage(); });
   document.querySelector('#form-undo').addEventListener('click', () => { if (historyIndex > 0) { historyIndex -= 1; drawingContext.putImageData(history[historyIndex], 0, 0); if (stage === 'trace') updateTraceCoverage(); } });

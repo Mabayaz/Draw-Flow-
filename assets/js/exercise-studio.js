@@ -53,7 +53,6 @@ const undoButton = document.querySelector('#studio-undo');
 const redoButton = document.querySelector('#studio-redo');
 const eraserButton = document.querySelector('#studio-eraser');
 const clearButton = document.querySelector('#studio-clear');
-const splitInput = document.querySelector('#studio-split');
 const topicProgress = document.querySelector('#studio-topic-progress');
 const overviewView = document.querySelector('#exercise-overview');
 const formIntroView = document.querySelector('#form-intro');
@@ -294,13 +293,12 @@ if (subjectSelect && levelSelect && drawingCanvas && referenceCanvas && differen
     scoreOutput.textContent = `${score}%`;
     differenceContext.clearRect(0, 0, differenceCanvas.width, differenceCanvas.height);
     differenceContext.fillStyle = 'rgba(220, 60, 45, .78)';
-    const split = Number(splitInput.value) / 100;
     for (let y = 0; y < offscreen.height; y += 4) {
       for (let x = 0; x < offscreen.width; x += 4) {
         const index = (y * offscreen.width + x) * 4;
         const missing = isInk(referencePixels, index) && !hasInkNear(drawingPixels, x, y);
         const extra = isInk(drawingPixels, index) && !hasInkNear(referencePixels, x, y);
-        if ((missing && x / offscreen.width <= split) || (extra && x / offscreen.width > split)) differenceContext.fillRect(x, y, 4, 4);
+        if (missing || extra) differenceContext.fillRect(x, y, 4, 4);
       }
     }
     if (currentStep === 'trace' && score >= TRACE_THRESHOLD) {
@@ -323,7 +321,6 @@ if (subjectSelect && levelSelect && drawingCanvas && referenceCanvas && differen
   subjectSelect.addEventListener('change', () => { populateLevels(); loadLevel(); });
   levelSelect.addEventListener('change', loadLevel);
   opacityInput.addEventListener('input', updateControls);
-  splitInput.addEventListener('input', () => { if (currentStep === 'compare') scoreDrawing(); });
   stepButtons.forEach((button) => button.addEventListener('click', () => setStep(button.dataset.studioStep)));
   checkButton.addEventListener('click', scoreDrawing);
   undoButton.addEventListener('click', () => { if (historyIndex > 0) { historyIndex -= 1; restoreSnapshot(history[historyIndex]); } });
