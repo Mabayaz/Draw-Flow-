@@ -1,7 +1,7 @@
 const formAssets = (level) => ({
-  trace: `/assets/drawing-exercise/form/level-${level}/trace.png`,
-  blank: `/assets/drawing-exercise/form/level-${level}/blank.png`,
-  complete: `/assets/drawing-exercise/form/level-${level}/complete.png`
+  trace: `/assets/drawing-exercise/form/level-${level}/${level === 1 ? 'trace.jpg' : level === 3 ? 'trace.JPG' : 'trace.jpg'}`,
+  blank: `/assets/drawing-exercise/form/level-${level}/${level === 1 || level === 2 ? 'freehand.jpg' : 'freehand.png'}`,
+  complete: `/assets/drawing-exercise/form/level-${level}/${level === 1 || level === 2 ? 'complete.jpg' : 'complete.png'}`
 });
 
 const formStateKey = 'drawflow-form-challenge';
