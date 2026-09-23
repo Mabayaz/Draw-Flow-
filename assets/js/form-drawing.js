@@ -231,7 +231,6 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     clearInterval(peekInterval);
     peekTimer.textContent = '';
     differenceContext.clearRect(0, 0, differenceCanvas.width, differenceCanvas.height);
-    const split = Number(splitInput.value) / 100;
     stage = level <= 2 ? 'trace' : 'freehand';
     if (stage === 'freehand') drawImage(guideContext, blank);
     if (stage === 'compare') { drawImage(guideContext, complete); renderEvaluation(complete); }
