@@ -88,7 +88,7 @@
             <button class="stage-tab" type="button" data-form-stage="compare" disabled>3. Evaluate</button>
           </div>
           <div id="form-toolbar" class="challenge-tools">
-            <label class="challenge-field">Level<select id="form-level" aria-label="Form level"><option value="1">Level 1</option><option value="2" disabled>Level 2</option><option value="3" disabled>Level 3</option></select></label>
+            <label class="challenge-field">Level<select id="form-level" aria-label="Form level"><option value="1">Level 1</option><option value="2">Level 2</option><option value="3">Level 3</option></select></label>
                         <label class="challenge-field">Level<select id="form-level" aria-label="Form level"><option value="1">Level 1</option><option value="2">Level 2</option><option value="3">Level 3</option></select></label>
             <label class="challenge-field">Brush size<input id="form-brush-size" type="range" min="2" max="24" value="6" aria-label="Brush size"></label>
             <label class="challenge-field">Color<input id="form-brush-color" type="color" value="#2563eb" aria-label="Brush color"></label>
@@ -102,7 +102,7 @@
           <div id="form-evaluation" class="evaluation-view mt-4" hidden><p class="mb-3 font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Your drawing / Complete reference</p><div class="evaluation-frame"><canvas id="form-user-evaluation"></canvas><canvas id="form-target-evaluation"></canvas><canvas id="form-evaluation-difference"></canvas></div><label class="challenge-field mt-3">Comparison split<input id="form-evaluation-split" type="range" min="0" max="100" value="50" aria-label="Evaluation comparison split"></label></div>
         </div>
         <aside class="grid content-start gap-4">
-          <div class="score-box"><span class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-muted-foreground">Accuracy</span><strong id="form-score">--%</strong><span id="form-rank" class="font-mono-draw text-xs font-bold text-accent">Rank --</span><p id="form-message" class="mt-2 text-xs leading-5 text-muted-foreground">Trace the guide, then continue when ready.</p></div>
+          <div class="score-box"><span class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-muted-foreground">Evaluation</span><span id="form-rank" class="font-mono-draw text-xs font-bold text-accent">Not evaluated</span><p id="form-message" class="mt-2 text-xs leading-5 text-muted-foreground">Trace the guide, then continue when ready.</p></div>
                     <div class="score-box"><span class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-muted-foreground">Evaluation</span><span id="form-rank" class="font-mono-draw text-xs font-bold text-accent">Not evaluated</span><p id="form-message" class="mt-2 text-xs leading-5 text-muted-foreground">Trace the guide, then continue when ready.</p></div>
           <div class="challenge-card"><p class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Round progress</p><p id="form-progress" class="mt-2 font-display text-2xl">Round 1</p><p class="mt-2 text-xs leading-5 text-muted-foreground">Practice rounds include faint guides. Freehand rounds hide them. Keep playing regardless of your score.</p><button id="form-next-level" class="challenge-button primary mt-4" type="button" disabled>&rarr; Next Round</button></div>
         </aside>
