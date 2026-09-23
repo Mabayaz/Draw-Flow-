@@ -70,6 +70,7 @@
       </div>
     </header>
     <main class="mx-auto max-w-7xl px-5 pb-20 sm:px-8">
+      <div class="game-header"><div class="game-badges"><span class="game-pill">Level 1</span><span id="form-stage-badge" class="game-pill">Stage 1: Trace</span></div><div id="form-hint-banner" class="game-hint-banner">Trace the dashed guides to build muscle memory.</div></div>
       <section class="page-intro">
         <p class="font-mono-draw text-[10px] uppercase tracking-[.18em] text-accent">Form / Level <span id="form-level-label">1</span></p>
         <h1 class="mt-4 max-w-4xl font-display text-6xl leading-[.9] sm:text-8xl">Draw solid forms.</h1>
@@ -89,6 +90,7 @@
             <label id="form-guide-opacity-control" class="challenge-field">Guide opacity<input id="form-trace-opacity" type="range" min=".1" max="1" step=".05" value=".5" aria-label="Guide opacity"></label>
             <button id="form-guide-toggle" class="challenge-button primary" type="button">Guide On</button><button id="form-pen" class="challenge-button primary" type="button">Pen</button><button id="form-eraser" class="challenge-button" type="button">Eraser</button><button id="form-undo" class="challenge-button" type="button">Undo</button><button id="form-redo" class="challenge-button" type="button">Redo</button><button id="form-clear" class="challenge-button" type="button">Clear</button>
           </div>
+          <div id="form-ready-banner" class="ready-banner" role="status">Great job! Click “Unlock Freehand Mode” when you’re ready.</div>
           <div class="canvas-wrap mt-4"><canvas id="form-guide-canvas" aria-hidden="true"></canvas><canvas id="form-drawing-canvas" aria-label="Form drawing canvas"></canvas><canvas id="form-difference-canvas" aria-hidden="true"></canvas></div>
           <div class="challenge-actions"><button id="form-submit" class="challenge-button primary" type="button" disabled>Unlock Freehand Mode (80%)</button><button id="form-peek" class="challenge-button" type="button" hidden>&#128161; Hint (3 Left)</button><label class="challenge-field ml-auto">Review split<input id="form-review-split" type="range" min="0" max="100" value="50" aria-label="Review comparison split"></label></div>
           <div class="mt-3 flex items-center gap-3"><div class="h-2 flex-1 overflow-hidden rounded-full bg-secondary"><div id="form-coverage-bar" class="h-full rounded-full bg-accent transition-all" style="width: 0%"></div></div><span id="form-coverage-label" class="font-mono-draw text-xs font-bold">0%</span><span id="form-peek-timer" class="font-mono-draw text-xs text-accent" aria-live="polite"></span></div>
