@@ -593,7 +593,7 @@
         },
         3: {
           name: "Level 3: 3D Geometry",
-          // EXACT SOLID BASE GEOMETRY MATCHING image_15d95f.png / image_15d6b7.png
+          // EXACT SOLID BLACK BASE GEOMETRY MATCHING image_15d6b7_2.png
           drawBase: (ctx) => {
             ctx.save();
             ctx.strokeStyle = '#1d2926';
@@ -601,21 +601,25 @@
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
             ctx.beginPath();
-            // Outer left wall
-            ctx.moveTo(100, 280);
-            ctx.lineTo(100, 440);
-            ctx.lineTo(285, 545);
-            ctx.lineTo(470, 440);
-            ctx.lineTo(285, 335);
-            ctx.lineTo(100, 440);
+            
+            // Floor diamond / base notch (Solid Black)
+            ctx.moveTo(100, 440); // Left corner
+            ctx.lineTo(285, 545); // Bottom vertex
+            ctx.lineTo(470, 440); // Right corner
+            ctx.lineTo(378, 388); // Inner right floor notch
+            ctx.lineTo(285, 440); // Inner center floor corner
+            ctx.lineTo(192, 388); // Inner left floor notch
+            ctx.lineTo(100, 440); // Back to left corner
 
-            // Left upper boundary edge leading to top vertex
-            ctx.moveTo(100, 280);
-            ctx.lineTo(285, 170);
+            // Outer Left Wall (Solid Black)
+            ctx.moveTo(100, 440);
+            ctx.lineTo(100, 280); // Left vertical edge
+            ctx.lineTo(285, 170); // Top left angled edge
+
             ctx.stroke();
             ctx.restore();
           },
-          // EXACT DASHED GUIDE GEOMETRY MATCHING image_15d95f.png / image_15d6b7.png
+          // EXACT DASHED GREY GUIDE LINES MATCHING image_15d6b7_2.png
           drawGuide: (ctx) => {
             ctx.save();
             ctx.strokeStyle = '#6b7280';
@@ -625,29 +629,32 @@
             ctx.setLineDash([12, 10]);
             ctx.beginPath();
 
-            // 1. Outer Right Back Wall Guides
+            // 1. Top-right outer boundary dashed lines
             ctx.moveTo(285, 170);
             ctx.lineTo(470, 275);
             ctx.lineTo(470, 440);
 
-            // 2. Center Vertical Divider Guide Line
+            // 2. Center-back vertical dashed line (from top peak down to inner center corner)
             ctx.moveTo(285, 170);
+            ctx.lineTo(285, 440);
+
+            // 3. Floating Inner Isometric Cube (Dashed Grey)
+            // Three vertical pillars extending up from the inner floor nodes
+            ctx.moveTo(192, 388);
+            ctx.lineTo(192, 282);
+
+            ctx.moveTo(285, 440);
             ctx.lineTo(285, 335);
 
-            // 3. Floating Inner Isometric Cube Structure
-            // Top Cap Diamond
+            ctx.moveTo(378, 388);
+            ctx.lineTo(378, 282);
+
+            // Top diamond cap of inner cube
             ctx.moveTo(285, 335);
             ctx.lineTo(192, 282);
             ctx.lineTo(285, 230);
             ctx.lineTo(378, 282);
             ctx.closePath();
-
-            // Vertical Isometric Legs descending to lower wall corners
-            ctx.moveTo(192, 282);
-            ctx.lineTo(192, 388);
-
-            ctx.moveTo(378, 282);
-            ctx.lineTo(378, 388);
 
             ctx.stroke();
             ctx.restore();
@@ -666,22 +673,25 @@
             ctx.lineTo(470, 275);
             ctx.lineTo(470, 440);
 
-            // Center Vertical Solid Line
+            // Center Back Vertical Solid Line
             ctx.moveTo(285, 170);
+            ctx.lineTo(285, 440);
+
+            // Inner Floating Cube Solid Lines
+            ctx.moveTo(192, 388);
+            ctx.lineTo(192, 282);
+
+            ctx.moveTo(285, 440);
             ctx.lineTo(285, 335);
 
-            // Floating Inner Cube Solid Lines
+            ctx.moveTo(378, 388);
+            ctx.lineTo(378, 282);
+
             ctx.moveTo(285, 335);
             ctx.lineTo(192, 282);
             ctx.lineTo(285, 230);
             ctx.lineTo(378, 282);
             ctx.closePath();
-
-            ctx.moveTo(192, 282);
-            ctx.lineTo(192, 388);
-
-            ctx.moveTo(378, 282);
-            ctx.lineTo(378, 388);
 
             ctx.stroke();
             ctx.restore();
