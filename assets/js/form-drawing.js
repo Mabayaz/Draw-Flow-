@@ -108,7 +108,7 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     updateProgress();
   };
 
-  const setCanvasSize = (image) => [guideCanvas, drawingCanvas, differenceCanvas].forEach((canvas) => { canvas.width = Math.max(image.naturalWidth, image.naturalHeight, 640); canvas.height = canvas.width; });
+  const setCanvasSize = (image) => [guideCanvas, drawingCanvas, differenceCanvas].forEach((canvas) => { canvas.width = image.naturalWidth; canvas.height = image.naturalHeight; });
   const renderEvaluation = (reference) => {
     if (!userEvaluationCanvas || !targetEvaluationCanvas || !evaluationDifferenceCanvas) return;
     [userEvaluationCanvas, targetEvaluationCanvas, evaluationDifferenceCanvas].forEach((canvas) => { canvas.width = drawingCanvas.width; canvas.height = drawingCanvas.height; });
@@ -132,7 +132,7 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     studyMode = false;
     freehandFailed = false;
     differenceContext.clearRect(0, 0, differenceCanvas.width, differenceCanvas.height);
-    stage = levelRecord().freehand >= 70 ? 'compare' : levelRecord().trace >= 75 ? 'freehand' : 'trace';
+    stage = 'trace';
     if (stage === 'freehand') drawImage(guideContext, blank);
     if (stage === 'compare') { drawImage(guideContext, complete); renderEvaluation(complete); }
     levelLabel.textContent = String(level);
@@ -238,6 +238,9 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
   evaluationSplitInput.addEventListener('input', () => { if (stage === 'compare') loadImage(images.complete).then(renderEvaluation); });
   submitButton.addEventListener('click', async () => {
     if (stage === 'trace') {
+      formProgress.levels[level] = { ...(levelRecord()), traceStrokes: strokes, traceReady: true };
+      saveState();
+      console.info(`Form Level ${level} trace saved and ready for freehand.`);
       stage = 'freehand';
       freehandFailed = false;
       clearDrawing();

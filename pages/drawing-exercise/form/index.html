@@ -23,13 +23,13 @@
     .stage-tab.is-active { border-color: #e86f45; background: #fff1e9; color: #1d2926; }
     .stage-tab:disabled { cursor: not-allowed; opacity: .5; }
     .canvas-wrap { position: relative; overflow: hidden; border: 1px solid #d9d5c9; border-radius: .75rem; background: white; }
-    .canvas-wrap canvas { display: block; width: 100%; aspect-ratio: 1; touch-action: none; }
+    .canvas-wrap canvas { display: block; width: 100%; height: auto; aspect-ratio: auto; touch-action: none; }
     #form-guide-canvas { position: relative; z-index: 1; pointer-events: none; }
     #form-drawing-canvas { position: absolute; inset: 0; z-index: 2; pointer-events: auto; cursor: crosshair; }
     #form-difference-canvas { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
     .evaluation-view[hidden] { display: none; }
     .evaluation-frame { position: relative; overflow: hidden; border: 1px solid #d9d5c9; border-radius: .75rem; background: white; }
-    .evaluation-frame canvas { display: block; width: 100%; aspect-ratio: 1; }
+    .evaluation-frame canvas { display: block; width: 100%; height: auto; aspect-ratio: auto; }
     #form-target-evaluation, #form-evaluation-difference { position: absolute; inset: 0; pointer-events: none; }
     #form-evaluation-difference { z-index: 3; }
     #form-target-evaluation { z-index: 2; clip-path: inset(0 50% 0 0); }
