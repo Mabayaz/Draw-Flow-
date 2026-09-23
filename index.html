@@ -242,7 +242,7 @@
   <script>
     (() => {
       const lessons = ['form', 'shadow', 'perspective', 'depth'];
-      const completed = JSON.parse(localStorage.getItem('drawflow-completed-lessons') || '[]');
+      const completed = [];
       const count = lessons.filter((lesson) => completed.includes(lesson)).length;
       const percentage = (count / lessons.length) * 100;
       const fill = document.querySelector('#home-progress-fill');

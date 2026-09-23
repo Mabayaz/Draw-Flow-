@@ -228,7 +228,7 @@
 <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
 <div>
 <p class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Need a reset?</p>
-<p class="mt-2 text-sm text-muted-foreground">Clear your saved module progress and start the sequence again.</p>
+<p class="mt-2 text-sm text-muted-foreground">Clear your module progress and start the sequence again.</p>
 </div>
 <button type="button" data-reset-progress class="focus-ring rounded-full border border-border bg-card px-4 py-3 text-xs font-bold hover:border-accent">Reset progress</button>
 </div>
@@ -244,12 +244,11 @@
   <script src="../assets/js/site.js">
 </script>
   <script>
-    const progressKey = 'drawflow-exercise-stages';
     const stages = [...document.querySelectorAll('[data-stage]')];
     const completeButtons = [...document.querySelectorAll('[data-complete]')];
     const progressLabel = document.querySelector('#progress-label');
     const progressFill = document.querySelector('#progress-fill');
-    let completedStages = new Set(JSON.parse(localStorage.getItem(progressKey) || '[]').map(Number));
+    let completedStages = new Set();
 
     const renderStages = () => {
       stages.forEach((stage) => {
@@ -277,11 +276,10 @@
     completeButtons.forEach((button) => button.addEventListener('click', () => {
       const stage = Number(button.dataset.complete);
       completedStages.add(stage);
-      localStorage.setItem(progressKey, JSON.stringify([...completedStages]));
       renderStages();
       document.querySelector(`[data-stage="${Math.min(stage + 1, 4)}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }));
-    document.querySelector('[data-reset-progress]')?.addEventListener('click', () => { completedStages = new Set(); localStorage.removeItem(progressKey); renderStages(); });
+    document.querySelector('[data-reset-progress]')?.addEventListener('click', () => { completedStages = new Set(); renderStages(); });
     renderStages();
   </script>
 </body>

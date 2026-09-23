@@ -5,7 +5,7 @@
   const completeButton = document.querySelector('[data-complete-lesson]');
   const completeLabel = document.querySelector('[data-complete-label]');
   const lesson = completeButton?.dataset.completeLesson;
-  const storageKey = 'drawflow-completed-lessons';
+  const completedLessons = new Set();
 
   const updateProgress = () => {
     const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
@@ -16,19 +16,16 @@
     track?.setAttribute('aria-valuenow', String(bounded));
   };
 
-  const getCompleted = () => JSON.parse(localStorage.getItem(storageKey) || '[]');
   const renderCompletion = () => {
     if (!completeButton || !lesson) return;
-    const complete = getCompleted().includes(lesson);
+    const complete = completedLessons.has(lesson);
     completeButton.textContent = complete ? 'Lesson complete ✓' : `Mark ${lesson[0].toUpperCase() + lesson.slice(1)} complete →`;
     completeButton.classList.toggle('is-complete', complete);
-    if (completeLabel) completeLabel.textContent = complete ? 'Saved to your learning path.' : 'You can change this later.';
+    if (completeLabel) completeLabel.textContent = complete ? 'Marked complete for this visit.' : 'You can change this later.';
   };
 
   completeButton?.addEventListener('click', () => {
-    const completed = new Set(getCompleted());
-    if (completed.has(lesson)) completed.delete(lesson); else completed.add(lesson);
-    localStorage.setItem(storageKey, JSON.stringify([...completed]));
+    if (completedLessons.has(lesson)) completedLessons.delete(lesson); else completedLessons.add(lesson);
     renderCompletion();
   });
 

@@ -9,9 +9,6 @@ const studyDescription = document.querySelector('#study-dialog-description');
 const closeDialogButton = document.querySelector('[data-close-dialog]');
 const startStudyButton = document.querySelector('[data-start-study]');
 
-const savedTheme = localStorage.getItem('drawflow-theme');
-if (savedTheme === 'dark') root.classList.add('dark-mode');
-
 const updatePageProgress = () => {
   const pageHeight = document.documentElement.scrollHeight - window.innerHeight;
   const progress = pageHeight > 0 ? Math.min(window.scrollY / pageHeight, 1) * 100 : 100;
@@ -47,7 +44,6 @@ const closeStudyDialog = () => {
 themeToggle?.addEventListener('click', () => {
   root.classList.toggle('dark-mode');
   const isDark = root.classList.contains('dark-mode');
-  localStorage.setItem('drawflow-theme', isDark ? 'dark' : 'light');
   themeToggle.setAttribute('aria-label', isDark ? 'Switch to day mode' : 'Switch to night mode');
 });
 
@@ -56,6 +52,8 @@ if (themeToggle) {
 }
 
 menuToggle?.addEventListener('click', () => {
+  if (!navigation) return;
+
   const isOpen = navigation.classList.toggle('!flex');
   navigation.classList.toggle('absolute', isOpen);
   navigation.classList.toggle('right-5', isOpen);
@@ -68,7 +66,7 @@ menuToggle?.addEventListener('click', () => {
 
 navigation?.querySelectorAll('a').forEach((link) => {
   link.addEventListener('click', () => {
-    if (!menuToggle || !navigation.classList.contains('!flex')) return;
+    if (!menuToggle || !navigation || !navigation.classList.contains('!flex')) return;
     menuToggle.click();
   });
 });
@@ -77,8 +75,9 @@ document.querySelectorAll('[data-study]').forEach((studyCard) => {
   studyCard.addEventListener('click', (event) => {
     event.preventDefault();
     if (!studyDialog || !studyTitle || !studyDescription) return;
-    studyTitle.textContent = studyCard.dataset.study;
-    studyDescription.textContent = studyCard.dataset.studyDescription;
+
+    studyTitle.textContent = studyCard.dataset.study || 'Study guide';
+    studyDescription.textContent = studyCard.dataset.studyDescription || 'More detail is coming soon.';
     studyDialog.classList.remove('hidden');
     studyDialog.classList.add('flex');
     closeDialogButton?.focus();

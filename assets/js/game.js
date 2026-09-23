@@ -7,7 +7,7 @@ class CubeGame {
     this.strokes = [];
     this.currentStroke = [];
     this.isDrawing = false;
-    this.score = Number(localStorage.getItem('drawflow-cube-score') || 0);
+    this.score = 0;
     this.promptFace = null;
     this.targetEdges = [];
     this.dpr = window.devicePixelRatio || 1;
@@ -113,7 +113,6 @@ class CubeGame {
     }
     const accuracy = this.calculateAccuracy();
     this.score += accuracy;
-    localStorage.setItem('drawflow-cube-score', String(this.score));
     this.updateScore();
     document.getElementById('hud-status').textContent = 'Evaluated';
     document.getElementById('modal-score').textContent = `${accuracy}% accuracy`;

@@ -29,7 +29,6 @@ quizForm?.addEventListener('submit', (event) => {
   const message = score === 10 ? 'Excellent. You have a strong grasp of the foundations.' : score >= 7 ? 'Good work. Review the highlighted answers to sharpen the details.' : 'Keep practicing. Revisit the lessons and try again.';
   scoreText.textContent = `You scored ${score} out of 10. ${message}`;
   resultsBox.classList.remove('hidden');
-  localStorage.setItem('drawflow-last-score', String(score));
   resultsBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 });
 
