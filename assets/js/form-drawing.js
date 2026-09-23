@@ -392,6 +392,6 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
   document.querySelector('#form-clear').addEventListener('click', () => { clearDrawing(); if (stage === 'trace') updateTraceCoverage(); });
   document.querySelector('#form-undo').addEventListener('click', () => { if (historyIndex > 0) { historyIndex -= 1; drawingContext.putImageData(history[historyIndex], 0, 0); if (stage === 'trace') updateTraceCoverage(); } });
   document.querySelector('#form-redo').addEventListener('click', () => { if (historyIndex < history.length - 1) { historyIndex += 1; drawingContext.putImageData(history[historyIndex], 0, 0); if (stage === 'trace') updateTraceCoverage(); } });
-  document.querySelector('#form-next-level').addEventListener('click', () => { if (level < 3 && formProgress.unlocked > level) { levelSelect.value = String(level + 1); loadLevel(); } });
+  document.querySelector('#form-next-level').addEventListener('click', () => { level = level >= 3 ? 1 : level + 1; levelSelect.value = String(level); loadLevel(); });
   loadLevel();
 }
