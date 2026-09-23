@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="refresh" content="0; url=/pages/lessons/">
+  <script>window.location.replace('/pages/lessons/');</script>
+</head>
+<body></body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lessons | DrawFlow</title>
+  <meta name="description" content="Welcome to Solid Drawing content! Learn the basic principles of Solid Drawing through Form, Shadow, Perspective, and Depth.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="../assets/js/tailwind-config.js"></script>
+  <link rel="stylesheet" href="../assets/css/site.css">
+  <style>
+    .reading-progress {
+      position: fixed;
+      top: 4.5rem;
+      right: 0;
+      left: 0;
+      z-index: 45;
+      border-bottom: 1px solid rgba(217, 213, 201, .8);
+      background: rgba(245, 241, 232, .92);
+      padding: .4rem max(1.25rem, calc((100vw - 1120px) / 2));
+      backdrop-filter: blur(10px);
+    }
+
+    .reading-progress__meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .75rem;
+      margin-bottom: .3rem;
+      color: #68716c;
+      font-family: 'DM Mono', monospace;
+      font-size: .62rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .reading-progress__track {
+      height: .24rem;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e8e2d7;
+    }
+
+    .reading-progress__fill {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: #e86f45;
+      transition: width .12s ease-out;
+    }
+
+    .lesson-contents {
+      top: 5.35rem;
+    }
+
+    .lesson-contents a.is-reading {
+      border-color: #e86f45;
+      background: rgba(232, 111, 69, .1);
+      color: #e86f45;
+    }
+
+    @media (max-width: 640px) {
+      .reading-progress { padding-right: 1.25rem; padding-left: 1.25rem; }
+      .lesson-contents { top: 5.35rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reading-progress__fill { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="texture page-shell bg-background text-foreground">
+    <header class="sticky top-0 z-40 border-b border-border/80 bg-background/90 backdrop-blur-md">
+      <div class="mx-auto flex h-[4.5rem] max-w-7xl items-center justify-between px-5 sm:px-8">
+        <a href="../" class="focus-ring flex items-center gap-3 rounded-md">
+          <span class="grid h-9 w-9 place-items-center rounded-[11px] bg-primary text-primary-foreground">DF</span>
+          <span class="font-display text-[1.45rem]">DrawFlow<span class="text-accent">.</span></span>
+        </a>
+        <nav class="hidden items-center gap-1 md:flex" aria-label="Main navigation">
+          <a href="../" class="focus-ring rounded-full px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted">Home</a>
+          <a href="lessons.html" aria-current="page" class="focus-ring rounded-full bg-muted px-4 py-2 text-sm font-semibold">Lessons</a>
+          <a href="exercises.html" class="focus-ring rounded-full px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted">Exercises</a>
+          <a href="self-check.html" class="focus-ring rounded-full px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted">Self-Check</a>
+          <a href="about.html" class="focus-ring rounded-full px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted">About Us</a>
+        </nav>
+        <div class="flex items-center gap-2">
+          <button type="button" aria-label="Switch to night mode" data-testid="button-theme-toggle" class="focus-ring grid h-10 w-10 place-items-center rounded-full border border-border bg-card text-muted-foreground">&#9790;</button>
+          <button type="button" aria-label="Open menu" aria-expanded="false" data-testid="button-mobile-menu" class="focus-ring grid h-10 w-10 place-items-center rounded-full border border-border md:hidden">&#9776;</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="reading-progress" aria-label="Lesson reading progress">
+      <div class="reading-progress__meta">
+        <span>Reading progress</span>
+        <span id="reading-progress-label">0% read</span>
+      </div>
+      <div class="reading-progress__track" role="progressbar" aria-label="Lesson reading progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div id="reading-progress-fill" class="reading-progress__fill"></div>
+      </div>
+    </section>
+
+    <main class="mx-auto max-w-7xl px-5 pb-16 sm:px-8">
+      <section class="page-intro">
+        <p class="font-mono-draw text-[10px] uppercase tracking-[.18em] text-accent">Solid Drawing Content</p>
+        <h1 class="mt-4 max-w-4xl font-display text-5xl leading-[.9] sm:text-7xl">Welcome to Solid Drawing content!</h1>
+        <p class="mt-7 max-w-3xl text-base leading-7 text-muted-foreground">In this section, you will learn the basic principles of Solid Drawing through four lessons: Form, Shadow, Perspective, and Depth. Each lesson provides simple explanations, visual examples, and video tutorials to help you understand how these principles are used in 2D animation. Read and watch each lesson carefully, then apply what you have learned in the exercises provided. Try to complete each lesson in order to build your Solid Drawing skills step by step.</p>
+      </section>
+
+      <nav aria-label="Lesson contents" class="lesson-contents sticky z-30 -mx-5 mb-12 overflow-x-auto border-y border-border bg-background/90 px-5 py-3 backdrop-blur-md sm:-mx-8 sm:px-8">
+        <div class="flex min-w-max items-center gap-2 text-xs font-semibold">
+          <span class="mr-2 font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Jump to</span>
+          <a href="form.html" class="focus-ring rounded-full border border-border px-3 py-2 hover:border-accent hover:text-accent">01 Form</a>
+          <a href="perspective.html" class="focus-ring rounded-full border border-border px-3 py-2 hover:border-accent hover:text-accent">02 Perspective</a>
+          <a href="shadow.html" class="focus-ring rounded-full border border-border px-3 py-2 hover:border-accent hover:text-accent">03 Shadow</a>
+          <a href="depth.html" class="focus-ring rounded-full border border-border px-3 py-2 hover:border-accent hover:text-accent">04 Depth</a>
+        </div>
+      </nav>
+
+      <div class="mt-10 space-y-16">
+        
+        <!-- LESSON 1: FORM -->
+        <article id="form" class="rounded-2xl border border-card-border bg-card p-7 sm:p-10">
+          <p class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Lesson 01</p>
+          <h2 class="mt-2 font-display text-4xl">FORM</h2>
+          <p class="mt-4 text-sm leading-6 text-muted-foreground">This topic lesson begins with discussing the meaning of form to understand its feature in solid drawing, along with differentiating the form to shapes to comprehend more of each nature. And to give more visualizing of form by providing some examples to imagine its picture, moreover this lesson will show more pictures to support the form in solid drawing and elaborate the importance in creating 2D animation.</p>
+
+          <div class="mt-6 rounded-xl border border-border bg-background p-5">
+            <strong class="font-display text-lg text-foreground">Objectives</strong>
+            <p class="mt-1 text-xs text-muted-foreground">At the end of this lesson students will be able to:</p>
+            <ul class="mt-3 list-disc pl-5 space-y-1 text-xs text-muted-foreground">
+              <li>Identify the elements of shape and form to create an object in 2D animation.</li>
+              <li>Apply the ideas from to the lessons and instructional video or guide provided.</li>
+              <li>Demonstrate in constructing shape and form by accomplishing the exercise activity.</li>
+            </ul>
+          </div>
+
+          <div class="mt-8 space-y-6 text-sm leading-7 text-muted-foreground">
+            <div>
+              <h3 class="font-display text-2xl text-foreground">I. Definition</h3>
+              <p class="mt-2">Form is a visual component that describes the appearance of a three-dimensional object on a two-dimensional surface. Additionally, it simply defined anything whose physical characteristics include length, width, and depth. In art, lines, shapes, and silhouettes enable us to "sculpt" form and establish a visual connection with our audience.</p>
+            </div>
+
+            <div>
+              <h3 class="font-display text-2xl text-foreground">II. Differentiate</h3>
+              <p class="mt-2">The form appears three-dimensional (like something you could hold in your hand), shape refers to a two-dimensional (flat), enclosed area. Additionally, flat versions of form are created using lines. And when lines join to enclose space, shapes are produced. "Positive" space is frequently used to describe the space inside the line or lines, whereas "negative" space is used to describe the space outside the shape. Shapes and intriguing contours can also be produced by "negative" space.</p>
+              <p class="mt-2">On the other hand form plays an important role in simplifying a subject and by identifying and understanding the basic forms into the visual details, after that you can create a more convincing representation because you develop a clearer sense of the subject's structure, volume, and appearance. However, by combining the five primary types of lines in continuous line drawing. This kind of practice also helps you identify your preferred line quality and shape language, which will guide the creation of forms and objects in your drawings.</p>
+            </div>
+
+            <div>
+              <h3 class="font-display text-2xl text-foreground">III. Examples</h3>
+              <p class="mt-2">As we move on to another vital component of drawing and painting, this lesson offers statements that help students develop a solid understanding of lines and the significance of varying them in their drawings. Your paintings and drawings will have more depth if you comprehend form correctly. These include the sphere, the cube, the cylinder, and variations and combinations of these shapes. Lastly, common forms are similar to the letters that make up words. In other words, when we see these forms, our brains are able to interpret them.</p>
+            </div>
+
+            <div>
+              <h3 class="font-display text-2xl text-foreground">IV. Depiction of Form</h3>
+              <p class="mt-2">The concept is straightforward: the form's planes that face away from the light will be darker than those that face the light. An excellent illustration of this by Gustave Caillebotte can be found below (Gustave Caillebotte, The Parquet Planers, 1876). Moreover, to detect shifts in light and shadow, use shading.</p>
+              <p class="mt-2">The contour lines that Leonardo da Vinci used to experiment and gain a sense of the forms are visible in the drawing below (Leonardo da Vinci, Study of Hands). And practicing this repeat the form, adhere to contour lines, and allow your brush to move over, under, and around the shape, also to make an effort to feel it.</p>
+            </div>
+
+            <div>
+              <h3 class="font-display text-2xl text-foreground">V. Tips to Learn</h3>
+              <ul class="mt-2 list-disc pl-5 space-y-2">
+                <li>Practice drawing basic forms such as spheres, cubes, cylinders, and cones to gain a solid grasp of volume and structure.</li>
+                <li>Use basic forms as warm-up exercises to enhance spatial awareness, hand control, and observation prior to beginning a drawing.</li>
+                <li>Simplify reference images by understanding the fundamental forms and shapes that comprise the topic.</li>
+                <li>Practice figure drawing to comprehend how fundamental shapes combine to form the human body and express its volume, movement, and structure.</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <!-- LESSON 2: PERSPECTIVE -->
+        <article id="perspective" class="rounded-2xl border border-card-border bg-card p-7 sm:p-10">
+          <p class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Lesson 02</p>
+          <h2 class="mt-2 font-display text-4xl">PERSPECTIVE</h2>
+          <p class="mt-4 text-sm leading-6 text-muted-foreground">This topic lesson begins with short discussion of the definition of form so that students will understand the basic principles by its concept of perspective in solid drawing, along with identifying and elaborating the elements and different types of creating perspective using different angles to drawings that show proper depth, proportion, and three-dimensional form. And to give more visualizing of perspective by providing some examples to imagine its picture, moreover this lesson will show more pictures to support the perspective in solid drawing.</p>
+
+          <div class="mt-6 rounded-xl border border-border bg-background p-5">
+            <strong class="font-display text-lg text-foreground">Objectives</strong>
+            <p class="mt-1 text-xs text-muted-foreground">At the end of this lesson students will be able to:</p>
+            <ul class="mt-3 list-disc pl-5 space-y-1 text-xs text-muted-foreground">
+              <li>Identify the basic elements of perspective that differentiate one-point, two-point, and three-point perspective in drawings, such as the horizon line, vanishing point, and perspective lines.</li>
+              <li>Apply basic perspective principles when drawing simple forms such as cubes, boxes, cylinders, and other objects.</li>
+              <li>Demonstrate depth and spatial relationships by correctly showing the size and position of objects based on their distance and viewpoint to produce a simple solid drawing using perspective that makes the object in three-dimensional and believable.</li>
+            </ul>
+          </div>
+
+          <div class="mt-8 space-y-6 text-sm leading-7 text-muted-foreground">
+            <div>
+              <h3 class="font-display text-2xl text-foreground">I. Definition</h3>
+              <p class="mt-2">In Solid Drawing, perspective is a technique that gives the illusion of spatial depth, or perspective, to drawings and paintings, like foreshortening, gives the illusion of depth and makes work pop off of the page by using angled lines to suggest vertical lines and horizontal lines.</p>
+              <p class="mt-2">Artists can more realistically or artistically represent a three-dimensional space by using perspective techniques. The two-dimensional image (drawn on paper or a screen) can be given the appearance of three dimensions by using perspective. In 2D animation, perspective drawing principles are also highly applicable, especially when you want to move a character closer or farther away from the camera.</p>
+            </div>
+
+            <div>
+              <h3 class="font-display text-2xl text-foreground">II. Key Elements</h3>
+              <div class="mt-3 space-y-4">
+                <div>
+                  <strong class="text-foreground">1. The Horizon Line:</strong> The horizon line is an imaginary line that shows both the height of the viewer's eyes and the furthest distance in the background. It is also known as the eye level, representing the farthest point of sight where the sky meets the land or water, forming a boundary. The way the horizon line is positioned can significantly change how the viewer interprets the scene.
+                </div>
+                <div>
+                  <strong class="text-foreground">2. The Vanishing Point:</strong> The location on the horizon line where all parallel lines seem to converge and effectively 'vanish' from view is known as the vanishing point. This is where parallel lines appear to converge and then vanish; to put it another way, it's the point or points where orthogonal lines converge. Objects appear to get smaller as they get farther away, eventually appearing to merge at this vanishing point.
+                </div>
+                <div>
+                  <strong class="text-foreground">3. Orthogonal Lines:</strong> The term orthogonal means "at right angles," which is how these lines relate to the picture plane in the one-point perspective. This is an imaginary diagonal line that is parallel to the ground plane and radiates from or converges to the vanishing point. Orthogonal lines in the perspective drawing are imaginary lines that recede toward the vanishing point on the horizon line. They act as guidelines to help you maintain perspective while constructing a three dimensional scene.
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="font-display text-2xl text-foreground">III. Types of Perspective</h3>
+              <div class="mt-3 space-y-4">
+                <div>
+                  <strong class="text-foreground">1. One-Point Perspective:</strong> One-point is commonly used in drawings that depict objects or scenes viewed straight-on. An image of railroad tracks meeting at a vanishing point on the horizon line is in one-point perspective. This technique creates a sense of depth and distance, making objects appear to recede into the distance.
+                </div>
+                <div>
+                  <strong class="text-foreground">2. Two-Point Perspective:</strong> This linear perspective features two vanishing points, often on opposite sides of the artwork on the far left and right. In a two-point perspective, there are two vanishing points on the horizon line. This technique is typically used when drawing objects or scenes viewed at an angle.
+                </div>
+                <div>
+                  <strong class="text-foreground">3. Three-Point Perspective:</strong> Is often employed when drawing objects or scenes that have a strong vertical or horizontal tilt. The top of the tower, as seen from below, will be one vanishing point, while lines from the bottom edges of the tower to the left and right will be the other two. The lines of the building seem to converge towards three different points, creating a dramatic and dynamic effect.
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="font-display text-2xl text-foreground">IV. Conclusion</h3>
+              <p class="mt-2">By using vanishing points and accurately depicting the way objects appear from different viewpoints, artists can create realistic and engaging artworks that captivate the viewer's imagination. Accurate lines and angles are essential for producing realistic perspective drawings. Keep in mind that perspective is not exclusive to objects; consider adding components like architectural structures or landscapes.</p>
+            </div>
+          </div>
+        </article>
+
+        <!-- LESSON 3: SHADOW -->
+        <article id="shadow" class="rounded-2xl border border-card-border bg-card p-7 sm:p-10">
+          <p class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Lesson 03</p>
+          <h2 class="mt-2 font-display text-4xl">SHADOW</h2>
+          <p class="mt-4 text-sm leading-6 text-muted-foreground">Shadow is an important aspect of Solid Drawing techniques that contributes to the realism and three dimensionality of objects. It reveals the direction of light and the darker areas of an object. Artists can use shadows to enhance depth, form, and dimension of drawings and to 2D animation, if they are applied correctly.</p>
+
+          <div class="mt-6 rounded-xl border border-border bg-background p-5">
+            <strong class="font-display text-lg text-foreground">Objectives</strong>
+            <p class="mt-1 text-xs text-muted-foreground">At the end of this lesson students will be able to:</p>
+            <ul class="mt-3 list-disc pl-5 space-y-1 text-xs text-muted-foreground">
+              <li>Understand how shadows are created and how light affects an object.</li>
+              <li>Apply simple shading to create proper shading to your drawings.</li>
+              <li>Demonstrate the use of shadows to make your drawings appear more realistic and in depth.</li>
+            </ul>
+          </div>
+
+          <div class="mt-8 space-y-6 text-sm leading-7 text-muted-foreground">
+            <div>
+              <h3 class="font-display text-2xl text-foreground">I. Definition</h3>
+              <p class="mt-2"><strong class="text-foreground">HOW DO SHADOWS WORK?</strong> A shadow is a dark space that is caused by the light. Light is a type of energy that moves in straight lines until it collides with an object. When the object prevents the light passing through then there is an area on the other side which is dark-that is called a shadow.</p>
+              <p class="mt-2"><strong class="text-foreground">WHY IS SHADOW SO IMPORTANT?</strong></p>
+              <ul class="mt-1 list-disc pl-5 space-y-1">
+                <li>It makes it three dimensional and malleable - meaning it does not look flat, it looks alive.</li>
+                <li>It conveys information about the light source and space - you can tell where the light is coming from and which object is facing which way in space.</li>
+                <li>It focuses on contrast and detail - there is tension in sharply drawn folds or fabrics.</li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 class="font-display text-2xl text-foreground">II. Key Elements: THE PARTS OF A SHADOW</h3>
+              <p class="mt-2">In a drawing with a strong light source, it may be possible to see various patterns of light and shadow on an object. By understanding these elements, you can create a more realistic and dimensional drawing.</p>
+              <ol class="mt-3 list-decimal pl-5 space-y-2">
+                <li><strong class="text-foreground">Highlight:</strong> Area of brightest light on an object caused by direct light striking it.</li>
+                <li><strong class="text-foreground">Light Area:</strong> This portion of an object that is facing the light source. It is lighter than the shadow side typically is.</li>
+                <li><strong class="text-foreground">Half-Tone:</strong> The area where the light slowly changes into shadow. It makes for a graceful transition particularly on rounded items.</li>
+                <li><strong class="text-foreground">Core Shadow:</strong> The darkest part of the shadow on the object. It helps to demonstrate shape and roundness of form.</li>
+                <li><strong class="text-foreground">Reflective Light:</strong> Light that is reflected from the environment onto the shadow side. It is typically lighter than the core shadow, but darker than the light area.</li>
+                <li><strong class="text-foreground">Cast Shadow:</strong> Shadow created by the presence of an object in front of light. Its shape is dependent upon the object, surface, and direction of the light. One of the darkest areas of a drawing is typically the cast shadow. This is darkest at the point where the object is in contact with the surface, known as the occlusion shadow.</li>
+              </ol>
+            </div>
+
+            <div>
+              <h3 class="font-display text-2xl text-foreground">III. Tips to Learn Shadows</h3>
+              <ol class="mt-2 list-decimal pl-5 space-y-2">
+                <li>Determine the light source first.</li>
+                <li>Notice the foot placement of the character.</li>
+                <li>Simplify the Shadow (e.g., in anime-style animation).</li>
+                <li>Practice Shadow Direction.</li>
+                <li>Think about the distance that the character is from the ground.</li>
+                <li>Apply soft edges as necessary.</li>
+                <li>Practice shadows on various surfaces.</li>
+                <li>Draw a comparison with a reference drawing.</li>
+                <li>Emphasized the shadow's function.</li>
+                <li>Do key frames (edit shadows separately from in-between frames).</li>
+              </ol>
+            </div>
+          </div>
+        </article>
+
+        <!-- LESSON 4: DEPTH -->
+        <article id="depth" class="rounded-2xl border border-card-border bg-card p-7 sm:p-10">
+          <p class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Lesson 04</p>
+          <h2 class="mt-2 font-display text-4xl">DEPTH</h2>
+          <p class="mt-4 text-sm leading-6 text-muted-foreground">Why Depth Matters in Animation? The trick for depth is not only visual, it's a tool that helps tell the story! Presenting believable 2D space will help your viewers get a sense of scale, focus, and spatial relationships. Lacking depth cues, the scenes are confused and lifeless, and viewers struggle to engage with them.</p>
+
+          <div class="mt-6 rounded-xl border border-border bg-background p-5">
+            <strong class="font-display text-lg text-foreground">Objectives</strong>
+            <p class="mt-1 text-xs text-muted-foreground">At the end of this lesson students will be able to:</p>
+            <ul class="mt-3 list-disc pl-5 space-y-1 text-xs text-muted-foreground">
+              <li>Explain the basic principles and techniques used to create depth in 2D animation.</li>
+              <li>Apply depth techniques such as perspective, parallax, and atmospheric in creating a 2D animation scene.</li>
+              <li>Demonstrate interest in creating depth in making animation scenes more realistic, clear, and visually engaging.</li>
+            </ul>
+          </div>
+
+          <div class="mt-8 space-y-6 text-sm leading-7 text-muted-foreground">
+            <div>
+              <h3 class="font-display text-2xl text-foreground">I. Definition: Depth of Field</h3>
+              <p class="mt-2">Depth of field is the distance between the nearest and furthest points of a scene that are in focus. It determines whether objects close to the camera appear sharp or blurred. In animation, Depth of Field (DOF) is used to select which elements are in focus and which are not, to give the animation a cinematic and realistic appearance. A shallow DOF can create a dreamy or romantic look, and deep DOF can help convey a sense of realism and depth in a scene.</p>
+            </div>
+
+            <div>
+              <h3 class="font-display text-2xl text-foreground">II. Key Elements &amp; Techniques</h3>
+              <div class="mt-3 space-y-4">
+                <div>
+                  <strong class="text-foreground">Building the stage: Layout and Perspective:</strong> Layout is the design phase where the layout artist creates the plan and layout of the scene from the storyboard. Linear perspective uses horizon lines and vanishing points to keep right proportions.
+                </div>
+                <div>
+                  <strong class="text-foreground">Creating motion: The Parallax Effect:</strong> In animation, parallax creates 3D effects as the camera moves. Objects closer to the camera seem to move faster and objects further away seem to move slower.
+                </div>
+                <div>
+                  <strong class="text-foreground">A physical solution: The Multiplane Camera:</strong> Devised by Walt Disney studios in the 1930s. Multiple layers of artwork were painted on separate pieces of glass and mounted at various levels to add depth and detail, as seen in Pinocchio (1940).
+                </div>
+                <div>
+                  <strong class="text-foreground">Atmospheric Perspective:</strong> Aerial or atmospheric perspective shows the visual effect of the atmosphere on objects further away. Distant objects lose detail, contrast, and color intensity, becoming lighter, cooler, or more blue/grey.
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </main>
+
+    <footer class="mx-auto flex max-w-7xl flex-col gap-4 border-t border-border px-5 py-8 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-8">
+      <span class="font-display text-lg text-foreground">DrawFlow<span class="text-accent">.</span></span>
+      <a href="about.html" class="focus-ring text-foreground underline decoration-accent underline-offset-4">Our approach</a>
+    </footer>
+  </div>
+  <script src="../assets/js/site.js"></script>
+  <script>
+    (() => {
+      const progressFill = document.querySelector('#reading-progress-fill');
+      const progressLabel = document.querySelector('#reading-progress-label');
+      const progressTrack = document.querySelector('.reading-progress__track');
+      const lessonSections = [...document.querySelectorAll('[data-lesson-link]')]
+        .map((link) => ({ link, section: document.getElementById(link.dataset.lessonLink) }))
+        .filter(({ section }) => section);
+      let ticking = false;
+
+      const updateReadingProgress = () => {
+        const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const percentage = scrollableHeight > 0
+          ? Math.round((window.scrollY / scrollableHeight) * 100)
+          : 100;
+        const boundedPercentage = Math.max(0, Math.min(100, percentage));
+
+        progressFill.style.width = `${boundedPercentage}%`;
+        progressLabel.textContent = `${boundedPercentage}% read`;
+        progressTrack.setAttribute('aria-valuenow', String(boundedPercentage));
+
+        if (lessonSections.length) {
+          const readingLine = window.scrollY + window.innerHeight * .3;
+          let activeSection = lessonSections[0];
+          lessonSections.forEach((item) => {
+            if (item.section.offsetTop <= readingLine) activeSection = item;
+          });
+          lessonSections.forEach(({ link }) => link.classList.toggle('is-reading', link === activeSection.link));
+        }
+        ticking = false;
+      };
+
+      const requestProgressUpdate = () => {
+        if (ticking) return;
+        ticking = true;
+        window.requestAnimationFrame(updateReadingProgress);
+      };
+
+      window.addEventListener('scroll', requestProgressUpdate, { passive: true });
+      window.addEventListener('resize', requestProgressUpdate);
+      updateReadingProgress();
+    })();
+  </script>
+</body>
+</html>
