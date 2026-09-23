@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Form drawing challenge: trace, draw from memory, and compare your result.">
+  <title>Depth Drawing Challenge | DrawFlow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/assets/js/tailwind-config.js"></script>
+  <link rel="stylesheet" href="/assets/css/site.css">
+  <style>
+    .form-challenge { display: grid; gap: 1.25rem; grid-template-columns: minmax(0, 1fr) 18rem; }
+    .challenge-card { border: 1px solid #d9d5c9; border-radius: 1rem; background: #fffdf8; padding: 1rem; }
+    .challenge-tools { display: flex; flex-wrap: wrap; align-items: end; gap: .65rem; }
+    .challenge-field { display: grid; gap: .3rem; color: #68716c; font: .65rem 'DM Mono', monospace; text-transform: uppercase; letter-spacing: .08em; }
+    .challenge-field input { min-height: 2.2rem; }
+    .challenge-field input[type=color] { width: 3rem; padding: .15rem; }
+    .stage-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; margin-bottom: 1rem; }
+    .stage-tab { border: 1px solid #d9d5c9; border-radius: .6rem; background: #f5f1e8; padding: .7rem; color: #68716c; font-size: .75rem; font-weight: 700; text-align: left; }
+    .stage-tab.is-active { border-color: #e86f45; background: #fff1e9; color: #1d2926; }
+    .stage-tab:disabled { cursor: not-allowed; opacity: .5; }
+    .canvas-wrap { position: relative; overflow: hidden; border: 1px solid #d9d5c9; border-radius: .75rem; background: white; }
+    .canvas-wrap canvas { display: block; width: 100%; height: auto; aspect-ratio: auto; touch-action: none; }
+    #form-guide-canvas { position: relative; z-index: 1; pointer-events: none; }
+    #form-drawing-canvas { position: absolute; inset: 0; z-index: 2; pointer-events: auto; cursor: crosshair; }
+    #form-difference-canvas { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
+    .evaluation-view[hidden] { display: none; }
+    .evaluation-frame { position: relative; overflow: hidden; border: 1px solid #d9d5c9; border-radius: .75rem; background: white; }
+    .evaluation-frame canvas { display: block; width: 100%; height: auto; aspect-ratio: auto; }
+    #form-target-evaluation, #form-evaluation-difference { position: absolute; inset: 0; pointer-events: none; }
+    #form-evaluation-difference { z-index: 3; }
+    #form-target-evaluation { z-index: 2; clip-path: inset(0 50% 0 0); }
+    .challenge-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1rem; }
+    .challenge-button { border: 1px solid #d9d5c9; border-radius: .55rem; background: #f5f1e8; padding: .65rem .8rem; color: #1d2926; font-size: .75rem; font-weight: 700; }
+    .challenge-button.primary { border-color: #173e36; background: #173e36; color: #f8f4eb; }
+    .challenge-button:disabled { cursor: not-allowed; opacity: .5; }
+    .score-box { border-radius: .75rem; background: #dce9df; padding: 1rem; }
+    .score-box strong { display: block; color: #173e36; font: 2rem 'DM Mono', monospace; }
+    @media (max-width: 850px) { .form-challenge { grid-template-columns: 1fr; } }
+    @media (max-width: 560px) { .stage-tabs { grid-template-columns: 1fr; } }
+    body { background: #fff8f0; color: #3d3935; }
+    body { min-height: 100vh; overflow-x: hidden; overflow-y: auto; }
+    .page-shell > header { border: 0; background: transparent; backdrop-filter: none; }
+    .page-intro { display: none; }
+    main { min-height: calc(100vh - 5.5rem); align-content: center; }
+    .game-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin: 0 auto 1.25rem; max-width: 78rem; }
+    .game-badges { display: flex; flex-wrap: wrap; gap: .6rem; }
+    .game-pill { border: 1.5px solid #ebdcd0; border-radius: 999px; background: #fff; padding: .55rem 1rem; box-shadow: 0 2px 8px rgba(180, 160, 140, .15); font-size: .75rem; font-weight: 700; }
+    .game-hint-banner { border: 1.5px solid #ebdcd0; border-radius: 999px; background: #fff; padding: .55rem 1rem; color: #6d635b; font-size: .75rem; box-shadow: 0 2px 8px rgba(180, 160, 140, .15); }
+    .form-challenge { position: relative; display: block; width: min(100%, 62rem); margin: 0 auto; }
+    .challenge-card { min-height: min(72vh, 45rem); padding-right: 10rem; background: #fff; box-shadow: 0 8px 24px rgba(180, 160, 140, .15); }
+    .challenge-tools { position: absolute; top: 1rem; right: 1rem; z-index: 5; display: flex; width: 7rem; flex-direction: column; align-items: stretch; gap: .5rem; border: 1.5px solid #f0e8df; border-radius: 1.4rem; background: #fff; padding: .65rem; box-shadow: 0 8px 20px rgba(180, 160, 140, .15); }
+    .challenge-tools .challenge-field { width: 100%; }
+    .challenge-tools .challenge-field input { width: 100%; }
+    .challenge-button { border-color: #e8e2d9; border-radius: 999px; background: #fff; color: #3d3935; }
+    .challenge-button:hover { background: #f7f1ea; transform: translateY(-1px); }
+    .challenge-button.primary { border: 0; background: #ff6b8b; color: #fff; box-shadow: 0 4px 12px rgba(255, 107, 139, .35); }
+    .challenge-button.primary:hover { background: #ff5277; }
+    .canvas-wrap { border-radius: 1.25rem; box-shadow: 0 8px 24px rgba(180, 160, 140, .12); }
+    .ready-banner { display: none; margin: .8rem 0; border: 1.5px solid #efb4c1; border-radius: 1rem; background: #fff0f3; padding: .75rem 1rem; color: #a83d59; font-size: .8rem; font-weight: 700; }
+    .ready-banner.is-visible { display: block; }
+    @media (max-width: 850px) { .challenge-card { padding-right: 1rem; padding-top: 12rem; } .challenge-tools { top: 1rem; right: 1rem; left: 1rem; width: auto; flex-direction: row; flex-wrap: wrap; } .challenge-tools .challenge-field { width: auto; } .game-header { align-items: flex-start; flex-direction: column; } }
+  </style>
+</head>
+<body data-exercise-topic="depth">
+  <div class="texture page-shell bg-background text-foreground">
+    <header class="sticky top-0 z-40 border-b border-border/80 bg-background/90 backdrop-blur-md">
+      <div class="mx-auto flex h-[4.5rem] max-w-7xl items-center justify-between px-5 sm:px-8">
+        <a href="/" class="focus-ring flex items-center gap-3 rounded-md"><span class="grid h-9 w-9 place-items-center rounded-[11px] bg-primary font-bold text-primary-foreground">DF</span><span class="font-display text-[1.45rem]">DrawFlow<span class="text-accent">.</span></span></a>
+        <a href="/pages/exercises/" class="focus-ring rounded-full border border-border px-4 py-2 text-sm font-semibold hover:bg-muted">Back to Exercises</a>
+      </div>
+    </header>
+    <main class="mx-auto max-w-7xl px-5 pb-20 sm:px-8">
+      <div class="game-header"><div class="game-badges"><span class="game-pill">Level 1</span><span id="form-stage-badge" class="game-pill">Stage 1: Trace</span></div><div id="form-hint-banner" class="game-hint-banner">Trace the dashed guides to build muscle memory.</div></div>
+      <section class="page-intro">
+        <p class="font-mono-draw text-[10px] uppercase tracking-[.18em] text-accent">Depth <span id="form-level-label">1</span></p>
+        <h1 class="mt-4 max-w-4xl font-display text-6xl leading-[.9] sm:text-8xl">Depth Drawing Challenge</h1>
+        <p class="mt-7 max-w-3xl text-base leading-7 text-muted-foreground">Build muscle memory in three stages: trace the construction, redraw it from memory, then compare your result with the finished reference.</p>
+      </section>
+      <section class="form-challenge" aria-label="Form drawing challenge">
+        <div class="challenge-card">
+          <div class="stage-tabs" role="tablist" aria-label="Challenge stages" hidden>
+            <button class="stage-tab is-active" type="button" data-form-stage="trace">1. Trace</button>
+            <button class="stage-tab" type="button" data-form-stage="freehand" disabled>2. Freehand</button>
+            <button class="stage-tab" type="button" data-form-stage="compare" disabled>3. Evaluate</button>
+          </div>
+          <div id="form-toolbar" class="challenge-tools">
+            <label class="challenge-field">Level<select id="form-level" aria-label="Form level"><option value="1">Level 1</option><option value="2" disabled>Level 2</option><option value="3" disabled>Level 3</option></select></label>
+            <label class="challenge-field">Brush size<input id="form-brush-size" type="range" min="2" max="24" value="6" aria-label="Brush size"></label>
+            <label class="challenge-field">Color<input id="form-brush-color" type="color" value="#2563eb" aria-label="Brush color"></label>
+            <label id="form-guide-opacity-control" class="challenge-field">Guide opacity<input id="form-trace-opacity" type="range" min=".1" max="1" step=".05" value=".5" aria-label="Guide opacity"></label>
+            <button id="form-guide-toggle" class="challenge-button primary" type="button">Guide On</button><button id="form-pen" class="challenge-button primary" type="button">Pen</button><button id="form-eraser" class="challenge-button" type="button">Eraser</button><button id="form-undo" class="challenge-button" type="button">Undo</button><button id="form-redo" class="challenge-button" type="button">Redo</button><button id="form-clear" class="challenge-button" type="button">Clear</button><button id="form-submit" class="challenge-button primary" type="button" disabled>Unlock Freehand Mode (80%)</button>
+          </div>
+          <div id="form-ready-banner" class="ready-banner" role="status">Great job! Click “Unlock Freehand Mode” when you’re ready.</div>
+          <div class="canvas-wrap mt-4"><canvas id="form-guide-canvas" aria-hidden="true"></canvas><canvas id="form-drawing-canvas" aria-label="Form drawing canvas"></canvas><canvas id="form-difference-canvas" aria-hidden="true"></canvas></div>
+          <div class="challenge-actions"><button id="form-peek" class="challenge-button" type="button" hidden>&#128161; Hint (3 Left)</button><label class="challenge-field ml-auto">Review split<input id="form-review-split" type="range" min="0" max="100" value="50" aria-label="Review comparison split"></label></div>
+          <div class="mt-3 flex items-center justify-end"><span id="form-peek-timer" class="font-mono-draw text-xs text-accent" aria-live="polite"></span></div>
+          <div id="form-evaluation" class="evaluation-view mt-4" hidden><p class="mb-3 font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Your drawing / Complete reference</p><div class="evaluation-frame"><canvas id="form-user-evaluation"></canvas><canvas id="form-target-evaluation"></canvas><canvas id="form-evaluation-difference"></canvas></div><label class="challenge-field mt-3">Comparison split<input id="form-evaluation-split" type="range" min="0" max="100" value="50" aria-label="Evaluation comparison split"></label></div>
+        </div>
+        <aside class="grid content-start gap-4">
+          <div class="score-box"><span class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-muted-foreground">Accuracy</span><strong id="form-score">--%</strong><span id="form-rank" class="font-mono-draw text-xs font-bold text-accent">Rank --</span><p id="form-message" class="mt-2 text-xs leading-5 text-muted-foreground">Trace the guide, then continue when ready.</p></div>
+          <div class="challenge-card"><p class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Round progress</p><p id="form-progress" class="mt-2 font-display text-2xl">Round 1</p><p class="mt-2 text-xs leading-5 text-muted-foreground">Practice rounds include faint guides. Freehand rounds hide them. Keep playing regardless of your score.</p><button id="form-next-level" class="challenge-button primary mt-4" type="button" disabled>&rarr; Next Round</button></div>
+        </aside>
+      </section>
+    </main>
+  </div>
+  <script src="/assets/js/form-drawing.js"></script>
+</body>
+</html>
