@@ -36,7 +36,6 @@
     }
   </script>
 
-  <!-- Custom App Styles -->
   <style>
     body {
       background-color: #fff8f0;
@@ -104,6 +103,11 @@
       cursor: pointer;
     }
 
+    .challenge-field option:disabled {
+      color: #9ca3af;
+      background: #f3f4f6;
+    }
+
     .challenge-field input[type=color] {
       width: 2.8rem;
       height: 2.2rem;
@@ -111,36 +115,6 @@
       border-radius: 0.5rem;
       border: 1px solid #d9d5c9;
       cursor: pointer;
-    }
-
-    .stage-tabs {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-    }
-
-    .stage-tab {
-      border: 1px solid #d9d5c9;
-      border-radius: 0.6rem;
-      background: #f5f1e8;
-      padding: 0.7rem;
-      color: #68716c;
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-align: center;
-      transition: all 0.2s ease;
-    }
-
-    .stage-tab.is-active {
-      border-color: #ff6b8b;
-      background: #fff0f3;
-      color: #a83d59;
-    }
-
-    .stage-tab:disabled {
-      cursor: not-allowed;
-      opacity: 0.5;
     }
 
     .canvas-wrap {
@@ -301,7 +275,7 @@
         </a>
         <div class="flex items-center gap-3">
           <span class="hidden sm:inline text-xs font-mono text-muted uppercase tracking-wider">Perspective & Structure Training</span>
-          <a href="#" class="rounded-full border border-borderCustom px-4 py-2 text-xs font-semibold hover:bg-white/60 transition">Reset Exercise</a>
+          <button id="form-reset-exercise" class="rounded-full border border-borderCustom px-4 py-2 text-xs font-semibold hover:bg-white/60 transition">Reset Exercise</button>
         </div>
       </div>
     </header>
@@ -330,8 +304,8 @@
               <label for="form-level">Level Selection</label>
               <select id="form-level" aria-label="Form level">
                 <option value="1">Level 1 (Pyramid)</option>
-                <option value="2">Level 2 (Cube)</option>
-                <option value="3">Level 3 (3D Geometry)</option>
+                <option value="2" id="opt-lvl-2" disabled>🔒 Level 2 (Cube - Locked)</option>
+                <option value="3" id="opt-lvl-3" disabled>🔒 Level 3 (3D Geometry - Locked)</option>
               </select>
             </div>
 
@@ -448,6 +422,7 @@
 
       const state = {
         level: 1,           // 1, 2, 3
+        unlockedLevels: { 1: true, 2: false, 3: false },
         stage: 'trace',     // 'trace', 'freehand', 'evaluate'
         tool: 'pen',        // 'pen', 'eraser'
         brushSize: 6,
@@ -466,6 +441,10 @@
 
       // --- DOM ELEMENTS ---
       const levelSelect = document.getElementById('form-level');
+      const optLvl2 = document.getElementById('opt-lvl-2');
+      const optLvl3 = document.getElementById('opt-lvl-3');
+      const resetExerciseBtn = document.getElementById('form-reset-exercise');
+
       const brushSizeInput = document.getElementById('form-brush-size');
       const brushColorInput = document.getElementById('form-brush-color');
       const opacityInput = document.getElementById('form-trace-opacity');
@@ -505,17 +484,16 @@
       const ctxUserEval = userEvalCanvas.getContext('2d');
       const ctxTargetEval = targetEvalCanvas.getContext('2d');
 
-      // Ensure crisp high-DPI scaling
+      // Ensure crisp high-DPI canvas resolution
       [baseCanvas, guideCanvas, drawingCanvas, userEvalCanvas, targetEvalCanvas].forEach(c => {
         c.width = CANVAS_SIZE;
         c.height = CANVAS_SIZE;
       });
 
-      // --- VECTOR GRAPHICS DEFINITIONS (Guaranteed High Precision Fallback) ---
+      // --- VECTOR GEOMETRY DEFINITIONS ---
       const geometries = {
         1: {
           name: "Level 1: Pyramid",
-          // Base solid lines
           drawBase: (ctx) => {
             ctx.save();
             ctx.strokeStyle = '#1d2926';
@@ -523,7 +501,6 @@
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
             ctx.beginPath();
-            // Left triangle face
             ctx.moveTo(100, 390);
             ctx.lineTo(295, 105);
             ctx.lineTo(295, 490);
@@ -531,7 +508,6 @@
             ctx.stroke();
             ctx.restore();
           },
-          // Dashed trace guides to complete shape
           drawGuide: (ctx) => {
             ctx.save();
             ctx.strokeStyle = '#6b7280';
@@ -540,14 +516,12 @@
             ctx.lineJoin = 'round';
             ctx.setLineDash([12, 10]);
             ctx.beginPath();
-            // Right pyramid face
             ctx.moveTo(295, 105);
             ctx.lineTo(535, 390);
             ctx.lineTo(295, 490);
             ctx.stroke();
             ctx.restore();
           },
-          // Target complete structure
           drawComplete: (ctx) => {
             geometries[1].drawBase(ctx);
             ctx.save();
@@ -572,7 +546,6 @@
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
             ctx.beginPath();
-            // Front face square
             ctx.moveTo(230, 240);
             ctx.lineTo(470, 200);
             ctx.lineTo(475, 435);
@@ -589,7 +562,6 @@
             ctx.lineJoin = 'round';
             ctx.setLineDash([12, 10]);
             ctx.beginPath();
-            // Top and back perspective lines of cube
             ctx.moveTo(230, 240);
             ctx.lineTo(140, 175);
             ctx.lineTo(335, 145);
@@ -623,6 +595,7 @@
         },
         3: {
           name: "Level 3: 3D Geometry",
+          // Base solid boundary matching user reference Untitled47_20260921230057_2.png
           drawBase: (ctx) => {
             ctx.save();
             ctx.strokeStyle = '#1d2926';
@@ -630,21 +603,23 @@
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
             ctx.beginPath();
-            // Complex outer frame
+            // Outer isometric frame
             ctx.moveTo(100, 200);
             ctx.lineTo(310, 80);
             ctx.moveTo(100, 200);
-            ctx.lineTo(100, 420);
-            ctx.lineTo(300, 530);
+            ctx.lineTo(100, 440);
+            ctx.lineTo(300, 560);
             ctx.lineTo(510, 440);
-            ctx.moveTo(100, 420);
-            ctx.lineTo(200, 370);
+            // Inner floor isometric base
+            ctx.moveTo(100, 440);
+            ctx.lineTo(205, 380);
             ctx.lineTo(300, 435);
-            ctx.lineTo(400, 370);
+            ctx.lineTo(410, 375);
             ctx.lineTo(510, 440);
             ctx.stroke();
             ctx.restore();
           },
+          // Dashed guidelines for inner cube completion
           drawGuide: (ctx) => {
             ctx.save();
             ctx.strokeStyle = '#6b7280';
@@ -653,23 +628,25 @@
             ctx.lineJoin = 'round';
             ctx.setLineDash([12, 10]);
             ctx.beginPath();
-            // Inner cube & perspective completion
+            // Outer wall dashed extensions
             ctx.moveTo(310, 80);
-            ctx.lineTo(510, 190);
+            ctx.lineTo(510, 195);
             ctx.lineTo(510, 440);
 
+            // Center vertical dashed pillar
             ctx.moveTo(310, 80);
-            ctx.lineTo(310, 300);
+            ctx.lineTo(310, 320);
 
-            ctx.moveTo(200, 250);
-            ctx.lineTo(300, 190);
-            ctx.lineTo(400, 250);
-            ctx.lineTo(300, 300);
+            // Inner suspended box structure
+            ctx.moveTo(205, 260);
+            ctx.lineTo(310, 200);
+            ctx.lineTo(410, 260);
+            ctx.lineTo(310, 320);
             ctx.closePath();
 
-            ctx.moveTo(200, 250); ctx.lineTo(200, 370);
-            ctx.moveTo(300, 300); ctx.lineTo(300, 435);
-            ctx.moveTo(400, 250); ctx.lineTo(400, 370);
+            ctx.moveTo(205, 260); ctx.lineTo(205, 380);
+            ctx.moveTo(310, 320); ctx.lineTo(300, 435);
+            ctx.moveTo(410, 260); ctx.lineTo(410, 375);
             ctx.stroke();
             ctx.restore();
           },
@@ -681,32 +658,45 @@
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
             ctx.beginPath();
-            ctx.moveTo(310, 80); ctx.lineTo(510, 190); ctx.lineTo(510, 440);
-            ctx.moveTo(310, 80); ctx.lineTo(310, 300);
+            ctx.moveTo(310, 80); ctx.lineTo(510, 195); ctx.lineTo(510, 440);
+            ctx.moveTo(310, 80); ctx.lineTo(310, 320);
 
-            ctx.moveTo(200, 250); ctx.lineTo(300, 190); ctx.lineTo(400, 250); ctx.lineTo(300, 300); ctx.closePath();
+            ctx.moveTo(205, 260); ctx.lineTo(310, 200); ctx.lineTo(410, 260); ctx.lineTo(310, 320); ctx.closePath();
 
-            ctx.moveTo(200, 250); ctx.lineTo(200, 370);
-            ctx.moveTo(300, 300); ctx.lineTo(300, 435);
-            ctx.moveTo(400, 250); ctx.lineTo(400, 370);
+            ctx.moveTo(205, 260); ctx.lineTo(205, 380);
+            ctx.moveTo(310, 320); ctx.lineTo(300, 435);
+            ctx.moveTo(410, 260); ctx.lineTo(410, 375);
             ctx.stroke();
             ctx.restore();
           }
         }
       };
 
-      // --- RENDERING & LEVEL MANAGEMENT ---
+      function updateLevelDropdownUI() {
+        if (state.unlockedLevels[2]) {
+          optLvl2.disabled = false;
+          optLvl2.textContent = "Level 2 (Cube)";
+        } else {
+          optLvl2.disabled = true;
+          optLvl2.textContent = "🔒 Level 2 (Cube - Locked)";
+        }
+
+        if (state.unlockedLevels[3]) {
+          optLvl3.disabled = false;
+          optLvl3.textContent = "Level 3 (3D Geometry)";
+        } else {
+          optLvl3.disabled = true;
+          optLvl3.textContent = "🔒 Level 3 (3D Geometry - Locked)";
+        }
+      }
+
       function renderLevel() {
-        // Clear all canvases completely
         ctxBase.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
         ctxGuide.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
         const currentGeo = geometries[state.level];
-
-        // 1. Render Base Line Art
         currentGeo.drawBase(ctxBase);
 
-        // 2. Render Guide Lines based on Stage & Toggle state
         if (state.stage === 'trace' && state.guideVisible) {
           guideCanvas.style.display = 'block';
           ctxGuide.globalAlpha = state.guideOpacity;
@@ -715,7 +705,6 @@
           guideCanvas.style.display = 'none';
         }
 
-        // Update Level & Stage Labels
         levelBadge.textContent = currentGeo.name;
         if (state.stage === 'trace') {
           stageBadge.textContent = 'Stage 1: Trace';
@@ -735,7 +724,6 @@
         }
       }
 
-      // Complete State Reset
       function resetCanvasState(resetHistory = true) {
         ctxDrawing.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
         if (resetHistory) {
@@ -747,6 +735,12 @@
       }
 
       function switchLevel(newLevel) {
+        if (!state.unlockedLevels[newLevel]) {
+          alert(`Level ${newLevel} is currently locked! Complete the previous level evaluation first to unlock it.`);
+          levelSelect.value = state.level;
+          return;
+        }
+
         state.level = parseInt(newLevel, 10);
         state.stage = 'trace';
         state.guideVisible = true;
@@ -768,7 +762,7 @@
       function saveHistoryState() {
         state.historyStep++;
         if (state.historyStep < state.history.length) {
-          state.history.length = state.historyStep; // Truncate redo stack
+          state.history.length = state.historyStep;
         }
         state.history.push(ctxDrawing.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE));
         updateUndoRedoButtons();
@@ -795,7 +789,7 @@
         redoBtn.disabled = state.historyStep >= state.history.length - 1;
       }
 
-      // --- DRAWING EVENT LISTENERS ---
+      // --- CANVAS DRAWING MECHANICS ---
       function getCanvasCoordinates(e) {
         const rect = drawingCanvas.getBoundingClientRect();
         const clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -835,7 +829,6 @@
           ctxDrawing.strokeStyle = state.brushColor;
           ctxDrawing.lineWidth = state.brushSize;
         } else {
-          // Eraser mode
           ctxDrawing.globalCompositeOperation = 'destination-out';
           ctxDrawing.lineWidth = state.brushSize * 2;
         }
@@ -847,7 +840,7 @@
         state.lastY = coords.y;
       }
 
-      function stopDrawing(e) {
+      function stopDrawing() {
         if (state.isDrawing) {
           state.isDrawing = false;
           saveHistoryState();
@@ -862,9 +855,8 @@
       drawingCanvas.addEventListener('touchmove', draw, { passive: false });
       window.addEventListener('touchend', stopDrawing);
 
-      // --- BEHIND-THE-SCENES PRECISION EVALUATION ---
+      // --- PRECISION EVALUATION ENGINE ---
       function evaluateDrawing() {
-        // Create an offscreen buffer for ideal target lines
         const targetCanvas = document.createElement('canvas');
         targetCanvas.width = CANVAS_SIZE;
         targetCanvas.height = CANVAS_SIZE;
@@ -879,18 +871,16 @@
         let userStrokeCount = 0;
         let strayPixelCount = 0;
 
-        // Bounding box tolerance check
-        const tolerance = 12; // Search radius in pixels for user line proximity
+        const tolerance = 14;
 
         for (let y = 0; y < CANVAS_SIZE; y += 2) {
           for (let x = 0; x < CANVAS_SIZE; x += 2) {
             const idx = (y * CANVAS_SIZE + x) * 4;
-            const isTarget = targetImgData[idx + 3] > 50; // Target alpha
-            const isUser = userImgData[idx + 3] > 50;     // User alpha
+            const isTarget = targetImgData[idx + 3] > 50;
+            const isUser = userImgData[idx + 3] > 50;
 
             if (isTarget) {
               targetPixelCount++;
-              // Search nearby pixels for user stroke proximity
               let hit = false;
               for (let dy = -tolerance; dy <= tolerance; dy += 4) {
                 for (let dx = -tolerance; dx <= tolerance; dx += 4) {
@@ -918,29 +908,25 @@
 
         if (targetPixelCount === 0) return 0;
 
-        const recall = matchedPixelCount / targetPixelCount; // How much guide covered
-        const precision = userStrokeCount > 0 ? Math.max(0, 1 - (strayPixelCount / userStrokeCount) * 0.5) : 0;
+        const recall = matchedPixelCount / targetPixelCount;
+        const precision = userStrokeCount > 0 ? Math.max(0, 1 - (strayPixelCount / userStrokeCount) * 0.4) : 0;
         
         let finalScore = Math.round((recall * 0.7 + precision * 0.3) * 100);
-        if (userStrokeCount < 100) finalScore = 0; // If barely drawn
+        if (userStrokeCount < 100) finalScore = 0;
         return Math.min(100, Math.max(0, finalScore));
       }
 
-      // --- STAGE ADVANCEMENT LOGIC ---
       function handleStageTransition() {
         if (state.stage === 'trace') {
-          // Move to Freehand Mode
           state.stage = 'freehand';
           state.guideVisible = false;
           resetCanvasState(true);
           renderLevel();
         } else if (state.stage === 'freehand') {
-          // Move to Evaluation Stage
           state.stage = 'evaluate';
           state.calculatedAccuracy = evaluateDrawing();
           renderEvaluationView();
         } else {
-          // Reset current level back to Stage 1
           state.stage = 'trace';
           state.guideVisible = true;
           drawingWrap.hidden = false;
@@ -954,51 +940,66 @@
         drawingWrap.hidden = true;
         evalWrap.hidden = false;
 
-        // Render User's Drawing + Base on userEvalCanvas
         ctxUserEval.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
         geometries[state.level].drawBase(ctxUserEval);
         ctxUserEval.drawImage(drawingCanvas, 0, 0);
 
-        // Render Target Complete Reference on targetEvalCanvas
         ctxTargetEval.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
         geometries[state.level].drawComplete(ctxTargetEval);
 
-        // Set Split Slider position
         updateEvaluationSplit(50);
         evalSplitInput.value = 50;
 
-        // Set Ranks and Feedback Message
         const score = state.calculatedAccuracy;
         let rank = 'S';
         let msg = '';
 
+        // Unlock next level if score passed minimum requirement
+        if (score >= 40) {
+          if (state.level === 1 && !state.unlockedLevels[2]) {
+            state.unlockedLevels[2] = true;
+            updateLevelDropdownUI();
+          } else if (state.level === 2 && !state.unlockedLevels[3]) {
+            state.unlockedLevels[3] = true;
+            updateLevelDropdownUI();
+          }
+        }
+
         if (score >= 90) {
           rank = 'S Class ⭐';
           msg = 'Masterful spatial precision! Your perspective geometry is spot on.';
-        } else if (score >= 75) {
+        } else if (score >= 70) {
           rank = 'A Class 🎯';
           msg = 'Great job! Strong structural alignment and proportion control.';
-        } else if (score >= 50) {
+        } else if (score >= 40) {
           rank = 'B Class 👍';
-          msg = 'Decent attempt! Practice tracing Stage 1 once more to build stronger muscle memory.';
+          msg = 'Solid effort! Next level is now unlocked.';
         } else {
           rank = 'C Class ✏️';
-          msg = 'Keep practicing! Focus on capturing key vanishing points and stroke angles.';
+          msg = 'Keep practicing! Draw complete strokes across all guide points.';
         }
 
         rankText.textContent = rank;
         messageText.textContent = msg;
 
-        // Enable Next Level button if score is passing
-        nextLevelBtn.disabled = false;
+        // Enable Next Level button if next level exists and is unlocked
+        if (state.level < 3 && state.unlockedLevels[state.level + 1]) {
+          nextLevelBtn.disabled = false;
+          nextLevelBtn.textContent = `Proceed to Level ${state.level + 1} ➔`;
+        } else if (state.level === 3) {
+          nextLevelBtn.disabled = false;
+          nextLevelBtn.textContent = `Restart Challenge 🔄`;
+        } else {
+          nextLevelBtn.disabled = true;
+          nextLevelBtn.textContent = `Next Level (Locked)`;
+        }
       }
 
       function updateEvaluationSplit(value) {
-        // Adjust clip path based on slider percentage
         targetEvalCanvas.style.clipPath = `inset(0 0 0 ${value}%)`;
       }
 
-      // --- TOOLBAR & EVENT BINDINGS ---
+      // --- EVENT BINDINGS ---
       levelSelect.addEventListener('change', (e) => switchLevel(e.target.value));
 
       brushSizeInput.addEventListener('input', (e) => state.brushSize = parseInt(e.target.value, 10));
@@ -1037,14 +1038,12 @@
         renderLevel();
       });
 
-      // Peek / Hint Feature
       peekBtn.addEventListener('click', () => {
         if (state.peekCount <= 0 || state.peekTimer !== null) return;
 
         state.peekCount--;
         peekCountSpan.textContent = state.peekCount;
 
-        // Flash guide on canvas briefly
         guideCanvas.style.display = 'block';
         ctxGuide.globalAlpha = 0.8;
         ctxGuide.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
@@ -1061,7 +1060,7 @@
             clearInterval(state.peekTimer);
             state.peekTimer = null;
             peekTimerSpan.textContent = '';
-            renderLevel(); // Re-hide guide if in freehand
+            renderLevel();
           }
         }, 1000);
       });
@@ -1070,18 +1069,29 @@
 
       nextLevelBtn.addEventListener('click', () => {
         if (state.level < 3) {
-          levelSelect.value = state.level + 1;
-          switchLevel(state.level + 1);
+          const nextLvl = state.level + 1;
+          levelSelect.value = nextLvl;
+          switchLevel(nextLvl);
         } else {
-          alert("Congratulations! You have completed all 3 Perspective Challenge levels!");
+          // Reset exercise back to Level 1
+          state.unlockedLevels = { 1: true, 2: false, 3: false };
+          updateLevelDropdownUI();
           levelSelect.value = 1;
           switchLevel(1);
         }
       });
 
+      resetExerciseBtn.addEventListener('click', () => {
+        state.unlockedLevels = { 1: true, 2: false, 3: false };
+        updateLevelDropdownUI();
+        levelSelect.value = 1;
+        switchLevel(1);
+      });
+
       evalSplitInput.addEventListener('input', (e) => updateEvaluationSplit(e.target.value));
 
       // --- INITIAL STARTUP ---
+      updateLevelDropdownUI();
       switchLevel(1);
     });
   </script>
