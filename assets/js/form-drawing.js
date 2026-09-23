@@ -1,0 +1,167 @@
+const formAssets = (level) => ({
+  trace: `/assets/drawing-exercise/form/level-${level}/trace.png`,
+  blank: `/assets/drawing-exercise/form/level-${level}/blank.png`,
+  complete: `/assets/drawing-exercise/form/level-${level}/complete.png`
+});
+
+const formStateKey = 'drawflow-form-challenge';
+const formProgress = JSON.parse(localStorage.getItem(formStateKey) || '{"unlocked":1,"levels":{}}');
+const levelSelect = document.querySelector('#form-level');
+const levelLabel = document.querySelector('#form-level-label');
+const stageButtons = [...document.querySelectorAll('[data-form-stage]')];
+const guideCanvas = document.querySelector('#form-guide-canvas');
+const drawingCanvas = document.querySelector('#form-drawing-canvas');
+const differenceCanvas = document.querySelector('#form-difference-canvas');
+const guideContext = guideCanvas?.getContext('2d', { willReadFrequently: true });
+const drawingContext = drawingCanvas?.getContext('2d', { willReadFrequently: true });
+const differenceContext = differenceCanvas?.getContext('2d', { willReadFrequently: true });
+const opacityInput = document.querySelector('#form-trace-opacity');
+const brushSizeInput = document.querySelector('#form-brush-size');
+const brushColorInput = document.querySelector('#form-brush-color');
+const scoreOutput = document.querySelector('#form-score');
+const messageOutput = document.querySelector('#form-message');
+const progressOutput = document.querySelector('#form-progress');
+const submitButton = document.querySelector('#form-submit');
+const nextButton = document.querySelector('#form-next-level');
+const splitInput = document.querySelector('#form-review-split');
+
+if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideContext && drawingContext && differenceContext) {
+  let level = 1;
+  let stage = 'trace';
+  let erasing = false;
+  let drawing = false;
+  let history = [];
+  let historyIndex = -1;
+  let images = {};
+
+  const cache = new Map();
+  const loadImage = (source) => {
+    if (cache.has(source)) return cache.get(source);
+    const image = new Image();
+    image.src = source;
+    const promise = new Promise((resolve, reject) => {
+      image.addEventListener('load', () => resolve(image), { once: true });
+      image.addEventListener('error', reject, { once: true });
+    });
+    cache.set(source, promise);
+    return promise;
+  };
+
+  const saveState = () => localStorage.setItem(formStateKey, JSON.stringify(formProgress));
+  const levelRecord = () => formProgress.levels[level] || {};
+  const completedCount = () => Object.values(formProgress.levels).filter((record) => record.freehand >= 70).length;
+  const drawImage = (context, image) => {
+    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+    const scale = Math.min(context.canvas.width / image.naturalWidth, context.canvas.height / image.naturalHeight);
+    const width = image.naturalWidth * scale;
+    const height = image.naturalHeight * scale;
+    context.drawImage(image, (context.canvas.width - width) / 2, (context.canvas.height - height) / 2, width, height);
+  };
+
+  const snapshot = () => {
+    history = history.slice(0, historyIndex + 1);
+    history.push(drawingContext.getImageData(0, 0, drawingCanvas.width, drawingCanvas.height));
+    historyIndex = history.length - 1;
+  };
+  const clearDrawing = () => { drawingContext.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height); snapshot(); };
+
+  const updateProgress = () => {
+    progressOutput.textContent = `${completedCount()} / 3 levels`;
+    [...levelSelect.options].forEach((option) => { option.disabled = Number(option.value) > formProgress.unlocked; });
+  };
+
+  const renderStage = () => {
+    stageButtons.forEach((button) => {
+      const name = button.dataset.formStage;
+      button.classList.toggle('is-active', name === stage);
+      button.disabled = name === 'freehand' ? !(levelRecord().trace >= 75) : name === 'compare' ? !(levelRecord().freehand >= 70) : false;
+    });
+    guideCanvas.style.opacity = stage === 'trace' ? opacityInput.value : stage === 'compare' ? '1' : '.25';
+    differenceCanvas.style.opacity = stage === 'compare' ? '1' : '0';
+    submitButton.disabled = stage === 'compare';
+    submitButton.textContent = stage === 'trace' ? 'Proceed to Freehand' : stage === 'freehand' ? 'Submit & Evaluate' : 'Evaluation Complete';
+    nextButton.disabled = stage !== 'compare' || level >= 3 || formProgress.unlocked <= level;
+    messageOutput.textContent = stage === 'trace' ? 'Trace the guide, then proceed when ready.' : stage === 'freehand' ? 'The guide is hidden. Draw the form from memory.' : 'Review the red marks and compare your drawing with the complete reference.';
+    updateProgress();
+  };
+
+  const setCanvasSize = (image) => [guideCanvas, drawingCanvas, differenceCanvas].forEach((canvas) => { canvas.width = Math.max(image.naturalWidth, image.naturalHeight, 640); canvas.height = canvas.width; });
+
+  const loadLevel = async () => {
+    level = Number(levelSelect.value);
+    images = formAssets(level);
+    const trace = await loadImage(images.trace);
+    const blank = await loadImage(images.blank);
+    const complete = await loadImage(images.complete);
+    setCanvasSize(trace);
+    drawImage(guideContext, trace);
+    clearDrawing();
+    differenceContext.clearRect(0, 0, differenceCanvas.width, differenceCanvas.height);
+    stage = levelRecord().freehand >= 70 ? 'compare' : levelRecord().trace >= 75 ? 'freehand' : 'trace';
+    if (stage === 'freehand') drawImage(guideContext, blank);
+    if (stage === 'compare') drawImage(guideContext, complete);
+    levelLabel.textContent = String(level);
+    scoreOutput.textContent = '--%';
+    renderStage();
+  };
+
+  const pointFor = (event) => {
+    const bounds = drawingCanvas.getBoundingClientRect();
+    return { x: (event.clientX - bounds.left) * drawingCanvas.width / bounds.width, y: (event.clientY - bounds.top) * drawingCanvas.height / bounds.height };
+  };
+  const drawPoint = (event) => {
+    const point = pointFor(event);
+    drawingContext.lineCap = 'round';
+    drawingContext.lineJoin = 'round';
+    drawingContext.lineWidth = Number(brushSizeInput.value);
+    drawingContext.strokeStyle = erasing ? '#ffffff' : brushColorInput.value;
+    drawingContext.globalCompositeOperation = erasing ? 'destination-out' : 'source-over';
+    drawingContext.lineTo(point.x, point.y);
+    drawingContext.stroke();
+  };
+  drawingCanvas.addEventListener('pointerdown', (event) => { drawing = true; drawingCanvas.setPointerCapture(event.pointerId); const point = pointFor(event); drawingContext.beginPath(); drawingContext.moveTo(point.x, point.y); drawPoint(event); });
+  drawingCanvas.addEventListener('pointermove', (event) => { if (drawing) drawPoint(event); });
+  drawingCanvas.addEventListener('pointerup', () => { drawing = false; drawingContext.closePath(); drawingContext.globalCompositeOperation = 'source-over'; snapshot(); });
+  drawingCanvas.addEventListener('pointercancel', () => { drawing = false; drawingContext.globalCompositeOperation = 'source-over'; });
+
+  const scoreCanvas = async () => {
+    const reference = await loadImage(images.complete);
+    const referenceCanvasCopy = document.createElement('canvas');
+    referenceCanvasCopy.width = drawingCanvas.width;
+    referenceCanvasCopy.height = drawingCanvas.height;
+    const referenceCopyContext = referenceCanvasCopy.getContext('2d', { willReadFrequently: true });
+    drawImage(referenceCopyContext, reference);
+    const referencePixels = referenceCopyContext.getImageData(0, 0, drawingCanvas.width, drawingCanvas.height).data;
+    const drawingPixels = drawingContext.getImageData(0, 0, drawingCanvas.width, drawingCanvas.height).data;
+    const radius = Math.max(3, Math.round(drawingCanvas.width / 160));
+    const ink = (pixels, index) => pixels[index + 3] > 30 && pixels[index] + pixels[index + 1] + pixels[index + 2] < 690;
+    const near = (pixels, x, y) => { for (let dy = -radius; dy <= radius; dy += 1) for (let dx = -radius; dx <= radius; dx += 1) { const nx = x + dx; const ny = y + dy; if (nx >= 0 && ny >= 0 && nx < drawingCanvas.width && ny < drawingCanvas.height && ink(pixels, (ny * drawingCanvas.width + nx) * 4)) return true; } return false; };
+    let expected = 0; let matched = 0; let drawn = 0; let aligned = 0;
+    differenceContext.clearRect(0, 0, differenceCanvas.width, differenceCanvas.height);
+    differenceContext.fillStyle = 'rgba(220, 60, 45, .78)';
+    const split = Number(splitInput.value) / 100;
+    for (let y = 0; y < drawingCanvas.height; y += 2) for (let x = 0; x < drawingCanvas.width; x += 2) { const index = (y * drawingCanvas.width + x) * 4; const expectedInk = ink(referencePixels, index); const drawnInk = ink(drawingPixels, index); if (expectedInk) { expected += 1; if (near(drawingPixels, x, y)) matched += 1; } if (drawnInk) { drawn += 1; if (near(referencePixels, x, y)) aligned += 1; } if ((expectedInk && !near(drawingPixels, x, y) && x / drawingCanvas.width <= split) || (drawnInk && !near(referencePixels, x, y) && x / drawingCanvas.width > split)) differenceContext.fillRect(x, y, 4, 4); }
+    const score = Math.round(((expected ? matched / expected : 0) * .65 + (drawn ? aligned / drawn : 0) * .35) * 100);
+    scoreOutput.textContent = `${score}%`;
+    if (stage === 'trace' && score >= 75) { formProgress.levels[level] = { ...(levelRecord()), trace: score }; stage = 'freehand'; messageOutput.textContent = 'Trace passed. The guide is hidden; redraw the form from memory.'; }
+    else if (stage === 'freehand' && score >= 70) { formProgress.levels[level] = { ...(levelRecord()), freehand: score }; formProgress.unlocked = Math.max(formProgress.unlocked, Math.min(3, level + 1)); stage = 'compare'; messageOutput.textContent = 'Level passed. Review your result, then continue to the next level.'; }
+    else if (stage === 'trace') messageOutput.textContent = 'Trace accuracy needs to reach 75% before freehand unlocks.';
+    else if (stage === 'freehand') messageOutput.textContent = 'Freehand accuracy needs to reach 70% to complete this level.';
+    saveState();
+    if (stage === 'freehand') drawImage(guideContext, await loadImage(images.blank));
+    if (stage === 'compare') drawImage(guideContext, reference);
+    renderStage();
+  };
+
+  stageButtons.forEach((button) => button.addEventListener('click', () => { if (!button.disabled) { stage = button.dataset.formStage; if (stage === 'freehand') loadImage(images.blank).then((image) => drawImage(guideContext, image)); if (stage === 'compare') loadImage(images.complete).then((image) => drawImage(guideContext, image)); renderStage(); } }));
+  levelSelect.addEventListener('change', loadLevel);
+  opacityInput.addEventListener('input', renderStage);
+  splitInput.addEventListener('input', () => { if (stage === 'compare') scoreCanvas(); });
+  submitButton.addEventListener('click', scoreCanvas);
+  document.querySelector('#form-eraser').addEventListener('click', (event) => { erasing = !erasing; event.currentTarget.classList.toggle('primary', erasing); });
+  document.querySelector('#form-clear').addEventListener('click', clearDrawing);
+  document.querySelector('#form-undo').addEventListener('click', () => { if (historyIndex > 0) { historyIndex -= 1; drawingContext.putImageData(history[historyIndex], 0, 0); } });
+  document.querySelector('#form-redo').addEventListener('click', () => { if (historyIndex < history.length - 1) { historyIndex += 1; drawingContext.putImageData(history[historyIndex], 0, 0); } });
+  document.querySelector('#form-next-level').addEventListener('click', () => { if (level < 3 && formProgress.unlocked > level) { levelSelect.value = String(level + 1); loadLevel(); } });
+  loadLevel();
+}
