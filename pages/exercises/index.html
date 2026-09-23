@@ -47,6 +47,12 @@
     .canvas-frame { position: relative; overflow: hidden; min-height: 20rem; border: 1px solid #d9d5c9; border-radius: .75rem; background: #fff; }
     .canvas-frame canvas { display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; cursor: crosshair; touch-action: none; }
     .canvas-frame canvas + canvas { position: absolute; inset: 0; }
+    #studio-difference-layer { pointer-events: none; }
+    .topic-progress-card { border: 1px solid #d9d5c9; border-radius: .65rem; background: #f5f1e8; padding: .65rem; color: #68716c; text-align: left; }
+    .topic-progress-card.is-current { border-color: #e86f45; color: #1d2926; }
+    .topic-progress-card.is-locked { cursor: not-allowed; opacity: .5; }
+    .topic-progress-card strong { display: block; font-family: 'DM Mono', monospace; font-size: .7rem; }
+    .topic-progress-card span { display: block; margin-top: .25rem; font-size: .68rem; }
     .studio-side { display: grid; gap: .75rem; }
     .studio-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
     .studio-button { border: 1px solid #d9d5c9; border-radius: .55rem; background: #f5f1e8; padding: .6rem .75rem; color: #1d2926; font-size: .75rem; font-weight: 700; }
