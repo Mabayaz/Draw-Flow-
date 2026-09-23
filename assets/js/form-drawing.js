@@ -41,6 +41,7 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
   let strokes = [];
   let activeStroke = null;
   let studyMode = false;
+  let freehandFailed = false;
 
   const cache = new Map();
   const loadImage = (source) => {
@@ -82,12 +83,12 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     stageButtons.forEach((button) => {
       const name = button.dataset.formStage;
       button.classList.toggle('is-active', name === stage);
-      button.disabled = name === 'freehand' ? !(levelRecord().trace >= 75) : name === 'compare' ? !(levelRecord().freehand >= 70) : false;
+      button.disabled = name === 'freehand' ? stage === 'trace' : name === 'compare' ? !(levelRecord().freehand >= 70) : false;
     });
     guideCanvas.style.opacity = stage === 'trace' ? opacityInput.value : stage === 'compare' ? '1' : '.25';
     differenceCanvas.style.opacity = stage === 'compare' ? '1' : '0';
     submitButton.disabled = stage === 'compare';
-    submitButton.textContent = stage === 'trace' ? 'Proceed to Freehand' : stage === 'freehand' ? 'Judge / Evaluate' : 'Evaluation Complete';
+    submitButton.textContent = stage === 'trace' ? 'Proceed to Freehand' : stage === 'freehand' ? (freehandFailed ? 'Try Freehand Again' : 'Judge / Evaluate') : 'Evaluation Complete';
     nextButton.disabled = stage !== 'compare' || level >= 3 || formProgress.unlocked <= level;
     studyButton.disabled = stage !== 'compare';
     replayButton.disabled = stage !== 'compare' || strokes.length === 0;
@@ -108,6 +109,7 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     clearDrawing();
     strokes = [];
     studyMode = false;
+    freehandFailed = false;
     differenceContext.clearRect(0, 0, differenceCanvas.width, differenceCanvas.height);
     stage = levelRecord().freehand >= 70 ? 'compare' : levelRecord().trace >= 75 ? 'freehand' : 'trace';
     if (stage === 'freehand') drawImage(guideContext, blank);
@@ -157,8 +159,8 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     scoreOutput.textContent = `${score}%`;
     if (stage === 'trace' && score >= 75) { formProgress.levels[level] = { ...(levelRecord()), trace: score }; stage = 'freehand'; messageOutput.textContent = 'Trace passed. The guide is hidden; redraw the form from memory.'; }
     else if (stage === 'freehand' && score >= 70) { formProgress.levels[level] = { ...(levelRecord()), freehand: score }; formProgress.unlocked = Math.max(formProgress.unlocked, Math.min(3, level + 1)); stage = 'compare'; messageOutput.textContent = 'Level passed. Review your result, then continue to the next level.'; }
-    else if (stage === 'trace') messageOutput.textContent = 'Trace accuracy needs to reach 75% before freehand unlocks.';
-    else if (stage === 'freehand') messageOutput.textContent = 'Freehand accuracy needs to reach 70% to complete this level.';
+    else if (stage === 'trace') messageOutput.textContent = 'Proceed to freehand when you have completed the guided trace.';
+    else if (stage === 'freehand') { freehandFailed = true; messageOutput.textContent = 'Freehand accuracy needs to reach 70%. Try the freehand stage again.'; }
     saveState();
     if (stage === 'freehand') drawImage(guideContext, await loadImage(images.blank));
     if (stage === 'compare') drawImage(guideContext, reference);
@@ -206,7 +208,18 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
   levelSelect.addEventListener('change', loadLevel);
   opacityInput.addEventListener('input', renderStage);
   splitInput.addEventListener('input', () => { if (stage === 'compare') scoreCanvas(); });
-  submitButton.addEventListener('click', scoreCanvas);
+  submitButton.addEventListener('click', async () => {
+    if (stage === 'trace') {
+      stage = 'freehand';
+      freehandFailed = false;
+      clearDrawing();
+      drawImage(guideContext, await loadImage(images.blank));
+      renderStage();
+      return;
+    }
+    if (freehandFailed) { freehandFailed = false; clearDrawing(); renderStage(); return; }
+    scoreCanvas();
+  });
   penButton.addEventListener('click', () => { tool = 'pen'; penButton.classList.add('primary'); eraserButton.classList.remove('primary'); });
   eraserButton.addEventListener('click', () => { tool = 'eraser'; eraserButton.classList.add('primary'); penButton.classList.remove('primary'); });
   studyButton.addEventListener('click', () => { studyMode = !studyMode; studyButton.classList.toggle('primary', studyMode); if (studyMode) drawStudyGuides(); else scoreCanvas(); });
