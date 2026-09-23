@@ -35,8 +35,10 @@ const evaluationDifferenceCanvas = document.querySelector('#form-evaluation-diff
 const evaluationSplitInput = document.querySelector('#form-evaluation-split');
 const penButton = document.querySelector('#form-pen');
 const eraserButton = document.querySelector('#form-eraser');
-const studyButton = document.querySelector('#form-study-mode');
-const replayButton = document.querySelector('#form-replay');
+const peekButton = document.querySelector('#form-peek');
+const coverageBar = document.querySelector('#form-coverage-bar');
+const coverageLabel = document.querySelector('#form-coverage-label');
+const peekTimer = document.querySelector('#form-peek-timer');
 
 if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideContext && drawingContext && differenceContext) {
   let level = 1;
@@ -49,12 +51,17 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
   let tool = 'pen';
   let strokes = [];
   let activeStroke = null;
-  let studyMode = false;
   let freehandFailed = false;
   let lastPoint = null;
   let tracePixels = null;
   let traceCoverage = 0;
   let guideVisible = true;
+  let traceNodes = [];
+  let peekUses = 3;
+  let peekTimeout = null;
+  let peekInterval = null;
+  let traceImage = null;
+  let blankImage = null;
 
   const cache = new Map();
   const loadImage = (source) => {
