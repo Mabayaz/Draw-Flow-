@@ -24,7 +24,9 @@
     .stage-tab:disabled { cursor: not-allowed; opacity: .5; }
     .canvas-wrap { position: relative; overflow: hidden; border: 1px solid #d9d5c9; border-radius: .75rem; background: white; }
     .canvas-wrap canvas { display: block; width: 100%; aspect-ratio: 1; touch-action: none; }
-    .canvas-wrap canvas + canvas { position: absolute; inset: 0; pointer-events: none; }
+    #form-guide-canvas { position: relative; z-index: 1; pointer-events: none; }
+    #form-drawing-canvas { position: absolute; inset: 0; z-index: 2; pointer-events: auto; cursor: crosshair; }
+    #form-difference-canvas { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
     .challenge-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1rem; }
     .challenge-button { border: 1px solid #d9d5c9; border-radius: .55rem; background: #f5f1e8; padding: .65rem .8rem; color: #1d2926; font-size: .75rem; font-weight: 700; }
     .challenge-button.primary { border-color: #173e36; background: #173e36; color: #f8f4eb; }
