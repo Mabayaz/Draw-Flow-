@@ -13,6 +13,7 @@ class CubeGame {
     this.dpr = window.devicePixelRatio || 1;
     this.modal = document.getElementById('game-modal');
     this.nextButton = document.getElementById('btn-next-level');
+    this.evaluateButton = document.getElementById('btn-evaluate');
 
     this.bindControls();
     this.resizeCanvas();
@@ -153,6 +154,7 @@ class CubeGame {
   hideModal() {
     this.modal?.classList.add('hidden');
     this.modal?.classList.remove('flex');
+    this.evaluateButton?.focus();
   }
 
   calculateAccuracy() {
