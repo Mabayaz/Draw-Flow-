@@ -149,6 +149,7 @@ class CubeGame {
     document.getElementById('modal-desc').textContent = accuracy > 85 ? 'Strong construction. Your edges are tracking toward a coherent vanishing point.' : 'Good attempt. Compare your stroke direction with the guide lines and try another prompt.';
     this.modal?.classList.remove('hidden');
     this.modal?.classList.add('flex');
+    this.modal?.setAttribute('aria-hidden', 'false');
     this.nextButton?.focus();
   }
 
@@ -159,6 +160,7 @@ class CubeGame {
   hideModal(focusTarget = null) {
     this.modal?.classList.add('hidden');
     this.modal?.classList.remove('flex');
+    this.modal?.setAttribute('aria-hidden', 'true');
     focusTarget?.focus();
   }
 
