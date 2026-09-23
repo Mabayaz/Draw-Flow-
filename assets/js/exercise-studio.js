@@ -187,6 +187,7 @@ if (subjectSelect && levelSelect && drawingCanvas && referenceCanvas && differen
       const option = document.createElement('option');
       option.value = key;
       option.textContent = subject.label;
+      option.disabled = !topicUnlocked(key);
       subjectSelect.append(option);
     });
   };
@@ -199,6 +200,10 @@ if (subjectSelect && levelSelect && drawingCanvas && referenceCanvas && differen
       option.textContent = level.label;
       levelSelect.append(option);
     });
+  };
+
+  const refreshSubjectLocks = () => {
+    [...subjectSelect.options].forEach((option) => { option.disabled = !topicUnlocked(option.value); });
   };
 
   const getPoint = (event) => {
