@@ -10,8 +10,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="assets/js/tailwind-config.js"></script>
-  <link rel="stylesheet" href="assets/css/site.css">
+  <script src="/assets/js/tailwind-config.js"></script>
+  <link rel="stylesheet" href="/assets/css/site.css">
   <style>
     .home-progress { border: 1px solid #d9d5c9; border-radius: 1.25rem; background: rgba(255, 253, 248, .72); padding: 1.25rem; }
     .home-progress__track { height: .55rem; overflow: hidden; border-radius: 999px; background: #e8e2d7; }
@@ -34,18 +34,18 @@
         </a>
 
         <nav class="hidden items-center gap-2 md:flex" aria-label="Main navigation">
-          <a href="/" class="focus-ring flex items-center gap-2 rounded-full bg-muted px-4 py-2 text-sm font-semibold text-foreground">Home</a>
+          <a href="/" aria-current="page" class="focus-ring flex items-center gap-2 rounded-full bg-muted px-4 py-2 text-sm font-semibold text-foreground">Home</a>
           <a href="/pages/lessons/" class="focus-ring flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted/70 hover:text-foreground transition-all">Lessons</a>
-          <a href="/pages/exercises/" class="focus-ring flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted/70 hover:text-foreground transition-all">Exercises</a>
+          <a href="/pages/drawing-exercise/exercises/" class="focus-ring flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted/70 hover:text-foreground transition-all">Exercises</a>
           <a href="/pages/self-check/" class="focus-ring flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted/70 hover:text-foreground transition-all">Self-Check</a>
           <a href="/pages/about/" class="focus-ring flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted/70 hover:text-foreground transition-all">About Us</a>
         </nav>
 
         <div class="flex items-center gap-3">
-          <button type="button" aria-label="Switch Theme" data-testid="button-theme-toggle" class="focus-ring grid h-10 w-10 place-items-center rounded-full border border-border bg-card text-muted-foreground hover:border-accent hover:text-accent transition-all">
+          <button type="button" aria-label="Switch Theme" id="button-theme-toggle" class="focus-ring grid h-10 w-10 place-items-center rounded-full border border-border bg-card text-muted-foreground hover:border-accent hover:text-accent transition-all">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
           </button>
-          <button type="button" aria-label="Open menu" data-testid="button-mobile-menu" class="focus-ring grid h-10 w-10 place-items-center rounded-full border border-border md:hidden">
+          <button type="button" aria-label="Open menu" id="button-mobile-menu" class="focus-ring grid h-10 w-10 place-items-center rounded-full border border-border md:hidden">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
           </button>
         </div>
@@ -76,16 +76,16 @@
             <a href="/pages/lessons/" class="focus-ring inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground shadow-lg hover:bg-primary/90 transition-all">
               Start Learning Now
             </a>
-            <a href="/pages/exercises/" class="focus-ring rounded-full border border-border px-6 py-3.5 text-sm font-bold hover:bg-muted transition-all">
+            <a href="/pages/drawing-exercise/exercises/" class="focus-ring rounded-full border border-border px-6 py-3.5 text-sm font-bold hover:bg-muted transition-all">
               Practice Exercises
             </a>
           </div>
         </div>
 
         <!-- INTRODUCTION VIDEO -->
-        <div class="relative overflow-hidden rounded-3xl border border-border bg-card shadow-2xl">
+        <div id="video-container" class="relative overflow-hidden rounded-3xl border border-border bg-card shadow-2xl">
           <video
-            data-video-player
+            id="intro-video"
             class="aspect-video w-full bg-black object-contain"
             controls
             controlsList="nodownload"
@@ -93,15 +93,15 @@
             preload="metadata"
             title="DrawFlow orientation video"
           >
-            <source src="assets/videos/introduction.mp4" type="video/mp4">
+            <source src="/assets/videos/introduction.mp4" type="video/mp4">
             Your browser does not support HTML video. Add the introduction video at assets/videos/introduction.mp4.
           </video>
-          <div class="flex items-center justify-between gap-4 border-t border-border px-4 py-3 text-xs text-muted-foreground">
+          <div class="flex items-center justify-between gap-4 border-t border-border px-4 py-3 text-xs text-muted-foreground flex-wrap">
             <span>DrawFlow orientation</span>
             <div class="flex items-center gap-3">
               <label class="flex items-center gap-2">
                 <span>Speed</span>
-                <select data-video-speed class="rounded border border-border bg-background px-2 py-1 text-foreground" aria-label="Playback speed">
+                <select id="video-speed" class="rounded border border-border bg-background px-2 py-1 text-foreground" aria-label="Playback speed">
                   <option value="0.5">0.5x</option>
                   <option value="0.75">0.75x</option>
                   <option value="1" selected>1x</option>
@@ -110,13 +110,7 @@
                   <option value="2">2x</option>
                 </select>
               </label>
-              <label class="flex items-center gap-2">
-                <span>Quality</span>
-                <select data-video-quality class="rounded border border-border bg-background px-2 py-1 text-foreground" aria-label="Video quality">
-                  <option value="auto">Auto</option>
-                </select>
-              </label>
-              <button data-video-fullscreen type="button" class="focus-ring rounded border border-border px-2 py-1 font-bold text-foreground hover:bg-muted" aria-label="Enter fullscreen">Fullscreen</button>
+              <button id="video-fullscreen" type="button" class="focus-ring rounded border border-border px-2 py-1 font-bold text-foreground hover:bg-muted" aria-label="Enter fullscreen">Fullscreen</button>
             </div>
           </div>
         </div>
@@ -177,74 +171,87 @@
         </div>
       </section>
 
-      <!-- 4 SIMPLE CARDS WITH CROSSHAIR HOVER EFFECT -->
+      <!-- 4 MODULE CARDS -->
       <section class="py-12 border-t border-border">
         <h2 class="font-display text-3xl font-bold">What You'll Learn</h2>
-        <p class="text-xs text-muted-foreground mt-1">Hover over any card to reveal its core definition.</p>
+        <p class="text-xs text-muted-foreground mt-1">Click any module card to start practicing its exercises.</p>
 
         <div class="home-progress mt-7" aria-label="Overall lesson progress">
-          <div class="mb-2 flex items-center justify-between gap-3 font-mono text-[10px] uppercase tracking-[.12em] text-muted-foreground"><span>Your learning path</span><span id="home-progress-label">0 of 4 complete</span></div>
-          <div class="home-progress__track" role="progressbar" aria-label="Overall lesson progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="home-progress-fill" class="home-progress__fill"></div></div>
+          <div class="mb-2 flex items-center justify-between gap-3 font-mono text-[10px] uppercase tracking-[.12em] text-muted-foreground">
+            <span>Your learning path</span>
+            <span id="home-progress-label">0 of 4 complete</span>
+          </div>
+          <div class="home-progress__track" role="progressbar" aria-label="Overall lesson progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <div id="home-progress-fill" class="home-progress__fill"></div>
+          </div>
         </div>
 
         <div class="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           
           <!-- Card 1: Form -->
-          <a href="/pages/form/" data-lesson-card="form" class="group relative overflow-hidden rounded-2xl border border-card-border bg-card p-6 transition-all duration-300 hover:border-accent hover:shadow-xl cursor-crosshair">
+          <a href="/pages/drawing-exercise/form/" data-lesson-card="form" class="group relative overflow-hidden rounded-2xl border border-card-border bg-card p-6 transition-all duration-300 hover:border-accent hover:shadow-xl cursor-pointer">
             <div class="flex items-center justify-between">
               <p class="font-mono text-xs font-bold text-accent">Lesson 01</p>
-              <span class="flex items-center gap-3"><span data-lesson-status class="lesson-status">Not started</span><span class="text-xl leading-none text-muted-foreground group-hover:text-accent">+</span></span>
+              <span class="flex items-center gap-3">
+                <span data-lesson-status class="lesson-status">Not started</span>
+                <span class="text-xl leading-none text-muted-foreground group-hover:text-accent">➔</span>
+              </span>
             </div>
             <h3 class="mt-3 font-display text-2xl font-bold">Form</h3>
-            <!-- Definition visible on hover -->
-            <div class="mt-4 min-h-[4.5rem] border-t border-transparent pt-4 opacity-0 transition-all duration-300 group-hover:border-accent group-hover:opacity-100 group-focus-visible:border-accent group-focus-visible:opacity-100">
+            <div class="mt-4 border-t border-transparent pt-4 transition-all duration-300 group-hover:border-accent">
               <p class="text-xs leading-relaxed text-muted-foreground group-hover:text-foreground font-medium">
-                Learn how to create solid and believable shapes using basic forms.
+                Learn how to create solid and believable shapes using basic 3D primitives.
               </p>
             </div>
           </a>
 
-          <!-- Card 2: Shadow -->
-          <a href="/pages/shadow/" data-lesson-card="shadow" class="group relative overflow-hidden rounded-2xl border border-card-border bg-card p-6 transition-all duration-300 hover:border-accent hover:shadow-xl cursor-crosshair">
+          <!-- Card 2: Perspective -->
+          <a href="/pages/drawing-exercise/perspective/" data-lesson-card="perspective" class="group relative overflow-hidden rounded-2xl border border-card-border bg-card p-6 transition-all duration-300 hover:border-accent hover:shadow-xl cursor-pointer">
             <div class="flex items-center justify-between">
               <p class="font-mono text-xs font-bold text-accent">Lesson 02</p>
-              <span class="flex items-center gap-3"><span data-lesson-status class="lesson-status">Not started</span><span class="text-xl leading-none text-muted-foreground group-hover:text-accent">+</span></span>
+              <span class="flex items-center gap-3">
+                <span data-lesson-status class="lesson-status">Not started</span>
+                <span class="text-xl leading-none text-muted-foreground group-hover:text-accent">➔</span>
+              </span>
             </div>
-            <h3 class="mt-3 font-display text-2xl font-bold">Shadow</h3>
-            <!-- Definition visible on hover -->
-            <div class="mt-4 min-h-[4.5rem] border-t border-transparent pt-4 opacity-0 transition-all duration-300 group-hover:border-accent group-hover:opacity-100 group-focus-visible:border-accent group-focus-visible:opacity-100">
+            <h3 class="mt-3 font-display text-2xl font-bold">Perspective</h3>
+            <div class="mt-4 border-t border-transparent pt-4 transition-all duration-300 group-hover:border-accent">
               <p class="text-xs leading-relaxed text-muted-foreground group-hover:text-foreground font-medium">
-                Understand how light and shadow give your drawings depth and volume.
+                Master 1-Point, 2-Point, and 3-Point perspective box geometry alignment.
               </p>
             </div>
           </a>
 
-          <!-- Card 3: Perspective -->
-          <a href="/pages/perspective/" data-lesson-card="perspective" class="group relative overflow-hidden rounded-2xl border border-card-border bg-card p-6 transition-all duration-300 hover:border-accent hover:shadow-xl cursor-crosshair">
+          <!-- Card 3: Shadow -->
+          <a href="/pages/drawing-exercise/shadow/" data-lesson-card="shadow" class="group relative overflow-hidden rounded-2xl border border-card-border bg-card p-6 transition-all duration-300 hover:border-accent hover:shadow-xl cursor-pointer">
             <div class="flex items-center justify-between">
               <p class="font-mono text-xs font-bold text-accent">Lesson 03</p>
-              <span class="flex items-center gap-3"><span data-lesson-status class="lesson-status">Not started</span><span class="text-xl leading-none text-muted-foreground group-hover:text-accent">+</span></span>
+              <span class="flex items-center gap-3">
+                <span data-lesson-status class="lesson-status">Not started</span>
+                <span class="text-xl leading-none text-muted-foreground group-hover:text-accent">➔</span>
+              </span>
             </div>
-            <h3 class="mt-3 font-display text-2xl font-bold">Perspective</h3>
-            <!-- Definition visible on hover -->
-            <div class="mt-4 min-h-[4.5rem] border-t border-transparent pt-4 opacity-0 transition-all duration-300 group-hover:border-accent group-hover:opacity-100 group-focus-visible:border-accent group-focus-visible:opacity-100">
+            <h3 class="mt-3 font-display text-2xl font-bold">Shadow</h3>
+            <div class="mt-4 border-t border-transparent pt-4 transition-all duration-300 group-hover:border-accent">
               <p class="text-xs leading-relaxed text-muted-foreground group-hover:text-foreground font-medium">
-                Learn how to show objects and characters correctly in space.
+                Project light sources and construct precise cast shadows across 3D surfaces.
               </p>
             </div>
           </a>
 
           <!-- Card 4: Depth -->
-          <a href="/pages/depth/" data-lesson-card="depth" class="group relative overflow-hidden rounded-2xl border border-card-border bg-card p-6 transition-all duration-300 hover:border-accent hover:shadow-xl cursor-crosshair">
+          <a href="/pages/drawing-exercise/depth/" data-lesson-card="depth" class="group relative overflow-hidden rounded-2xl border border-card-border bg-card p-6 transition-all duration-300 hover:border-accent hover:shadow-xl cursor-pointer">
             <div class="flex items-center justify-between">
               <p class="font-mono text-xs font-bold text-accent">Lesson 04</p>
-              <span class="flex items-center gap-3"><span data-lesson-status class="lesson-status">Not started</span><span class="text-xl leading-none text-muted-foreground group-hover:text-accent">+</span></span>
+              <span class="flex items-center gap-3">
+                <span data-lesson-status class="lesson-status">Not started</span>
+                <span class="text-xl leading-none text-muted-foreground group-hover:text-accent">➔</span>
+              </span>
             </div>
             <h3 class="mt-3 font-display text-2xl font-bold">Depth</h3>
-            <!-- Definition visible on hover -->
-            <div class="mt-4 min-h-[4.5rem] border-t border-transparent pt-4 opacity-0 transition-all duration-300 group-hover:border-accent group-hover:opacity-100 group-focus-visible:border-accent group-focus-visible:opacity-100">
+            <div class="mt-4 border-t border-transparent pt-4 transition-all duration-300 group-hover:border-accent">
               <p class="text-xs leading-relaxed text-muted-foreground group-hover:text-foreground font-medium">
-                Discover how to create a sense of distance and space in your drawings.
+                Discover how to create scale, overlap, and spatial depth in your drawings.
               </p>
             </div>
           </a>
@@ -264,26 +271,61 @@
     </footer>
   </div>
   
-  <script src="assets/js/site.js"></script>
+  <script src="/assets/js/site.js"></script>
   <script>
-    (() => {
-      const lessons = ['form', 'shadow', 'perspective', 'depth'];
-      const completed = [];
-      const count = lessons.filter((lesson) => completed.includes(lesson)).length;
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. VIDEO CONTROLS
+      const video = document.getElementById('intro-video');
+      const speedSelect = document.getElementById('video-speed');
+      const fullscreenBtn = document.getElementById('video-fullscreen');
+      const videoContainer = document.getElementById('video-container');
+
+      if (video && speedSelect) {
+        speedSelect.addEventListener('change', (e) => {
+          video.playbackRate = parseFloat(e.target.value);
+        });
+      }
+
+      if (videoContainer && fullscreenBtn) {
+        fullscreenBtn.addEventListener('click', () => {
+          if (!document.fullscreenElement) {
+            videoContainer.requestFullscreen().catch(err => {
+              alert(`Error entering fullscreen: ${err.message}`);
+            });
+          } else {
+            document.exitFullscreen();
+          }
+        });
+      }
+
+      // 2. PROGRESS TRACKING FROM LOCALSTORAGE
+      const lessons = ['form', 'perspective', 'shadow', 'depth'];
+      let completed = [];
+      
+      try {
+        completed = JSON.parse(localStorage.getItem('drawflow_completed_lessons') || '[]');
+      } catch (e) {
+        completed = [];
+      }
+
+      const count = lessons.filter(lesson => completed.includes(lesson)).length;
       const percentage = (count / lessons.length) * 100;
-      const fill = document.querySelector('#home-progress-fill');
-      const label = document.querySelector('#home-progress-label');
-      const track = document.querySelector('.home-progress__track');
+      
+      const fill = document.getElementById('home-progress-fill');
+      const label = document.getElementById('home-progress-label');
+      
       if (fill) fill.style.width = `${percentage}%`;
       if (label) label.textContent = `${count} of ${lessons.length} complete`;
-      track?.setAttribute('aria-valuenow', String(percentage));
-      document.querySelectorAll('[data-lesson-card]').forEach((card) => {
-        const complete = completed.includes(card.dataset.lessonCard);
+
+      document.querySelectorAll('[data-lesson-card]').forEach(card => {
+        const isComplete = completed.includes(card.dataset.lessonCard);
         const status = card.querySelector('[data-lesson-status]');
-        status.textContent = complete ? 'Completed' : 'Not started';
-        status.classList.toggle('is-complete', complete);
+        if (status) {
+          status.textContent = isComplete ? 'Completed' : 'Not started';
+          status.classList.toggle('is-complete', isComplete);
+        }
       });
-    })();
+    });
   </script>
 </body>
 </html>
