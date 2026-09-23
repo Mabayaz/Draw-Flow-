@@ -592,8 +592,9 @@
           }
         },
         3: {
+          3: {
           name: "Level 3: 3D Geometry",
-          // Base solid black structure: Outer left panel + Bottom floor diamond
+          // Solid Black Lines: Outer left wall + Bottom floor notch
           drawBase: (ctx) => {
             ctx.save();
             ctx.strokeStyle = '#1d2926';
@@ -606,7 +607,7 @@
             ctx.moveTo(100, 440);
             ctx.lineTo(310, 560);
             ctx.lineTo(520, 440);
-            ctx.lineTo(310, 320);
+            ctx.lineTo(310, 440);
             ctx.closePath();
 
             // Left outer vertical panel
@@ -618,7 +619,7 @@
             ctx.restore();
           },
 
-          // Dashed grey guide lines: Outer top-right shell + Inner floating cube
+          // Dashed grey guide lines: Outer top-right shell + Inner central floating cube
           drawGuide: (ctx) => {
             ctx.save();
             ctx.strokeStyle = '#6b7280';
@@ -635,23 +636,23 @@
 
             // Center vertical axis line
             ctx.moveTo(310, 80);
-            ctx.lineTo(310, 320);
+            ctx.lineTo(310, 440);
 
             // Inner Central Floating Cube
-            ctx.moveTo(310, 320);
-            ctx.lineTo(310, 200); // Center vertical edge
+            ctx.moveTo(310, 440);
+            ctx.lineTo(310, 320); // Center vertical edge
 
-            ctx.moveTo(205, 260);
-            ctx.lineTo(205, 140); // Left vertical edge
+            ctx.moveTo(205, 380);
+            ctx.lineTo(205, 260); // Left vertical edge
 
-            ctx.moveTo(415, 260);
-            ctx.lineTo(415, 140); // Right vertical edge
+            ctx.moveTo(415, 380);
+            ctx.lineTo(415, 260); // Right vertical edge
 
             // Top diamond cap of central cube
-            ctx.moveTo(310, 200);
-            ctx.lineTo(205, 140);
-            ctx.lineTo(310, 80);
-            ctx.lineTo(415, 140);
+            ctx.moveTo(310, 320);
+            ctx.lineTo(205, 260);
+            ctx.lineTo(310, 200); // Fixed top peak (lowered to y=200)
+            ctx.lineTo(415, 260);
             ctx.closePath();
 
             ctx.stroke();
@@ -675,30 +676,28 @@
 
             // Center vertical axis line
             ctx.moveTo(310, 80);
-            ctx.lineTo(310, 320);
+            ctx.lineTo(310, 440);
 
             // Inner Central Floating Cube
+            ctx.moveTo(310, 440);
+            ctx.lineTo(310, 320);
+
+            ctx.moveTo(205, 380);
+            ctx.lineTo(205, 260);
+
+            ctx.moveTo(415, 380);
+            ctx.lineTo(415, 260);
+
             ctx.moveTo(310, 320);
+            ctx.lineTo(205, 260);
             ctx.lineTo(310, 200);
-
-            ctx.moveTo(205, 260);
-            ctx.lineTo(205, 140);
-
-            ctx.moveTo(415, 260);
-            ctx.lineTo(415, 140);
-
-            ctx.moveTo(310, 200);
-            ctx.lineTo(205, 140);
-            ctx.lineTo(310, 80);
-            ctx.lineTo(415, 140);
+            ctx.lineTo(415, 260);
             ctx.closePath();
 
             ctx.stroke();
             ctx.restore();
           }
         }
-      };
-
       function updateLevelDropdownUI() {
         if (state.unlockedLevels[2]) {
           optLvl2.disabled = false;
