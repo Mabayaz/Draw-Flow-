@@ -60,10 +60,6 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
   let peekUses = 3;
   let peekTimeout = null;
   let peekInterval = null;
-  let traceNodes = [];
-  let peekUses = 3;
-  let peekTimeout = null;
-  let peekInterval = null;
   let traceImage = null;
   let blankImage = null;
 
