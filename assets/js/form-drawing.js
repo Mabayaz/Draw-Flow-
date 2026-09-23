@@ -24,6 +24,10 @@ const progressOutput = document.querySelector('#form-progress');
 const submitButton = document.querySelector('#form-submit');
 const nextButton = document.querySelector('#form-next-level');
 const splitInput = document.querySelector('#form-review-split');
+const penButton = document.querySelector('#form-pen');
+const eraserButton = document.querySelector('#form-eraser');
+const studyButton = document.querySelector('#form-study-mode');
+const replayButton = document.querySelector('#form-replay');
 
 if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideContext && drawingContext && differenceContext) {
   let level = 1;
@@ -33,6 +37,10 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
   let history = [];
   let historyIndex = -1;
   let images = {};
+  let tool = 'pen';
+  let strokes = [];
+  let activeStroke = null;
+  let studyMode = false;
 
   const cache = new Map();
   const loadImage = (source) => {
