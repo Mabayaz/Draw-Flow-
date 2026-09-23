@@ -83,7 +83,7 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     image.src = source;
     const promise = new Promise((resolve, reject) => {
       image.addEventListener('load', () => resolve(image), { once: true });
-      image.addEventListener('error', reject, { once: true });
+      image.addEventListener('error', () => { cache.delete(source); reject(new Error(`Unable to load exercise image: ${source}`)); }, { once: true });
     });
     cache.set(source, promise);
     return promise;
@@ -106,6 +106,44 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     historyIndex = history.length - 1;
   };
   const clearDrawing = () => { drawingContext.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height); snapshot(); };
+  const clearDrawing = () => {
+    drawingContext.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+    drawingContext.beginPath();
+    drawingContext.globalCompositeOperation = 'source-over';
+    snapshot();
+  };
+
+  const resetExerciseState = () => {
+    clearTimeout(peekTimeout);
+    clearInterval(peekInterval);
+    drawing = false;
+    erasing = false;
+    history = [];
+    historyIndex = -1;
+    strokes = [];
+    activeStroke = null;
+    lastPoint = null;
+    tracePixels = null;
+    traceNodes = [];
+    traceCoverage = 0;
+    freehandFailed = false;
+    peekUses = 3;
+    peekActive = false;
+    guideVisible = true;
+    [guideContext, drawingContext, differenceContext].forEach((context) => {
+      context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+      context.beginPath();
+      context.globalCompositeOperation = 'source-over';
+    });
+    [userEvaluationCanvas, targetEvaluationCanvas, evaluationDifferenceCanvas].forEach((canvas) => {
+      if (!canvas) return;
+      canvas.width = 1;
+      canvas.height = 1;
+      canvas.getContext('2d').clearRect(0, 0, 1, 1);
+      canvas.style.clipPath = '';
+    });
+    peekTimer.textContent = '';
+  };
 
   const buildTraceNodes = () => {
     const nodes = [];
@@ -210,22 +248,28 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
   };
 
   const loadLevel = async () => {
+  let loadRequest = 0;
+  const loadLevel = async () => {
+    const request = ++loadRequest;
     level = Number(levelSelect.value);
     images = formAssets(level);
-    const trace = await loadImage(images.trace);
-    const blank = await loadImage(images.blank);
-    const complete = await loadImage(images.complete);
-    setCanvasSize(trace);
-    drawImage(guideContext, trace);
-    tracePixels = guideContext.getImageData(0, 0, guideCanvas.width, guideCanvas.height).data;
-    traceNodes = buildTraceNodes();
-    traceCoverage = 0;
-    clearDrawing();
-    strokes = [];
-    history = [];
-    historyIndex = -1;
-    activeStroke = null;
-    lastPoint = null;
+    resetExerciseState();
+    try {
+      const trace = await loadImage(images.trace);
+      const blank = await loadImage(images.blank);
+      await loadImage(images.complete);
+      if (request !== loadRequest) return;
+      setCanvasSize(trace);
+      drawImage(guideContext, trace);
+      tracePixels = guideContext.getImageData(0, 0, guideCanvas.width, guideCanvas.height).data;
+      traceNodes = buildTraceNodes();
+      clearDrawing();
+    } catch (error) {
+      if (request !== loadRequest) return;
+      messageOutput.textContent = 'This level could not be loaded. Please refresh and try again.';
+      console.error(error);
+      return;
+    }
     if (formProgress.levels[level]) {
       delete formProgress.levels[level].traceStrokes;
       delete formProgress.levels[level].freehandStrokes;
@@ -305,8 +349,17 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
         differenceContext.fillRect(x, y, 4, 4);
       }
     }
-    const score = Math.round(((expected ? matched / expected : 0) * .75 + (drawn ? aligned / drawn : 0) * .25) * 100);
-    scoreOutput.textContent = `${score}%`;
+    const recall = expected ? matched / expected : 0;
+    const precision = drawn ? aligned / drawn : 0;
+    const referenceArea = Math.max(1, (referenceMaxX - referenceMinX) * (referenceMaxY - referenceMinY));
+    const drawingArea = Math.max(1, (drawingMaxX - drawingMinX) * (drawingMaxY - drawingMinY));
+    const intersectionWidth = Math.max(0, Math.min(referenceMaxX, drawingMaxX) - Math.max(referenceMinX, drawingMinX));
+    const intersectionHeight = Math.max(0, Math.min(referenceMaxY, drawingMaxY) - Math.max(referenceMinY, drawingMinY));
+    const unionArea = referenceArea + drawingArea - intersectionWidth * intersectionHeight;
+    const boundsScore = unionArea ? (intersectionWidth * intersectionHeight) / unionArea : 0;
+    const densityScore = Math.min(referenceCount, drawn) / Math.max(referenceCount, drawn, 1);
+    const score = Math.round((recall * .45 + precision * .3 + boundsScore * .15 + densityScore * .1) * 100);
+    if (scoreOutput) scoreOutput.textContent = `${score}%`;
     rankOutput.textContent = `Rank ${score >= 95 ? 'S' : score >= 85 ? 'A' : score >= 70 ? 'B' : score >= 50 ? 'C' : 'D'}`;
     if (stage === 'trace') {
       formProgress.levels[level] = { ...(levelRecord()), trace: score };
