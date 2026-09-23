@@ -221,6 +221,7 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     if (formProgress.levels[level]) {
       delete formProgress.levels[level].traceStrokes;
       delete formProgress.levels[level].freehandStrokes;
+      saveState();
     }
     freehandFailed = false;
     guideVisible = true;
