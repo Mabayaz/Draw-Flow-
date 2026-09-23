@@ -181,8 +181,8 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     peekButton.textContent = `💡 Hint (${peekUses} Left)`;
     guideToggle.hidden = stage !== 'trace';
     guideOpacityControl.hidden = stage !== 'trace';
-    coverageBar.style.width = `${traceCoverage}%`;
-    coverageLabel.textContent = `${Math.round(traceCoverage)}%`;
+    if (coverageBar) coverageBar.style.width = `${traceCoverage}%`;
+    if (coverageLabel) coverageLabel.textContent = `${Math.round(traceCoverage)}%`;
     messageOutput.textContent = stage === 'trace' ? 'Practice the faint perspective guides, then continue when ready.' : stage === 'freehand' ? 'The guide is hidden. Draw the form from memory.' : 'Review the red marks and compare your drawing with the complete reference.';
     readyBanner.classList.toggle('is-visible', stage === 'trace' && traceCoverage >= 80);
     stageBadge.textContent = `Stage ${stage === 'trace' ? '1: Trace' : stage === 'freehand' ? '2: Freehand' : '3: Evaluate'}`;
@@ -214,6 +214,14 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     traceCoverage = 0;
     clearDrawing();
     strokes = [];
+    history = [];
+    historyIndex = -1;
+    activeStroke = null;
+    lastPoint = null;
+    if (formProgress.levels[level]) {
+      delete formProgress.levels[level].traceStrokes;
+      delete formProgress.levels[level].freehandStrokes;
+    }
     freehandFailed = false;
     guideVisible = true;
     peekUses = 3;
