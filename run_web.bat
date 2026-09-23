@@ -1,64 +1,1125 @@
-@echo off
-setlocal
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Form drawing challenge: trace, draw from memory, and evaluate your perspective precision.">
+  <title>Perspective Drawing Challenge | DrawFlow</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"DM Sans"', 'sans-serif'],
+            mono: ['"DM Mono"', 'monospace'],
+            display: ['"Space Grotesk"', 'sans-serif'],
+          },
+          colors: {
+            background: '#fff8f0',
+            foreground: '#3d3935',
+            primary: { DEFAULT: '#173e36', foreground: '#f8f4eb' },
+            accent: { DEFAULT: '#ff6b8b', hover: '#ff5277' },
+            card: '#fffdf8',
+            borderCustom: '#d9d5c9',
+            muted: '#68716c',
+          }
+        }
+      }
+    }
+  </script>
 
-set "SCRIPT_DIR=%~dp0"
-cd /d "%SCRIPT_DIR%"
+  <style>
+    body {
+      background-color: #fff8f0;
+      color: #3d3935;
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
 
-set "PY_EXE="
+    .form-challenge {
+      display: grid;
+      gap: 1.25rem;
+      grid-template-columns: minmax(0, 1fr) 18rem;
+      position: relative;
+      width: min(100%, 72rem);
+      margin: 0 auto;
+    }
 
-if exist "%SCRIPT_DIR%tools\python312\python.exe" (
-  set "PY_EXE=%SCRIPT_DIR%tools\python312\python.exe"
-  goto :run_server
-)
+    .challenge-card {
+      border: 1px solid #d9d5c9;
+      border-radius: 1.25rem;
+      background: #ffffff;
+      padding: 1.25rem;
+      box-shadow: 0 8px 24px rgba(180, 160, 140, 0.15);
+      position: relative;
+    }
 
-for %%P in (py.exe python.exe python3.exe) do (
-  for /f "delims=" %%I in ('where %%P 2^>nul') do (
-    set "PY_EXE=%%I"
-    goto :run_server
-  )
-)
+    .challenge-tools {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.65rem;
+      background: #fffdf8;
+      border: 1px solid #e8e2d9;
+      border-radius: 1rem;
+      padding: 0.75rem 1rem;
+      margin-bottom: 1rem;
+    }
 
-for /f "delims=" %%I in ('dir /b /s "%LocalAppData%\Programs\Python\Python*\python.exe" 2^>nul') do (
-  set "PY_EXE=%%I"
-  goto :run_server
-) 
+    .challenge-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      color: #68716c;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
 
-echo Python is not installed or not available in PATH.
-echo.
-echo Install Python (recommended):
-echo   winget install -e --id Python.Python.3.12
-echo Or use the bundled portable runtime at tools\python312\python.exe
-echo.
-echo After installing, close and reopen VS Code, then run this file again.
-exit /b 1
+    .challenge-field select,
+    .challenge-field input[type=range] {
+      min-height: 2.2rem;
+    }
 
-:run_server
-echo Using Python: %PY_EXE%
-set "SITE_PORT=8000"
+    .challenge-field select {
+      border: 1px solid #d9d5c9;
+      border-radius: 0.5rem;
+      padding: 0.25rem 0.5rem;
+      background: #fff;
+      color: #1d2926;
+      font-weight: 600;
+      outline: none;
+      cursor: pointer;
+    }
 
-echo Closing existing local servers...
-taskkill /FI "WINDOWTITLE eq Draw Flow Server" /T /F >nul 2>&1
-call :kill_port 8000
-call :kill_port 8010
-powershell -NoProfile -ExecutionPolicy Bypass -Command "Get-CimInstance Win32_Process ^| Where-Object { $_.Name -match 'python|py' -and $_.CommandLine -match 'scripts\\run_server.py|run_server.py' } ^| ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }" >nul 2>&1
-timeout /t 1 /nobreak >nul
+    .challenge-field option:disabled {
+      color: #9ca3af;
+      background: #f3f4f6;
+    }
 
-netstat -ano | findstr /r /c:":8000 .*LISTENING" >nul
-if %errorlevel%==0 (
-  echo Port 8000 is still in use by another process.
-  echo Close that process manually, then run this file again.
-  exit /b 1
-)
+    .challenge-field input[type=color] {
+      width: 2.8rem;
+      height: 2.2rem;
+      padding: 0.15rem;
+      border-radius: 0.5rem;
+      border: 1px solid #d9d5c9;
+      cursor: pointer;
+    }
 
-set "SITE_URL=http://127.0.0.1:%SITE_PORT%"
-echo Starting Draw Flow server at %SITE_URL%
-start "Draw Flow Server" cmd /c "set DRAW_FLOW_PORT=%SITE_PORT% && "%PY_EXE%" scripts\run_server.py"
-timeout /t 2 /nobreak >nul
-start "" "%SITE_URL%/?v=3"
-exit /b 0
+    .canvas-wrap {
+      position: relative;
+      overflow: hidden;
+      border: 1.5px solid #d9d5c9;
+      border-radius: 1rem;
+      background: white;
+      aspect-ratio: 1 / 1;
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+      box-shadow: 0 8px 24px rgba(180, 160, 140, 0.12);
+    }
 
-:kill_port
-for /f "tokens=5" %%A in ('netstat -ano ^| findstr /r /c:":%~1 .*LISTENING"') do (
-  taskkill /PID %%A /F >nul 2>&1
-)
-exit /b 0
+    .canvas-wrap canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      touch-action: none;
+    }
+
+    #form-base-canvas { z-index: 1; pointer-events: none; }
+    #form-guide-canvas { z-index: 2; pointer-events: none; }
+    #form-drawing-canvas { z-index: 3; cursor: crosshair; }
+
+    /* Interactive Evaluation View */
+    .evaluation-view[hidden] { display: none !important; }
+    
+    .evaluation-frame {
+      position: relative;
+      overflow: hidden;
+      border: 1.5px solid #d9d5c9;
+      border-radius: 1rem;
+      background: white;
+      aspect-ratio: 1 / 1;
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .evaluation-frame canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    #form-user-evaluation { z-index: 1; }
+    #form-target-evaluation { z-index: 2; clip-path: inset(0 50% 0 0); }
+
+    .challenge-button {
+      border: 1px solid #e8e2d9;
+      border-radius: 999px;
+      background: #ffffff;
+      padding: 0.5rem 0.9rem;
+      color: #3d3935;
+      font-size: 0.75rem;
+      font-weight: 700;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+    }
+
+    .challenge-button:hover:not(:disabled) {
+      background: #f7f1ea;
+      transform: translateY(-1px);
+    }
+
+    .challenge-button.primary {
+      border: none;
+      background: #ff6b8b;
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(255, 107, 139, 0.35);
+    }
+
+    .challenge-button.primary:hover:not(:disabled) {
+      background: #ff5277;
+    }
+
+    .challenge-button.secondary {
+      border-color: #173e36;
+      background: #173e36;
+      color: #f8f4eb;
+    }
+
+    .challenge-button.active-tool {
+      border-color: #ff6b8b;
+      background: #fff0f3;
+      color: #a83d59;
+    }
+
+    .challenge-button:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+      transform: none !important;
+    }
+
+    .score-box {
+      border-radius: 0.85rem;
+      background: #eaf3ed;
+      padding: 1.25rem;
+      border: 1px solid #cce2d3;
+    }
+
+    .score-box strong {
+      display: block;
+      color: #173e36;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.25rem;
+      line-height: 1.1;
+      margin-top: 0.25rem;
+    }
+
+    .game-pill {
+      border: 1.5px solid #ebdcd0;
+      border-radius: 999px;
+      background: #fff;
+      padding: 0.5rem 1rem;
+      box-shadow: 0 2px 8px rgba(180, 160, 140, 0.15);
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .game-hint-banner {
+      border: 1.5px solid #ebdcd0;
+      border-radius: 999px;
+      background: #fff;
+      padding: 0.5rem 1rem;
+      color: #6d635b;
+      font-size: 0.75rem;
+      box-shadow: 0 2px 8px rgba(180, 160, 140, 0.15);
+    }
+
+    @media (max-width: 850px) {
+      .form-challenge {
+        grid-template-columns: 1fr;
+      }
+      .challenge-tools {
+        flex-direction: row;
+      }
+    }
+  </style>
+</head>
+<body data-exercise-topic="form">
+  <div class="texture page-shell min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="sticky top-0 z-40 border-b border-borderCustom/80 bg-background/90 backdrop-blur-md">
+      <div class="mx-auto flex h-[4.5rem] max-w-7xl items-center justify-between px-5 sm:px-8">
+        <a href="#" class="flex items-center gap-3 rounded-md">
+          <span class="grid h-9 w-9 place-items-center rounded-[11px] bg-primary font-display font-bold text-primary-foreground">DF</span>
+          <span class="font-display text-[1.45rem] font-bold">DrawFlow<span class="text-accent">.</span></span>
+        </a>
+        <div class="flex items-center gap-3">
+          <span class="hidden sm:inline text-xs font-mono text-muted uppercase tracking-wider">Perspective & Structure Training</span>
+          <button id="form-reset-exercise" class="rounded-full border border-borderCustom px-4 py-2 text-xs font-semibold hover:bg-white/60 transition">Reset Exercise</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="mx-auto max-w-7xl px-4 py-6 sm:px-8 flex-1 w-full flex flex-col justify-center">
+      <!-- Game Header -->
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 max-w-6xl mx-auto w-full">
+        <div class="flex flex-wrap items-center gap-2">
+          <span id="form-level-badge" class="game-pill text-primary">Level 1: Pyramid</span>
+          <span id="form-stage-badge" class="game-pill text-accent">Stage 1: Trace</span>
+        </div>
+        <div id="form-hint-banner" class="game-hint-banner font-medium">
+          Trace the dashed guides accurately to build perspective muscle memory.
+        </div>
+      </div>
+
+      <!-- Main Challenge Area -->
+      <section class="form-challenge" aria-label="Form drawing challenge">
+        <!-- Interactive Canvas Card -->
+        <div class="challenge-card flex flex-col justify-between">
+          
+          <!-- Tool Bar -->
+          <div id="form-toolbar" class="challenge-tools">
+            <div class="challenge-field">
+              <label for="form-level">Level Selection</label>
+              <select id="form-level" aria-label="Form level">
+                <option value="1">Level 1 (Pyramid)</option>
+                <option value="2" id="opt-lvl-2" disabled>🔒 Level 2 (Cube - Locked)</option>
+                <option value="3" id="opt-lvl-3" disabled>🔒 Level 3 (3D Geometry - Locked)</option>
+              </select>
+            </div>
+
+            <div class="challenge-field">
+              <label for="form-brush-size">Brush Size</label>
+              <input id="form-brush-size" type="range" min="2" max="24" value="6" aria-label="Brush size">
+            </div>
+
+            <div class="challenge-field">
+              <label for="form-brush-color">Color</label>
+              <input id="form-brush-color" type="color" value="#2563eb" aria-label="Brush color">
+            </div>
+
+            <div id="form-guide-opacity-control" class="challenge-field">
+              <label for="form-trace-opacity">Guide Opacity</label>
+              <input id="form-trace-opacity" type="range" min="0.1" max="1" step="0.05" value="0.7" aria-label="Guide opacity">
+            </div>
+
+            <div class="flex flex-wrap items-center gap-1.5 ml-auto">
+              <button id="form-pen" class="challenge-button active-tool" type="button" title="Pen Tool">
+                <span>🖊️</span> Pen
+              </button>
+              <button id="form-eraser" class="challenge-button" type="button" title="Eraser Tool">
+                <span>🧹</span> Eraser
+              </button>
+              <button id="form-undo" class="challenge-button" type="button" title="Undo Stroke">
+                ↩️ Undo
+              </button>
+              <button id="form-redo" class="challenge-button" type="button" title="Redo Stroke">
+                ↪️ Redo
+              </button>
+              <button id="form-clear" class="challenge-button" type="button" title="Clear Canvas">
+                🗑️ Clear
+              </button>
+              <button id="form-guide-toggle" class="challenge-button" type="button" title="Toggle Guide">
+                👁️ Guide On
+              </button>
+            </div>
+          </div>
+
+          <!-- Drawing Canvas Container -->
+          <div id="main-drawing-area" class="w-full">
+            <div class="canvas-wrap">
+              <canvas id="form-base-canvas" width="600" height="600" aria-hidden="true"></canvas>
+              <canvas id="form-guide-canvas" width="600" height="600" aria-hidden="true"></canvas>
+              <canvas id="form-drawing-canvas" width="600" height="600" aria-label="Form drawing canvas"></canvas>
+            </div>
+          </div>
+
+          <!-- Interactive Evaluation View (Hidden initially) -->
+          <div id="form-evaluation" class="evaluation-view w-full" hidden>
+            <div class="flex items-center justify-between mb-2">
+              <p class="font-mono text-xs uppercase tracking-wider text-accent font-semibold">
+                Your Drawing / Complete Geometry Comparison
+              </p>
+              <span class="text-xs font-mono text-muted">Slide to compare split</span>
+            </div>
+            <div class="evaluation-frame">
+              <canvas id="form-user-evaluation" width="600" height="600"></canvas>
+              <canvas id="form-target-evaluation" width="600" height="600"></canvas>
+            </div>
+            <div class="challenge-field mt-3">
+              <label for="form-evaluation-split">Comparison Split</label>
+              <input id="form-evaluation-split" type="range" min="0" max="100" value="50" aria-label="Evaluation comparison split">
+            </div>
+          </div>
+
+          <!-- Action Bar -->
+          <div class="flex flex-wrap items-center justify-between gap-3 mt-4 pt-3 border-t border-borderCustom/60">
+            <div class="flex items-center gap-2">
+              <button id="form-peek" class="challenge-button" type="button">
+                💡 Peek Hint (<span id="peek-count">3</span> Left)
+              </button>
+              <span id="form-peek-timer" class="font-mono text-xs text-accent font-semibold" aria-live="polite"></span>
+            </div>
+
+            <button id="form-submit" class="challenge-button primary py-2 px-6" type="button">
+              Continue to Freehand Mode ➔
+            </button>
+          </div>
+        </div>
+
+        <!-- Right Side Panel -->
+        <aside class="grid content-start gap-4">
+          <!-- Score Box -->
+          <div class="score-box">
+            <span class="font-mono text-[10px] uppercase tracking-[0.15em] text-muted font-bold">Accuracy Rank</span>
+            <strong id="form-rank">--</strong>
+            <p id="form-message" class="mt-2 text-xs leading-relaxed text-muted">
+              Trace over the dashed guide lines accurately. When ready, proceed to Freehand Mode.
+            </p>
+          </div>
+
+          <!-- Round Progress Box -->
+          <div class="challenge-card">
+            <p class="font-mono text-[10px] uppercase tracking-[0.15em] text-accent font-bold">Stage Progress</p>
+            <p id="form-progress" class="mt-1 font-display text-2xl font-bold text-primary">Stage 1: Trace</p>
+            <p class="mt-2 text-xs leading-relaxed text-muted">
+              Stage 1 provides dashed guide lines for muscle memory. Stage 2 requires drawing from memory. Stage 3 performs a clean evaluation.
+            </p>
+            <button id="form-next-level" class="challenge-button secondary mt-4 w-full" type="button" disabled>
+              Next Level ➔
+            </button>
+          </div>
+        </aside>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const CANVAS_SIZE = 600;
+
+      const state = {
+        level: 1,           // 1, 2, 3
+        unlockedLevels: { 1: true, 2: false, 3: false },
+        stage: 'trace',     // 'trace', 'freehand', 'evaluate'
+        tool: 'pen',        // 'pen', 'eraser'
+        brushSize: 6,
+        brushColor: '#2563eb',
+        guideOpacity: 0.7,
+        guideVisible: true,
+        peekCount: 3,
+        peekTimer: null,
+        isDrawing: false,
+        lastX: 0,
+        lastY: 0,
+        history: [],        
+        historyStep: -1,
+        calculatedAccuracy: 0,
+      };
+
+      // --- DOM ELEMENTS ---
+      const levelSelect = document.getElementById('form-level');
+      const optLvl2 = document.getElementById('opt-lvl-2');
+      const optLvl3 = document.getElementById('opt-lvl-3');
+      const resetExerciseBtn = document.getElementById('form-reset-exercise');
+
+      const brushSizeInput = document.getElementById('form-brush-size');
+      const brushColorInput = document.getElementById('form-brush-color');
+      const opacityInput = document.getElementById('form-trace-opacity');
+      const penBtn = document.getElementById('form-pen');
+      const eraserBtn = document.getElementById('form-eraser');
+      const undoBtn = document.getElementById('form-undo');
+      const redoBtn = document.getElementById('form-redo');
+      const clearBtn = document.getElementById('form-clear');
+      const guideToggleBtn = document.getElementById('form-guide-toggle');
+      const peekBtn = document.getElementById('form-peek');
+      const peekCountSpan = document.getElementById('peek-count');
+      const peekTimerSpan = document.getElementById('form-peek-timer');
+      const submitBtn = document.getElementById('form-submit');
+      const nextLevelBtn = document.getElementById('form-next-level');
+
+      const levelBadge = document.getElementById('form-level-badge');
+      const stageBadge = document.getElementById('form-stage-badge');
+      const hintBanner = document.getElementById('form-hint-banner');
+      const rankText = document.getElementById('form-rank');
+      const messageText = document.getElementById('form-message');
+      const progressText = document.getElementById('form-progress');
+
+      const drawingWrap = document.getElementById('main-drawing-area');
+      const evalWrap = document.getElementById('form-evaluation');
+      const evalSplitInput = document.getElementById('form-evaluation-split');
+
+      // Canvases
+      const baseCanvas = document.getElementById('form-base-canvas');
+      const guideCanvas = document.getElementById('form-guide-canvas');
+      const drawingCanvas = document.getElementById('form-drawing-canvas');
+      const userEvalCanvas = document.getElementById('form-user-evaluation');
+      const targetEvalCanvas = document.getElementById('form-target-evaluation');
+
+      const ctxBase = baseCanvas.getContext('2d');
+      const ctxGuide = guideCanvas.getContext('2d');
+      const ctxDrawing = drawingCanvas.getContext('2d', { willReadFrequently: true });
+      const ctxUserEval = userEvalCanvas.getContext('2d');
+      const ctxTargetEval = targetEvalCanvas.getContext('2d');
+
+      // Set canvas resolution
+      [baseCanvas, guideCanvas, drawingCanvas, userEvalCanvas, targetEvalCanvas].forEach(c => {
+        c.width = CANVAS_SIZE;
+        c.height = CANVAS_SIZE;
+      });
+
+      const geometries = {
+        1: {
+          name: "Level 1: Pyramid",
+          drawBase: (ctx) => {
+            ctx.save();
+            ctx.strokeStyle = '#1d2926';
+            ctx.lineWidth = 6;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.beginPath();
+            ctx.moveTo(100, 390);
+            ctx.lineTo(295, 105);
+            ctx.lineTo(295, 490);
+            ctx.lineTo(100, 390);
+            ctx.stroke();
+            ctx.restore();
+          },
+          drawGuide: (ctx) => {
+            ctx.save();
+            ctx.strokeStyle = '#6b7280';
+            ctx.lineWidth = 5;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.setLineDash([12, 10]);
+            ctx.beginPath();
+            ctx.moveTo(295, 105);
+            ctx.lineTo(535, 390);
+            ctx.lineTo(295, 490);
+            ctx.stroke();
+            ctx.restore();
+          },
+          drawComplete: (ctx) => {
+            geometries[1].drawBase(ctx);
+            ctx.save();
+            ctx.strokeStyle = '#1d2926';
+            ctx.lineWidth = 6;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.beginPath();
+            ctx.moveTo(295, 105);
+            ctx.lineTo(535, 390);
+            ctx.lineTo(295, 490);
+            ctx.stroke();
+            ctx.restore();
+          }
+        },
+        2: {
+          name: "Level 2: Cube",
+          drawBase: (ctx) => {
+            ctx.save();
+            ctx.strokeStyle = '#1d2926';
+            ctx.lineWidth = 6;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.beginPath();
+            ctx.moveTo(230, 240);
+            ctx.lineTo(470, 200);
+            ctx.lineTo(475, 435);
+            ctx.lineTo(235, 480);
+            ctx.closePath();
+            ctx.stroke();
+            ctx.restore();
+          },
+          drawGuide: (ctx) => {
+            ctx.save();
+            ctx.strokeStyle = '#6b7280';
+            ctx.lineWidth = 5;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.setLineDash([12, 10]);
+            ctx.beginPath();
+            ctx.moveTo(230, 240);
+            ctx.lineTo(140, 175);
+            ctx.lineTo(335, 145);
+            ctx.lineTo(470, 200);
+
+            ctx.moveTo(140, 175);
+            ctx.lineTo(160, 385);
+            ctx.lineTo(235, 480);
+            ctx.stroke();
+            ctx.restore();
+          },
+          drawComplete: (ctx) => {
+            geometries[2].drawBase(ctx);
+            ctx.save();
+            ctx.strokeStyle = '#1d2926';
+            ctx.lineWidth = 6;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.beginPath();
+            ctx.moveTo(230, 240);
+            ctx.lineTo(140, 175);
+            ctx.lineTo(335, 145);
+            ctx.lineTo(470, 200);
+
+            ctx.moveTo(140, 175);
+            ctx.lineTo(160, 385);
+            ctx.lineTo(235, 480);
+            ctx.stroke();
+            ctx.restore();
+          }
+        },
+        3: {
+          name: "Level 3: 3D Geometry",
+          // Solid Black Lines: Outer left wall + Bottom floor notch
+          drawBase: (ctx) => {
+            ctx.save();
+            ctx.strokeStyle = '#1d2926';
+            ctx.lineWidth = 6;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.beginPath();
+
+            // Bottom floor notch
+            ctx.moveTo(100, 440);
+            ctx.lineTo(310, 560);
+            ctx.lineTo(520, 440);
+            ctx.lineTo(310, 370);
+            ctx.lineTo(100, 440);
+
+            // Left outer vertical panel
+            ctx.moveTo(100, 440);
+            ctx.lineTo(100, 200);
+            ctx.lineTo(310, 80);
+
+            ctx.stroke();
+            ctx.restore();
+          },
+
+          // Dashed Grey Lines: Outer top-right boundary + Inner floating cube
+          drawGuide: (ctx) => {
+            ctx.save();
+            ctx.strokeStyle = '#6b7280';
+            ctx.lineWidth = 5;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.setLineDash([12, 10]);
+            ctx.beginPath();
+
+            // Outer top-right boundary
+            ctx.moveTo(310, 80);
+            ctx.lineTo(520, 200);
+            ctx.lineTo(520, 440);
+
+            // Center vertical axis line
+            ctx.moveTo(310, 80);
+            ctx.lineTo(310, 200);
+
+            // Inner Central Floating Cube
+            ctx.moveTo(310, 370);
+            ctx.lineTo(310, 270);
+
+            ctx.moveTo(205, 310);
+            ctx.lineTo(205, 210);
+
+            ctx.moveTo(415, 310);
+            ctx.lineTo(415, 210);
+
+            // Top diamond cap of central cube
+            ctx.moveTo(310, 270);
+            ctx.lineTo(205, 210);
+            ctx.lineTo(310, 150);
+            ctx.lineTo(415, 210);
+            ctx.closePath();
+
+            // Connection to back wall
+            ctx.moveTo(310, 150);
+            ctx.lineTo(310, 200);
+
+            ctx.stroke();
+            ctx.restore();
+          },
+
+          // Complete geometry for evaluation comparison
+          drawComplete: (ctx) => {
+            geometries[3].drawBase(ctx);
+            ctx.save();
+            ctx.strokeStyle = '#1d2926';
+            ctx.lineWidth = 6;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.beginPath();
+
+            ctx.moveTo(310, 80);
+            ctx.lineTo(520, 200);
+            ctx.lineTo(520, 440);
+
+            ctx.moveTo(310, 80);
+            ctx.lineTo(310, 200);
+
+            ctx.moveTo(310, 370);
+            ctx.lineTo(310, 270);
+
+            ctx.moveTo(205, 310);
+            ctx.lineTo(205, 210);
+
+            ctx.moveTo(415, 310);
+            ctx.lineTo(415, 210);
+
+            ctx.moveTo(310, 270);
+            ctx.lineTo(205, 210);
+            ctx.lineTo(310, 150);
+            ctx.lineTo(415, 210);
+            ctx.closePath();
+
+            ctx.moveTo(310, 150);
+            ctx.lineTo(310, 200);
+
+            ctx.stroke();
+            ctx.restore();
+          }
+        }
+      };
+
+      function updateLevelDropdownUI() {
+        if (state.unlockedLevels[2]) {
+          optLvl2.disabled = false;
+          optLvl2.textContent = "Level 2 (Cube)";
+        } else {
+          optLvl2.disabled = true;
+          optLvl2.textContent = "🔒 Level 2 (Cube - Locked)";
+        }
+
+        if (state.unlockedLevels[3]) {
+          optLvl3.disabled = false;
+          optLvl3.textContent = "Level 3 (3D Geometry)";
+        } else {
+          optLvl3.disabled = true;
+          optLvl3.textContent = "🔒 Level 3 (3D Geometry - Locked)";
+        }
+      }
+
+      function renderLevel() {
+        ctxBase.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+        ctxGuide.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+
+        const currentGeo = geometries[state.level];
+        currentGeo.drawBase(ctxBase);
+
+        if (state.stage === 'trace' && state.guideVisible) {
+          guideCanvas.style.display = 'block';
+          ctxGuide.globalAlpha = state.guideOpacity;
+          currentGeo.drawGuide(ctxGuide);
+        } else {
+          guideCanvas.style.display = 'none';
+        }
+
+        levelBadge.textContent = currentGeo.name;
+        if (state.stage === 'trace') {
+          stageBadge.textContent = 'Stage 1: Trace';
+          hintBanner.textContent = 'Trace the dashed guides accurately to build perspective muscle memory.';
+          submitBtn.textContent = 'Continue to Freehand Mode ➔';
+          progressText.textContent = 'Stage 1: Trace';
+        } else if (state.stage === 'freehand') {
+          stageBadge.textContent = 'Stage 2: Freehand';
+          hintBanner.textContent = 'The guide lines are hidden! Recreate the missing perspective lines from memory.';
+          submitBtn.textContent = 'Evaluate Drawing ➔';
+          progressText.textContent = 'Stage 2: Freehand';
+        } else {
+          stageBadge.textContent = 'Stage 3: Evaluation';
+          hintBanner.textContent = 'Review your drawing against the ideal geometry using the comparison slider.';
+          submitBtn.textContent = 'Retry Current Level 🔄';
+          progressText.textContent = 'Stage 3: Completed';
+        }
+      }
+
+      function resetCanvasState(resetHistory = true) {
+        ctxDrawing.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+        if (resetHistory) {
+          state.history = [];
+          state.historyStep = -1;
+          saveHistoryState();
+        }
+        updateUndoRedoButtons();
+      }
+
+      function switchLevel(newLevel) {
+        if (!state.unlockedLevels[newLevel]) {
+          alert(`Level ${newLevel} is currently locked! Complete the previous level evaluation first to unlock it.`);
+          levelSelect.value = state.level;
+          return;
+        }
+
+        state.level = parseInt(newLevel, 10);
+        state.stage = 'trace';
+        state.guideVisible = true;
+        guideToggleBtn.classList.remove('secondary');
+        guideToggleBtn.textContent = '👁️ Guide On';
+
+        drawingWrap.hidden = false;
+        evalWrap.hidden = true;
+
+        resetCanvasState(true);
+        renderLevel();
+
+        rankText.textContent = '--';
+        messageText.textContent = 'Trace over the guide lines, then advance to Freehand Mode.';
+        nextLevelBtn.disabled = true;
+      }
+
+      function saveHistoryState() {
+        state.historyStep++;
+        if (state.historyStep < state.history.length) {
+          state.history.length = state.historyStep;
+        }
+        state.history.push(ctxDrawing.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE));
+        updateUndoRedoButtons();
+      }
+
+      function undo() {
+        if (state.historyStep > 0) {
+          state.historyStep--;
+          ctxDrawing.putImageData(state.history[state.historyStep], 0, 0);
+          updateUndoRedoButtons();
+        }
+      }
+
+      function redo() {
+        if (state.historyStep < state.history.length - 1) {
+          state.historyStep++;
+          ctxDrawing.putImageData(state.history[state.historyStep], 0, 0);
+          updateUndoRedoButtons();
+        }
+      }
+
+      function updateUndoRedoButtons() {
+        undoBtn.disabled = state.historyStep <= 0;
+        redoBtn.disabled = state.historyStep >= state.history.length - 1;
+      }
+
+      function getCanvasCoordinates(e) {
+        const rect = drawingCanvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        const scaleX = CANVAS_SIZE / rect.width;
+        const scaleY = CANVAS_SIZE / rect.height;
+        return {
+          x: (clientX - rect.left) * scaleX,
+          y: (clientY - rect.top) * scaleY
+        };
+      }
+
+      function startDrawing(e) {
+        if (state.stage === 'evaluate') return;
+        e.preventDefault();
+        state.isDrawing = true;
+        const coords = getCanvasCoordinates(e);
+        state.lastX = coords.x;
+        state.lastY = coords.y;
+      }
+
+      function draw(e) {
+        if (!state.isDrawing || state.stage === 'evaluate') return;
+        e.preventDefault();
+
+        const coords = getCanvasCoordinates(e);
+
+        ctxDrawing.save();
+        ctxDrawing.beginPath();
+        ctxDrawing.moveTo(state.lastX, state.lastY);
+        ctxDrawing.lineTo(coords.x, coords.y);
+        ctxDrawing.lineCap = 'round';
+        ctxDrawing.lineJoin = 'round';
+
+        if (state.tool === 'pen') {
+          ctxDrawing.globalCompositeOperation = 'source-over';
+          ctxDrawing.strokeStyle = state.brushColor;
+          ctxDrawing.lineWidth = state.brushSize;
+        } else {
+          ctxDrawing.globalCompositeOperation = 'destination-out';
+          ctxDrawing.lineWidth = state.brushSize * 2;
+        }
+
+        ctxDrawing.stroke();
+        ctxDrawing.restore();
+
+        state.lastX = coords.x;
+        state.lastY = coords.y;
+      }
+
+      function stopDrawing() {
+        if (state.isDrawing) {
+          state.isDrawing = false;
+          saveHistoryState();
+        }
+      }
+
+      drawingCanvas.addEventListener('mousedown', startDrawing);
+      drawingCanvas.addEventListener('mousemove', draw);
+      window.addEventListener('mouseup', stopDrawing);
+
+      drawingCanvas.addEventListener('touchstart', startDrawing, { passive: false });
+      drawingCanvas.addEventListener('touchmove', draw, { passive: false });
+      window.addEventListener('touchend', stopDrawing);
+
+      function evaluateDrawing() {
+        const targetCanvas = document.createElement('canvas');
+        targetCanvas.width = CANVAS_SIZE;
+        targetCanvas.height = CANVAS_SIZE;
+        const ctxTarget = targetCanvas.getContext('2d');
+        geometries[state.level].drawGuide(ctxTarget);
+
+        const targetImgData = ctxTarget.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE).data;
+        const userImgData = ctxDrawing.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE).data;
+
+        let targetPixelCount = 0;
+        let matchedPixelCount = 0;
+        let userStrokeCount = 0;
+        let strayPixelCount = 0;
+
+        const tolerance = 14;
+
+        for (let y = 0; y < CANVAS_SIZE; y += 2) {
+          for (let x = 0; x < CANVAS_SIZE; x += 2) {
+            const idx = (y * CANVAS_SIZE + x) * 4;
+            const isTarget = targetImgData[idx + 3] > 50;
+            const isUser = userImgData[idx + 3] > 50;
+
+            if (isTarget) {
+              targetPixelCount++;
+              let hit = false;
+              for (let dy = -tolerance; dy <= tolerance; dy += 4) {
+                for (let dx = -tolerance; dx <= tolerance; dx += 4) {
+                  const nx = x + dx;
+                  const ny = y + dy;
+                  if (nx >= 0 && nx < CANVAS_SIZE && ny >= 0 && ny < CANVAS_SIZE) {
+                    const nIdx = (ny * CANVAS_SIZE + nx) * 4;
+                    if (userImgData[nIdx + 3] > 50) {
+                      hit = true;
+                      break;
+                    }
+                  }
+                }
+                if (hit) break;
+              }
+              if (hit) matchedPixelCount++;
+            }
+
+            if (isUser) {
+              userStrokeCount++;
+              if (!isTarget) strayPixelCount++;
+            }
+          }
+        }
+
+        if (targetPixelCount === 0) return 0;
+
+        const recall = matchedPixelCount / targetPixelCount;
+        const precision = userStrokeCount > 0 ? Math.max(0, 1 - (strayPixelCount / userStrokeCount) * 0.4) : 0;
+        
+        let finalScore = Math.round((recall * 0.7 + precision * 0.3) * 100);
+        if (userStrokeCount < 100) finalScore = 0;
+        return Math.min(100, Math.max(0, finalScore));
+      }
+
+      function handleStageTransition() {
+        if (state.stage === 'trace') {
+          state.stage = 'freehand';
+          state.guideVisible = false;
+          resetCanvasState(true);
+          renderLevel();
+        } else if (state.stage === 'freehand') {
+          state.stage = 'evaluate';
+          state.calculatedAccuracy = evaluateDrawing();
+          renderEvaluationView();
+        } else {
+          state.stage = 'trace';
+          state.guideVisible = true;
+          drawingWrap.hidden = false;
+          evalWrap.hidden = true;
+          resetCanvasState(true);
+          renderLevel();
+        }
+      }
+
+      function renderEvaluationView() {
+        drawingWrap.hidden = true;
+        evalWrap.hidden = false;
+
+        ctxUserEval.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+        geometries[state.level].drawBase(ctxUserEval);
+        ctxUserEval.drawImage(drawingCanvas, 0, 0);
+
+        ctxTargetEval.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+        geometries[state.level].drawComplete(ctxTargetEval);
+
+        updateEvaluationSplit(50);
+        evalSplitInput.value = 50;
+
+        const score = state.calculatedAccuracy;
+        let rank = 'S';
+        let msg = '';
+
+        // Unlock next level sequentially
+        if (score >= 40) {
+          if (state.level === 1 && !state.unlockedLevels[2]) {
+            state.unlockedLevels[2] = true;
+            updateLevelDropdownUI();
+          } else if (state.level === 2 && !state.unlockedLevels[3]) {
+            state.unlockedLevels[3] = true;
+            updateLevelDropdownUI();
+          }
+        }
+
+        if (score >= 90) {
+          rank = 'S Class ⭐';
+          msg = 'Masterful spatial precision! Your perspective geometry is spot on.';
+        } else if (score >= 70) {
+          rank = 'A Class 🎯';
+          msg = 'Great job! Strong structural alignment and proportion control.';
+        } else if (score >= 40) {
+          rank = 'B Class 👍';
+          msg = 'Solid effort! Next level is now unlocked.';
+        } else {
+          rank = 'C Class ✏️';
+          msg = 'Keep practicing! Draw complete strokes across all guide points.';
+        }
+
+        rankText.textContent = rank;
+        messageText.textContent = msg;
+
+        if (state.level < 3 && state.unlockedLevels[state.level + 1]) {
+          nextLevelBtn.disabled = false;
+          nextLevelBtn.textContent = `Proceed to Level ${state.level + 1} ➔`;
+        } else if (state.level === 3) {
+          nextLevelBtn.disabled = false;
+          nextLevelBtn.textContent = `Restart Challenge 🔄`;
+        } else {
+          nextLevelBtn.disabled = true;
+          nextLevelBtn.textContent = `Next Level (Locked)`;
+        }
+      }
+
+      function updateEvaluationSplit(value) {
+        targetEvalCanvas.style.clipPath = `inset(0 0 0 ${value}%)`;
+      }
+
+      // --- EVENT BINDINGS ---
+      levelSelect.addEventListener('change', (e) => switchLevel(e.target.value));
+
+      brushSizeInput.addEventListener('input', (e) => state.brushSize = parseInt(e.target.value, 10));
+      brushColorInput.addEventListener('input', (e) => state.brushColor = e.target.value);
+      
+      opacityInput.addEventListener('input', (e) => {
+        state.guideOpacity = parseFloat(e.target.value);
+        renderLevel();
+      });
+
+      penBtn.addEventListener('click', () => {
+        state.tool = 'pen';
+        penBtn.classList.add('active-tool');
+        eraserBtn.classList.remove('active-tool');
+      });
+
+      eraserBtn.addEventListener('click', () => {
+        state.tool = 'eraser';
+        eraserBtn.classList.add('active-tool');
+        penBtn.classList.remove('active-tool');
+      });
+
+      undoBtn.addEventListener('click', undo);
+      redoBtn.addEventListener('click', redo);
+      clearBtn.addEventListener('click', () => resetCanvasState(true));
+
+      guideToggleBtn.addEventListener('click', () => {
+        state.guideVisible = !state.guideVisible;
+        if (state.guideVisible) {
+          guideToggleBtn.classList.remove('secondary');
+          guideToggleBtn.textContent = '👁️ Guide On';
+        } else {
+          guideToggleBtn.classList.add('secondary');
+          guideToggleBtn.textContent = '🙈 Guide Off';
+        }
+        renderLevel();
+      });
+
+      peekBtn.addEventListener('click', () => {
+        if (state.peekCount <= 0 || state.peekTimer !== null) return;
+
+        state.peekCount--;
+        peekCountSpan.textContent = state.peekCount;
+
+        guideCanvas.style.display = 'block';
+        ctxGuide.globalAlpha = 0.8;
+        ctxGuide.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+        geometries[state.level].drawGuide(ctxGuide);
+
+        let secondsLeft = 3;
+        peekTimerSpan.textContent = `(${secondsLeft}s)`;
+
+        state.peekTimer = setInterval(() => {
+          secondsLeft--;
+          if (secondsLeft > 0) {
+            peekTimerSpan.textContent = `(${secondsLeft}s)`;
+          } else {
+            clearInterval(state.peekTimer);
+            state.peekTimer = null;
+            peekTimerSpan.textContent = '';
+            renderLevel();
+          }
+        }, 1000);
+      });
+
+      submitBtn.addEventListener('click', handleStageTransition);
+
+      nextLevelBtn.addEventListener('click', () => {
+        if (state.level < 3) {
+          const nextLvl = state.level + 1;
+          levelSelect.value = nextLvl;
+          switchLevel(nextLvl);
+        } else {
+          state.unlockedLevels = { 1: true, 2: false, 3: false };
+          updateLevelDropdownUI();
+          levelSelect.value = 1;
+          switchLevel(1);
+        }
+      });
+
+      resetExerciseBtn.addEventListener('click', () => {
+        state.unlockedLevels = { 1: true, 2: false, 3: false };
+        updateLevelDropdownUI();
+        levelSelect.value = 1;
+        switchLevel(1);
+      });
+
+      evalSplitInput.addEventListener('input', (e) => updateEvaluationSplit(e.target.value));
+
+      // --- INITIAL STARTUP ---
+      updateLevelDropdownUI();
+      switchLevel(1);
+    });
+  </script>
+</body>
+</html>
