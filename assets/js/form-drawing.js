@@ -223,6 +223,7 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     for (let y = 0; y < drawingCanvas.height; y += 2) for (let x = 0; x < drawingCanvas.width; x += 2) { const index = (y * drawingCanvas.width + x) * 4; const expectedInk = ink(referencePixels, index); const drawnInk = ink(drawingPixels, index); if (expectedInk) { expected += 1; if (near(drawingPixels, x, y)) matched += 1; } if (drawnInk) { drawn += 1; if (near(referencePixels, x, y)) aligned += 1; } if ((expectedInk && !near(drawingPixels, x, y) && x / drawingCanvas.width <= split) || (drawnInk && !near(referencePixels, x, y) && x / drawingCanvas.width > split)) differenceContext.fillRect(x, y, 4, 4); }
     const score = Math.round(((expected ? matched / expected : 0) * .65 + (drawn ? aligned / drawn : 0) * .35) * 100);
     scoreOutput.textContent = `${score}%`;
+    rankOutput.textContent = `Rank ${score >= 95 ? 'S' : score >= 85 ? 'A' : score >= 70 ? 'B' : score >= 50 ? 'C' : 'D'}`;
     if (stage === 'trace' && score >= 75) { formProgress.levels[level] = { ...(levelRecord()), trace: score }; stage = 'freehand'; messageOutput.textContent = 'Trace passed. The guide is hidden; redraw the form from memory.'; }
     else if (stage === 'freehand' && score >= 70) { formProgress.levels[level] = { ...(levelRecord()), freehand: score }; formProgress.unlocked = Math.max(formProgress.unlocked, Math.min(3, level + 1)); stage = 'compare'; messageOutput.textContent = 'Level passed. Review your result, then continue to the next level.'; }
     else if (stage === 'trace') messageOutput.textContent = 'Proceed to freehand when you have completed the guided trace.';
@@ -273,6 +274,7 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
   stageButtons.forEach((button) => button.addEventListener('click', () => { if (!button.disabled) { stage = button.dataset.formStage; if (stage === 'freehand') loadImage(images.blank).then((image) => drawImage(guideContext, image)); if (stage === 'compare') loadImage(images.complete).then((image) => drawImage(guideContext, image)); renderStage(); } }));
   levelSelect.addEventListener('change', loadLevel);
   opacityInput.addEventListener('input', renderStage);
+  guideToggle.addEventListener('click', () => { guideVisible = !guideVisible; guideToggle.textContent = guideVisible ? 'Guide On' : 'Guide Off'; guideToggle.classList.toggle('primary', guideVisible); renderStage(); });
   splitInput.addEventListener('input', () => { if (stage === 'compare') scoreCanvas(); });
   evaluationSplitInput.addEventListener('input', () => { if (stage === 'compare') loadImage(images.complete).then(renderEvaluation); });
   submitButton.addEventListener('click', async () => {
@@ -294,9 +296,9 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
   eraserButton.addEventListener('click', () => { tool = 'eraser'; eraserButton.classList.add('primary'); penButton.classList.remove('primary'); });
   studyButton.addEventListener('click', () => { studyMode = !studyMode; studyButton.classList.toggle('primary', studyMode); if (studyMode) drawStudyGuides(); else scoreCanvas(); });
   replayButton.addEventListener('click', replayStrokes);
-  document.querySelector('#form-clear').addEventListener('click', clearDrawing);
-  document.querySelector('#form-undo').addEventListener('click', () => { if (historyIndex > 0) { historyIndex -= 1; drawingContext.putImageData(history[historyIndex], 0, 0); } });
-  document.querySelector('#form-redo').addEventListener('click', () => { if (historyIndex < history.length - 1) { historyIndex += 1; drawingContext.putImageData(history[historyIndex], 0, 0); } });
+  document.querySelector('#form-clear').addEventListener('click', () => { clearDrawing(); if (stage === 'trace') updateTraceCoverage(); });
+  document.querySelector('#form-undo').addEventListener('click', () => { if (historyIndex > 0) { historyIndex -= 1; drawingContext.putImageData(history[historyIndex], 0, 0); if (stage === 'trace') updateTraceCoverage(); } });
+  document.querySelector('#form-redo').addEventListener('click', () => { if (historyIndex < history.length - 1) { historyIndex += 1; drawingContext.putImageData(history[historyIndex], 0, 0); if (stage === 'trace') updateTraceCoverage(); } });
   document.querySelector('#form-next-level').addEventListener('click', () => { if (level < 3 && formProgress.unlocked > level) { levelSelect.value = String(level + 1); loadLevel(); } });
   loadLevel();
 }
