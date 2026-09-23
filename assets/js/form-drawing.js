@@ -204,7 +204,6 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
 
   const updateProgress = () => {
     progressOutput.textContent = `Round ${level}`;
-    [...levelSelect.options].forEach((option) => { option.disabled = Number(option.value) > formProgress.unlocked; });
   };
 
   const renderStage = () => {
