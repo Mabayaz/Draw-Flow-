@@ -269,9 +269,26 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     const near = (pixels, x, y) => { for (let dy = -radius; dy <= radius; dy += 1) for (let dx = -radius; dx <= radius; dx += 1) { const nx = x + dx; const ny = y + dy; if (nx >= 0 && ny >= 0 && nx < drawingCanvas.width && ny < drawingCanvas.height && ink(pixels, (ny * drawingCanvas.width + nx) * 4)) return true; } return false; };
     let expected = 0; let matched = 0; let drawn = 0; let aligned = 0;
     differenceContext.clearRect(0, 0, differenceCanvas.width, differenceCanvas.height);
-    differenceContext.fillStyle = 'rgba(220, 60, 45, .78)';
     const split = Number(splitInput.value) / 100;
-    for (let y = 0; y < drawingCanvas.height; y += 2) for (let x = 0; x < drawingCanvas.width; x += 2) { const index = (y * drawingCanvas.width + x) * 4; const expectedInk = ink(referencePixels, index); const drawnInk = ink(drawingPixels, index); if (expectedInk) { expected += 1; if (near(drawingPixels, x, y)) matched += 1; } if (drawnInk) { drawn += 1; if (near(referencePixels, x, y)) aligned += 1; } if ((expectedInk && !near(drawingPixels, x, y) && x / drawingCanvas.width <= split) || (drawnInk && !near(referencePixels, x, y) && x / drawingCanvas.width > split)) differenceContext.fillRect(x, y, 4, 4); }
+    for (let y = 0; y < drawingCanvas.height; y += 2) for (let x = 0; x < drawingCanvas.width; x += 2) {
+      const index = (y * drawingCanvas.width + x) * 4;
+      const expectedInk = ink(referencePixels, index);
+      const drawnInk = ink(drawingPixels, index);
+      const targetAligned = expectedInk && near(drawingPixels, x, y);
+      const drawingAligned = drawnInk && near(referencePixels, x, y);
+      const missing = expectedInk && !targetAligned;
+      const extra = drawnInk && !drawingAligned;
+      if (expectedInk) { expected += 1; if (targetAligned) matched += 1; }
+      if (drawnInk) { drawn += 1; if (drawingAligned) aligned += 1; }
+      if (targetAligned || drawingAligned) {
+        differenceContext.fillStyle = 'rgba(47, 137, 108, .8)';
+        differenceContext.fillRect(x, y, 4, 4);
+      }
+      if ((missing && x / drawingCanvas.width <= split) || (extra && x / drawingCanvas.width > split)) {
+        differenceContext.fillStyle = 'rgba(220, 60, 90, .85)';
+        differenceContext.fillRect(x, y, 4, 4);
+      }
+    }
     const score = Math.round(((expected ? matched / expected : 0) * .65 + (drawn ? aligned / drawn : 0) * .35) * 100);
     scoreOutput.textContent = `${score}%`;
     rankOutput.textContent = `Rank ${score >= 95 ? 'S' : score >= 85 ? 'A' : score >= 70 ? 'B' : score >= 50 ? 'C' : 'D'}`;
