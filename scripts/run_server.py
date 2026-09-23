@@ -30,7 +30,23 @@ class NoCacheRequestHandler(SimpleHTTPRequestHandler):
 
         # Map extensionless requests to existing .html files.
         if clean_path not in ("", "/") and not Path(clean_path).suffix:
-            candidate = (Path(self.directory or os.getcwd()) / clean_path.lstrip("/")).with_suffix(".html")
+            project_path = Path(self.directory or os.getcwd()) / clean_path.lstrip("/")
+            if project_path.is_dir() and (project_path / "index.html").is_file():
+                if not clean_path.endswith("/"):
+                    target = f"{clean_path}/"
+                    if parsed.query:
+                        target = f"{target}?{parsed.query}"
+                    self.send_response(301)
+                    self.send_header("Location", target)
+                    self.end_headers()
+                    return
+                self.path = f"{clean_path}index.html"
+                if parsed.query:
+                    self.path = f"{self.path}?{parsed.query}"
+                super().do_GET()
+                return
+
+            candidate = project_path.with_suffix(".html")
             if candidate.exists() and candidate.is_file():
                 query_parts = parse_qs(parsed.query, keep_blank_values=True)
                 query_parts["_ext"] = ["html"]
