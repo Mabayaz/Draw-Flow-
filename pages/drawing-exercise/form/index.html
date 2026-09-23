@@ -130,15 +130,6 @@
       box-shadow: 0 8px 24px rgba(180, 160, 140, 0.12);
     }
 
-    .canvas-wrap img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      pointer-events: none;
-    }
-
     .canvas-wrap canvas {
       position: absolute;
       inset: 0;
@@ -147,8 +138,6 @@
       touch-action: none;
     }
 
-    #form-base-img { z-index: 1; }
-    #form-guide-img { z-index: 2; }
     #form-base-canvas { z-index: 1; pointer-events: none; }
     #form-guide-canvas { z-index: 2; pointer-events: none; }
     #form-drawing-canvas { z-index: 3; cursor: crosshair; }
@@ -168,14 +157,12 @@
       margin: 0 auto;
     }
 
-    .evaluation-frame canvas,
-    .evaluation-frame img {
+    .evaluation-frame canvas {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
       pointer-events: none;
-      object-fit: contain;
     }
 
     #form-user-evaluation { z-index: 1; }
@@ -362,8 +349,6 @@
           <!-- Drawing Canvas Container -->
           <div id="main-drawing-area" class="w-full">
             <div class="canvas-wrap">
-              <img id="form-base-img" src="" alt="Base Image" style="display:none;" />
-              <img id="form-guide-img" src="" alt="Trace Guide Image" style="display:none;" />
               <canvas id="form-base-canvas" width="600" height="600" aria-hidden="true"></canvas>
               <canvas id="form-guide-canvas" width="600" height="600" aria-hidden="true"></canvas>
               <canvas id="form-drawing-canvas" width="600" height="600" aria-label="Form drawing canvas"></canvas>
@@ -380,7 +365,6 @@
             </div>
             <div class="evaluation-frame">
               <canvas id="form-user-evaluation" width="600" height="600"></canvas>
-              <img id="form-target-img" src="" alt="Complete Geometry Target" />
               <canvas id="form-target-evaluation" width="600" height="600"></canvas>
             </div>
             <div class="challenge-field mt-3">
@@ -486,16 +470,12 @@
       const evalWrap = document.getElementById('form-evaluation');
       const evalSplitInput = document.getElementById('form-evaluation-split');
 
-      // Canvases & Image Elements
+      // Canvases
       const baseCanvas = document.getElementById('form-base-canvas');
       const guideCanvas = document.getElementById('form-guide-canvas');
       const drawingCanvas = document.getElementById('form-drawing-canvas');
       const userEvalCanvas = document.getElementById('form-user-evaluation');
       const targetEvalCanvas = document.getElementById('form-target-evaluation');
-
-      const baseImg = document.getElementById('form-base-img');
-      const guideImg = document.getElementById('form-guide-img');
-      const targetImg = document.getElementById('form-target-img');
 
       const ctxBase = baseCanvas.getContext('2d');
       const ctxGuide = guideCanvas.getContext('2d');
@@ -512,7 +492,6 @@
       const geometries = {
         1: {
           name: "Level 1: Pyramid",
-          isImageBased: false,
           drawBase: (ctx) => {
             ctx.save();
             ctx.strokeStyle = '#1d2926';
@@ -558,7 +537,6 @@
         },
         2: {
           name: "Level 2: Cube",
-          isImageBased: false,
           drawBase: (ctx) => {
             ctx.save();
             ctx.strokeStyle = '#1d2926';
@@ -615,11 +593,109 @@
         },
         3: {
           name: "Level 3: 3D Geometry",
-          isImageBased: true,
-          // Directly references your local file assets
-          basePath: "LVL. 3/Freehand.png",
-          guidePath: "LVL. 3/Trace.png",
-          completePath: "LVL. 3/Complete.JPG"
+          
+          // Solid Black Base Structure (Untitled47_20260921230109_2.png)
+          drawBase: (ctx) => {
+            ctx.save();
+            ctx.strokeStyle = '#1d2926';
+            ctx.lineWidth = 6;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.beginPath();
+
+            // Bottom L-Shaped Floor Notch
+            ctx.moveTo(100, 440);
+            ctx.lineTo(310, 560);
+            ctx.lineTo(520, 440);
+            ctx.lineTo(415, 380);
+            ctx.lineTo(310, 440);
+            ctx.lineTo(205, 380);
+            ctx.lineTo(100, 440);
+
+            // Left Outer Wall Panel
+            ctx.moveTo(100, 440);
+            ctx.lineTo(100, 200);
+            ctx.lineTo(310, 80);
+
+            ctx.stroke();
+            ctx.restore();
+          },
+
+          // Dashed Grey Target Lines (Untitled47_20260921230057_10.png)
+          drawGuide: (ctx) => {
+            ctx.save();
+            ctx.strokeStyle = '#6b7280';
+            ctx.lineWidth = 5;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.setLineDash([12, 10]);
+            ctx.beginPath();
+
+            // 1. Top-Right Outer Wall Shell Boundary
+            ctx.moveTo(310, 80);
+            ctx.lineTo(520, 200);
+            ctx.lineTo(520, 440);
+
+            // 2. Center Vertical Wall Seam
+            ctx.moveTo(310, 80);
+            ctx.lineTo(310, 440);
+
+            // 3. Central Inner Cube Structure
+            ctx.moveTo(310, 440);
+            ctx.lineTo(310, 320);
+
+            ctx.moveTo(205, 380);
+            ctx.lineTo(205, 260);
+
+            ctx.moveTo(415, 380);
+            ctx.lineTo(415, 260);
+
+            // Top diamond roof cap of central cube
+            ctx.moveTo(310, 320);
+            ctx.lineTo(205, 260);
+            ctx.lineTo(310, 200);
+            ctx.lineTo(415, 260);
+            ctx.closePath();
+
+            ctx.stroke();
+            ctx.restore();
+          },
+
+          // Complete Geometry View (IMG_2862_2.JPG)
+          drawComplete: (ctx) => {
+            geometries[3].drawBase(ctx);
+            ctx.save();
+            ctx.strokeStyle = '#1d2926';
+            ctx.lineWidth = 6;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.beginPath();
+
+            ctx.moveTo(310, 80);
+            ctx.lineTo(520, 200);
+            ctx.lineTo(520, 440);
+
+            ctx.moveTo(310, 80);
+            ctx.lineTo(310, 440);
+
+            ctx.moveTo(310, 440);
+            ctx.lineTo(310, 320);
+
+            ctx.moveTo(205, 380);
+            ctx.lineTo(205, 260);
+
+            ctx.moveTo(415, 380);
+            ctx.lineTo(415, 260);
+
+            ctx.moveTo(310, 320);
+            ctx.lineTo(205, 260);
+            ctx.lineTo(310, 200);
+            ctx.lineTo(415, 260);
+            ctx.closePath();
+
+            ctx.stroke();
+            ctx.restore();
+          }
         }
       };
 
@@ -646,38 +722,14 @@
         ctxGuide.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
         const currentGeo = geometries[state.level];
+        currentGeo.drawBase(ctxBase);
 
-        if (currentGeo.isImageBased) {
-          // Use Image Assets
-          baseCanvas.style.display = 'none';
-          guideCanvas.style.display = 'none';
-
-          baseImg.src = currentGeo.basePath;
-          baseImg.style.display = 'block';
-
-          guideImg.src = currentGeo.guidePath;
-          guideImg.style.opacity = state.guideOpacity;
-
-          if (state.stage === 'trace' && state.guideVisible) {
-            guideImg.style.display = 'block';
-          } else {
-            guideImg.style.display = 'none';
-          }
+        if (state.stage === 'trace' && state.guideVisible) {
+          guideCanvas.style.display = 'block';
+          ctxGuide.globalAlpha = state.guideOpacity;
+          currentGeo.drawGuide(ctxGuide);
         } else {
-          // Use Vector Canvas Lines
-          baseImg.style.display = 'none';
-          guideImg.style.display = 'none';
-          baseCanvas.style.display = 'block';
-
-          currentGeo.drawBase(ctxBase);
-
-          if (state.stage === 'trace' && state.guideVisible) {
-            guideCanvas.style.display = 'block';
-            ctxGuide.globalAlpha = state.guideOpacity;
-            currentGeo.drawGuide(ctxGuide);
-          } else {
-            guideCanvas.style.display = 'none';
-          }
+          guideCanvas.style.display = 'none';
         }
 
         levelBadge.textContent = currentGeo.name;
@@ -833,12 +885,7 @@
         targetCanvas.width = CANVAS_SIZE;
         targetCanvas.height = CANVAS_SIZE;
         const ctxTarget = targetCanvas.getContext('2d');
-
-        if (geometries[state.level].isImageBased) {
-          ctxTarget.drawImage(guideImg, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
-        } else {
-          geometries[state.level].drawGuide(ctxTarget);
-        }
+        geometries[state.level].drawGuide(ctxTarget);
 
         const targetImgData = ctxTarget.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE).data;
         const userImgData = ctxDrawing.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE).data;
@@ -917,24 +964,12 @@
         drawingWrap.hidden = true;
         evalWrap.hidden = false;
 
-        const currentGeo = geometries[state.level];
-
         ctxUserEval.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-        
-        if (!currentGeo.isImageBased) {
-          currentGeo.drawBase(ctxUserEval);
-          targetImg.style.display = 'none';
-          targetEvalCanvas.style.display = 'block';
-          ctxTargetEval.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-          currentGeo.drawComplete(ctxTargetEval);
-        } else {
-          ctxUserEval.drawImage(baseImg, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
-          targetImg.src = currentGeo.completePath;
-          targetImg.style.display = 'block';
-          targetEvalCanvas.style.display = 'none';
-        }
-
+        geometries[state.level].drawBase(ctxUserEval);
         ctxUserEval.drawImage(drawingCanvas, 0, 0);
+
+        ctxTargetEval.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+        geometries[state.level].drawComplete(ctxTargetEval);
 
         updateEvaluationSplit(50);
         evalSplitInput.value = 50;
@@ -983,11 +1018,7 @@
       }
 
       function updateEvaluationSplit(value) {
-        if (geometries[state.level].isImageBased) {
-          targetImg.style.clipPath = `inset(0 0 0 ${value}%)`;
-        } else {
-          targetEvalCanvas.style.clipPath = `inset(0 0 0 ${value}%)`;
-        }
+        targetEvalCanvas.style.clipPath = `inset(0 0 0 ${value}%)`;
       }
 
       // --- EVENT BINDINGS ---
@@ -998,11 +1029,7 @@
       
       opacityInput.addEventListener('input', (e) => {
         state.guideOpacity = parseFloat(e.target.value);
-        if (geometries[state.level].isImageBased) {
-          guideImg.style.opacity = state.guideOpacity;
-        } else {
-          renderLevel();
-        }
+        renderLevel();
       });
 
       penBtn.addEventListener('click', () => {
@@ -1039,15 +1066,10 @@
         state.peekCount--;
         peekCountSpan.textContent = state.peekCount;
 
-        if (geometries[state.level].isImageBased) {
-          guideImg.style.display = 'block';
-          guideImg.style.opacity = '0.8';
-        } else {
-          guideCanvas.style.display = 'block';
-          ctxGuide.globalAlpha = 0.8;
-          ctxGuide.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-          geometries[state.level].drawGuide(ctxGuide);
-        }
+        guideCanvas.style.display = 'block';
+        ctxGuide.globalAlpha = 0.8;
+        ctxGuide.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+        geometries[state.level].drawGuide(ctxGuide);
 
         let secondsLeft = 3;
         peekTimerSpan.textContent = `(${secondsLeft}s)`;
