@@ -90,7 +90,7 @@
           <div id="form-toolbar" class="challenge-tools">
             <label class="challenge-field">Level<select id="form-level" aria-label="Form level"><option value="1">Level 1</option><option value="2" disabled>Level 2</option><option value="3" disabled>Level 3</option></select></label>
             <label class="challenge-field">Brush size<input id="form-brush-size" type="range" min="2" max="24" value="6" aria-label="Brush size"></label>
-            <label class="challenge-field">Color<input id="form-brush-color" type="color" value="#173e36" aria-label="Brush color"></label>
+            <label class="challenge-field">Color<input id="form-brush-color" type="color" value="#2563eb" aria-label="Brush color"></label>
             <label id="form-guide-opacity-control" class="challenge-field">Guide opacity<input id="form-trace-opacity" type="range" min=".1" max="1" step=".05" value=".5" aria-label="Guide opacity"></label>
             <button id="form-guide-toggle" class="challenge-button primary" type="button">Guide On</button><button id="form-pen" class="challenge-button primary" type="button">Pen</button><button id="form-eraser" class="challenge-button" type="button">Eraser</button><button id="form-undo" class="challenge-button" type="button">Undo</button><button id="form-redo" class="challenge-button" type="button">Redo</button><button id="form-clear" class="challenge-button" type="button">Clear</button><button id="form-submit" class="challenge-button primary" type="button" disabled>Unlock Freehand Mode (80%)</button>
           </div>
@@ -102,7 +102,7 @@
         </div>
         <aside class="grid content-start gap-4">
           <div class="score-box"><span class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-muted-foreground">Accuracy</span><strong id="form-score">--%</strong><span id="form-rank" class="font-mono-draw text-xs font-bold text-accent">Rank --</span><p id="form-message" class="mt-2 text-xs leading-5 text-muted-foreground">Trace at least 80% of the dashed guides to unlock freehand.</p></div>
-          <div class="challenge-card"><p class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Level progress</p><p id="form-progress" class="mt-2 font-display text-2xl">0 / 3 levels</p><p class="mt-2 text-xs leading-5 text-muted-foreground">Trace passes at 75%. Freehand passes at 70% and unlocks the next level.</p><button id="form-next-level" class="challenge-button primary mt-4" type="button" disabled>Next Level</button></div>
+          <div class="challenge-card"><p class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Round progress</p><p id="form-progress" class="mt-2 font-display text-2xl">Round 1</p><p class="mt-2 text-xs leading-5 text-muted-foreground">Practice rounds include faint guides. Freehand rounds hide them. Keep playing regardless of your score.</p><button id="form-next-level" class="challenge-button primary mt-4" type="button" disabled>&rarr; Next Round</button></div>
         </aside>
       </section>
     </main>
