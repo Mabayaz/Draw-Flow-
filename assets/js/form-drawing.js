@@ -24,6 +24,8 @@ const progressOutput = document.querySelector('#form-progress');
 const submitButton = document.querySelector('#form-submit');
 const nextButton = document.querySelector('#form-next-level');
 const splitInput = document.querySelector('#form-review-split');
+const guideToggle = document.querySelector('#form-guide-toggle');
+const rankOutput = document.querySelector('#form-rank');
 const evaluationView = document.querySelector('#form-evaluation');
 const formToolbar = document.querySelector('#form-toolbar');
 const evaluationActions = document.querySelector('.challenge-actions');
@@ -50,6 +52,9 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
   let studyMode = false;
   let freehandFailed = false;
   let lastPoint = null;
+  let tracePixels = null;
+  let traceCoverage = 0;
+  let guideVisible = true;
 
   const cache = new Map();
   const loadImage = (source) => {
@@ -93,18 +98,18 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
       button.classList.toggle('is-active', name === stage);
       button.disabled = name === 'freehand' ? stage === 'trace' : name === 'compare' ? !(levelRecord().freehand >= 70) : false;
     });
-    guideCanvas.style.opacity = stage === 'trace' ? opacityInput.value : stage === 'compare' ? '1' : '.25';
+    guideCanvas.style.opacity = guideVisible ? (stage === 'trace' ? opacityInput.value : stage === 'compare' ? '1' : '.25') : '0';
     differenceCanvas.style.opacity = stage === 'compare' ? '1' : '0';
     formToolbar.hidden = stage === 'compare';
     document.querySelector('.canvas-wrap').hidden = stage === 'compare';
     evaluationActions.hidden = stage === 'compare';
     evaluationView.hidden = stage !== 'compare';
-    submitButton.disabled = stage === 'compare';
-    submitButton.textContent = stage === 'trace' ? 'Proceed to Freehand' : stage === 'freehand' ? (freehandFailed ? 'Try Freehand Again' : 'Judge / Evaluate') : 'Evaluation Complete';
+    submitButton.disabled = stage === 'trace' ? traceCoverage < 80 : stage === 'compare';
+    submitButton.textContent = stage === 'trace' ? `Unlock Freehand Mode (${Math.round(traceCoverage)}%)` : stage === 'freehand' ? (freehandFailed ? 'Try Freehand Again' : 'Judge / Evaluate') : 'Evaluation Complete';
     nextButton.disabled = stage !== 'compare' || level >= 3 || formProgress.unlocked <= level;
     studyButton.disabled = stage !== 'compare';
     replayButton.disabled = stage !== 'compare' || strokes.length === 0;
-    messageOutput.textContent = stage === 'trace' ? 'Trace the guide, then proceed when ready.' : stage === 'freehand' ? 'The guide is hidden. Draw the form from memory.' : 'Review the red marks and compare your drawing with the complete reference.';
+    messageOutput.textContent = stage === 'trace' ? `Trace at least 80% of the dashed guides to unlock freehand. Current: ${Math.round(traceCoverage)}%.` : stage === 'freehand' ? 'The guide is hidden. Draw the form from memory.' : 'Review the red marks and compare your drawing with the complete reference.';
     updateProgress();
   };
 
