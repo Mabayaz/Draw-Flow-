@@ -114,7 +114,7 @@ if (subjectSelect && levelSelect && drawingCanvas && referenceCanvas && drawingC
     freehandButton.disabled = !tracePassed;
     compareButton.disabled = !freehandPassed;
     const traceMode = currentStep === 'trace';
-    referenceCanvas.style.opacity = traceMode ? opacityInput.value : '0';
+    referenceCanvas.style.opacity = traceMode ? opacityInput.value : currentStep === 'compare' ? '.45' : '0';
     checkButton.textContent = currentStep === 'trace' ? 'Check trace accuracy' : currentStep === 'freehand' ? 'Check freehand accuracy' : 'Recheck accuracy';
     levelStatus.textContent = `${exerciseData[subjectSelect.value].label} / ${levelSelect.options[levelSelect.selectedIndex].textContent}`;
   };
