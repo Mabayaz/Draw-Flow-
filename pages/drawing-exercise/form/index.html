@@ -42,11 +42,15 @@
     @media (max-width: 850px) { .form-challenge { grid-template-columns: 1fr; } }
     @media (max-width: 560px) { .stage-tabs { grid-template-columns: 1fr; } }
     body { background: #fff8f0; color: #3d3935; }
+    body { overflow: hidden; }
+    .page-shell > header { border: 0; background: transparent; backdrop-filter: none; }
+    .page-intro { display: none; }
+    main { min-height: calc(100vh - 5.5rem); align-content: center; }
     .game-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin: 0 auto 1.25rem; max-width: 78rem; }
     .game-badges { display: flex; flex-wrap: wrap; gap: .6rem; }
     .game-pill { border: 1.5px solid #ebdcd0; border-radius: 999px; background: #fff; padding: .55rem 1rem; box-shadow: 0 2px 8px rgba(180, 160, 140, .15); font-size: .75rem; font-weight: 700; }
     .game-hint-banner { border: 1.5px solid #ebdcd0; border-radius: 999px; background: #fff; padding: .55rem 1rem; color: #6d635b; font-size: .75rem; box-shadow: 0 2px 8px rgba(180, 160, 140, .15); }
-    .form-challenge { position: relative; display: block; }
+    .form-challenge { position: relative; display: block; width: min(100%, 62rem); margin: 0 auto; }
     .challenge-card { min-height: min(72vh, 45rem); padding-right: 10rem; background: #fff; box-shadow: 0 8px 24px rgba(180, 160, 140, .15); }
     .challenge-tools { position: absolute; top: 1rem; right: 1rem; z-index: 5; display: flex; width: 7rem; flex-direction: column; align-items: stretch; gap: .5rem; border: 1.5px solid #f0e8df; border-radius: 1.4rem; background: #fff; padding: .65rem; box-shadow: 0 8px 20px rgba(180, 160, 140, .15); }
     .challenge-tools .challenge-field { width: 100%; }
