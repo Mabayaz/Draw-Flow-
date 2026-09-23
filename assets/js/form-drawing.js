@@ -231,6 +231,7 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     clearInterval(peekInterval);
     peekTimer.textContent = '';
     differenceContext.clearRect(0, 0, differenceCanvas.width, differenceCanvas.height);
+    const split = Number(splitInput.value) / 100;
     stage = level <= 2 ? 'trace' : 'freehand';
     if (stage === 'freehand') drawImage(guideContext, blank);
     if (stage === 'compare') { drawImage(guideContext, complete); renderEvaluation(complete); }
@@ -292,7 +293,7 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
         differenceContext.fillStyle = 'rgba(47, 137, 108, .8)';
         differenceContext.fillRect(x, y, 4, 4);
       }
-      if (missing || extra) {
+      if ((missing && x / drawingCanvas.width <= split) || (extra && x / drawingCanvas.width > split)) {
         differenceContext.fillStyle = 'rgba(220, 60, 90, .85)';
         differenceContext.fillRect(x, y, 4, 4);
       }
