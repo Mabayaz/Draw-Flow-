@@ -140,6 +140,7 @@ if (subjectSelect && levelSelect && drawingCanvas && referenceCanvas && differen
   };
 
   const renderTopicProgress = () => {
+    updateOnboardingProgress();
     topicProgress.replaceChildren();
     topicOrder.forEach((subject) => {
       const completedLevels = exerciseData[subject].levels.filter((_, index) => progress[`${subject}-${index}`]?.freehand >= FREEHAND_THRESHOLD).length;
@@ -329,7 +330,16 @@ if (subjectSelect && levelSelect && drawingCanvas && referenceCanvas && differen
   redoButton.addEventListener('click', () => { if (historyIndex < history.length - 1) { historyIndex += 1; restoreSnapshot(history[historyIndex]); } });
   eraserButton.addEventListener('click', () => { erasing = !erasing; eraserButton.classList.toggle('primary', erasing); });
   clearButton.addEventListener('click', clearDrawing);
+  document.querySelector('[data-open-form-intro]')?.addEventListener('click', () => showView(formIntroView));
+  document.querySelector('[data-back-to-overview]')?.addEventListener('click', () => showView(overviewView));
+  document.querySelector('[data-start-form-challenge]')?.addEventListener('click', () => {
+    subjectSelect.value = 'form';
+    levelSelect.value = '0';
+    showView(studioView);
+    loadLevel();
+  });
   populateSubjects();
   populateLevels();
   loadLevel();
+  showView(overviewView);
 }
