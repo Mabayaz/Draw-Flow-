@@ -124,6 +124,18 @@ if (subjectSelect && levelSelect && drawingCanvas && referenceCanvas && differen
     saveSnapshot();
   };
 
+  const renderTopicProgress = () => {
+    topicProgress.replaceChildren();
+    topicOrder.forEach((subject) => {
+      const completedLevels = exerciseData[subject].levels.filter((_, index) => progress[`${subject}-${index}`]?.freehand >= FREEHAND_THRESHOLD).length;
+      const card = document.createElement('div');
+      card.className = `topic-progress-card${subject === subjectSelect.value ? ' is-current' : ''}${topicUnlocked(subject) ? '' : ' is-locked'}`;
+      card.title = topicUnlocked(subject) ? `${completedLevels} of 3 levels completed` : `Complete all ${exerciseData[topicOrder[topicOrder.indexOf(subject) - 1]].label} levels to unlock.`;
+      card.innerHTML = `<strong>${exerciseData[subject].label}</strong><span>${completedLevels} / 3 levels${topicUnlocked(subject) ? '' : ' - locked'}</span>`;
+      topicProgress.append(card);
+    });
+  };
+
   const updateControls = () => {
     const traceButton = document.querySelector('[data-studio-step="trace"]');
     const freehandButton = document.querySelector('[data-studio-step="freehand"]');
@@ -135,8 +147,10 @@ if (subjectSelect && levelSelect && drawingCanvas && referenceCanvas && differen
     compareButton.disabled = !freehandPassed;
     const traceMode = currentStep === 'trace';
     referenceCanvas.style.opacity = traceMode ? opacityInput.value : currentStep === 'compare' ? '.45' : '0';
+    differenceCanvas.style.opacity = currentStep === 'compare' ? '1' : '0';
     checkButton.textContent = currentStep === 'trace' ? 'Check trace accuracy' : currentStep === 'freehand' ? 'Check freehand accuracy' : 'Recheck accuracy';
     levelStatus.textContent = `${exerciseData[subjectSelect.value].label} / ${levelSelect.options[levelSelect.selectedIndex].textContent}`;
+    renderTopicProgress();
   };
 
   const setStep = (step) => {
@@ -153,10 +167,12 @@ if (subjectSelect && levelSelect && drawingCanvas && referenceCanvas && differen
   };
 
   const loadLevel = async () => {
+    if (!topicUnlocked(subjectSelect.value)) return;
     const level = exerciseData[subjectSelect.value].levels[Number(levelSelect.value)];
     currentImages = level;
-    tracePassed = false;
-    freehandPassed = false;
+    const saved = progress[levelKey()] || {};
+    tracePassed = saved.trace >= TRACE_THRESHOLD;
+    freehandPassed = saved.freehand >= FREEHAND_THRESHOLD;
     currentStep = 'trace';
     scoreOutput.textContent = '--%';
     const traceImage = await loadImage(level.trace);
