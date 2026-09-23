@@ -108,6 +108,15 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
   };
 
   const setCanvasSize = (image) => [guideCanvas, drawingCanvas, differenceCanvas].forEach((canvas) => { canvas.width = Math.max(image.naturalWidth, image.naturalHeight, 640); canvas.height = canvas.width; });
+  const renderEvaluation = (reference) => {
+    if (!userEvaluationCanvas || !targetEvaluationCanvas || !evaluationDifferenceCanvas) return;
+    [userEvaluationCanvas, targetEvaluationCanvas, evaluationDifferenceCanvas].forEach((canvas) => { canvas.width = drawingCanvas.width; canvas.height = drawingCanvas.height; });
+    userEvaluationCanvas.getContext('2d').drawImage(drawingCanvas, 0, 0);
+    drawImage(targetEvaluationCanvas.getContext('2d'), reference);
+    evaluationDifferenceCanvas.getContext('2d').drawImage(differenceCanvas, 0, 0);
+    const clip = `${100 - Number(evaluationSplitInput.value)}% 0 0`;
+    targetEvaluationCanvas.style.clipPath = `inset(0 ${clip})`;
+  };
 
   const loadLevel = async () => {
     level = Number(levelSelect.value);
@@ -174,7 +183,7 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     else if (stage === 'freehand') { freehandFailed = true; messageOutput.textContent = 'Freehand accuracy needs to reach 70%. Try the freehand stage again.'; }
     saveState();
     if (stage === 'freehand') drawImage(guideContext, await loadImage(images.blank));
-    if (stage === 'compare') drawImage(guideContext, reference);
+    if (stage === 'compare') { drawImage(guideContext, reference); renderEvaluation(reference); }
     renderStage();
   };
 
