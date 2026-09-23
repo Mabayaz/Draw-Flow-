@@ -200,10 +200,10 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     setCanvasSize(trace);
     drawImage(guideContext, trace);
     tracePixels = guideContext.getImageData(0, 0, guideCanvas.width, guideCanvas.height).data;
+    traceNodes = buildTraceNodes();
     traceCoverage = 0;
     clearDrawing();
     strokes = [];
-    studyMode = false;
     freehandFailed = false;
     differenceContext.clearRect(0, 0, differenceCanvas.width, differenceCanvas.height);
     stage = 'trace';
@@ -329,8 +329,6 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
   });
   penButton.addEventListener('click', () => { tool = 'pen'; penButton.classList.add('primary'); eraserButton.classList.remove('primary'); });
   eraserButton.addEventListener('click', () => { tool = 'eraser'; eraserButton.classList.add('primary'); penButton.classList.remove('primary'); });
-  studyButton.addEventListener('click', () => { studyMode = !studyMode; studyButton.classList.toggle('primary', studyMode); if (studyMode) drawStudyGuides(); else scoreCanvas(); });
-  replayButton.addEventListener('click', replayStrokes);
   document.querySelector('#form-clear').addEventListener('click', () => { clearDrawing(); if (stage === 'trace') updateTraceCoverage(); });
   document.querySelector('#form-undo').addEventListener('click', () => { if (historyIndex > 0) { historyIndex -= 1; drawingContext.putImageData(history[historyIndex], 0, 0); if (stage === 'trace') updateTraceCoverage(); } });
   document.querySelector('#form-redo').addEventListener('click', () => { if (historyIndex < history.length - 1) { historyIndex += 1; drawingContext.putImageData(history[historyIndex], 0, 0); if (stage === 'trace') updateTraceCoverage(); } });
