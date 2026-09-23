@@ -40,6 +40,9 @@ const coverageBar = document.querySelector('#form-coverage-bar');
 const coverageLabel = document.querySelector('#form-coverage-label');
 const peekTimer = document.querySelector('#form-peek-timer');
 const guideOpacityControl = document.querySelector('#form-guide-opacity-control');
+const readyBanner = document.querySelector('#form-ready-banner');
+const stageBadge = document.querySelector('#form-stage-badge');
+const hintBanner = document.querySelector('#form-hint-banner');
 
 if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideContext && drawingContext && differenceContext) {
   let level = 1;
@@ -181,6 +184,9 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     coverageBar.style.width = `${traceCoverage}%`;
     coverageLabel.textContent = `${Math.round(traceCoverage)}%`;
     messageOutput.textContent = stage === 'trace' ? `Trace at least 80% of the dashed guides to unlock freehand. Current: ${Math.round(traceCoverage)}%.` : stage === 'freehand' ? 'The guide is hidden. Draw the form from memory.' : 'Review the red marks and compare your drawing with the complete reference.';
+    readyBanner.classList.toggle('is-visible', stage === 'trace' && traceCoverage >= 80);
+    stageBadge.textContent = `Stage ${stage === 'trace' ? '1: Trace' : stage === 'freehand' ? '2: Freehand' : '3: Evaluate'}`;
+    hintBanner.textContent = stage === 'trace' ? 'Trace the dashed guides to build muscle memory.' : stage === 'freehand' ? 'Draw the missing lines from memory. Use Hint if stuck.' : 'Review your result against the complete reference.';
     updateProgress();
   };
 
