@@ -165,6 +165,43 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     renderStage();
   };
 
+  const drawStudyGuides = () => {
+    differenceContext.clearRect(0, 0, differenceCanvas.width, differenceCanvas.height);
+    differenceContext.strokeStyle = 'rgba(47, 137, 108, .7)';
+    differenceContext.fillStyle = '#e86f45';
+    differenceContext.lineWidth = Math.max(2, differenceCanvas.width / 320);
+    const center = differenceCanvas.width / 2;
+    differenceContext.beginPath();
+    differenceContext.moveTo(center, differenceCanvas.height * .08);
+    differenceContext.lineTo(center, differenceCanvas.height * .92);
+    differenceContext.moveTo(differenceCanvas.width * .08, center);
+    differenceContext.lineTo(differenceCanvas.width * .92, center);
+    differenceContext.stroke();
+    [[differenceCanvas.width * .08, center], [differenceCanvas.width * .92, center], [center, differenceCanvas.height * .08]].forEach(([x, y]) => { differenceContext.beginPath(); differenceContext.arc(x, y, differenceCanvas.width / 45, 0, Math.PI * 2); differenceContext.fill(); });
+  };
+
+  const replayStrokes = () => {
+    if (!strokes.length) return;
+    drawingContext.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+    let strokeIndex = 0;
+    let pointIndex = 0;
+    const tick = () => {
+      const stroke = strokes[strokeIndex];
+      if (!stroke) return;
+      const point = stroke[pointIndex];
+      drawingContext.globalCompositeOperation = point.tool === 'eraser' ? 'destination-out' : 'source-over';
+      drawingContext.strokeStyle = point.tool === 'eraser' ? '#ffffff' : brushColorInput.value;
+      drawingContext.lineWidth = Number(brushSizeInput.value);
+      drawingContext.lineCap = 'round';
+      if (pointIndex === 0) { drawingContext.beginPath(); drawingContext.moveTo(point.x, point.y); } else { drawingContext.lineTo(point.x, point.y); drawingContext.stroke(); }
+      pointIndex += 1;
+      if (pointIndex >= stroke.length) { drawingContext.closePath(); strokeIndex += 1; pointIndex = 0; }
+      if (strokeIndex < strokes.length) requestAnimationFrame(tick);
+      else drawingContext.globalCompositeOperation = 'source-over';
+    };
+    tick();
+  };
+
   stageButtons.forEach((button) => button.addEventListener('click', () => { if (!button.disabled) { stage = button.dataset.formStage; if (stage === 'freehand') loadImage(images.blank).then((image) => drawImage(guideContext, image)); if (stage === 'compare') loadImage(images.complete).then((image) => drawImage(guideContext, image)); renderStage(); } }));
   levelSelect.addEventListener('change', loadLevel);
   opacityInput.addEventListener('input', renderStage);
