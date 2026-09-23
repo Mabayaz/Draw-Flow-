@@ -55,6 +55,11 @@ const eraserButton = document.querySelector('#studio-eraser');
 const clearButton = document.querySelector('#studio-clear');
 const splitInput = document.querySelector('#studio-split');
 const topicProgress = document.querySelector('#studio-topic-progress');
+const overviewView = document.querySelector('#exercise-overview');
+const formIntroView = document.querySelector('#form-intro');
+const studioView = document.querySelector('#exercise-studio');
+const overviewProgress = document.querySelector('#overview-progress');
+const formIntroProgress = document.querySelector('#form-intro-progress');
 
 const TRACE_THRESHOLD = 75;
 const FREEHAND_THRESHOLD = 70;
@@ -79,6 +84,16 @@ if (subjectSelect && levelSelect && drawingCanvas && referenceCanvas && differen
     return topicIndex === 0 || topicComplete(topicOrder[topicIndex - 1]);
   };
   const saveProgress = () => localStorage.setItem(progressKey, JSON.stringify(progress));
+  const completedFormLevels = () => exerciseData.form.levels.filter((_, index) => progress[`form-${index}`]?.freehand >= FREEHAND_THRESHOLD).length;
+  const updateOnboardingProgress = () => {
+    const label = `${completedFormLevels()} / 3 levels completed`;
+    if (overviewProgress) overviewProgress.textContent = label;
+    if (formIntroProgress) formIntroProgress.textContent = label;
+  };
+  const showView = (view) => {
+    [overviewView, formIntroView, studioView].forEach((candidate) => { if (candidate) candidate.hidden = candidate !== view; });
+    updateOnboardingProgress();
+  };
 
   const imageCache = new Map();
 
