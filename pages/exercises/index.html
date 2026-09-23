@@ -55,9 +55,9 @@
     .topic-progress-card span { display: block; margin-top: .25rem; font-size: .68rem; }
     .exercise-view[hidden] { display: none; }
     .topic-card-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .75rem; }
-    .topic-card { display: grid; min-height: 9rem; align-content: space-between; border: 1px solid #d9d5c9; border-radius: 1rem; background: #fffdf8; padding: 1rem; text-align: left; transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease; }
+    .topic-card { display: grid; min-height: 9rem; align-content: space-between; border: 1px solid #d9d5c9; border-radius: 1rem; background: #fffdf8; padding: 1rem; color: inherit; text-align: left; text-decoration: none; transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease; }
     .topic-card:not(:disabled):hover { border-color: #e86f45; box-shadow: 0 12px 24px rgba(29, 41, 38, .08); transform: translateY(-2px); }
-    .topic-card:disabled { cursor: not-allowed; opacity: .5; }
+    .topic-card.is-locked { cursor: not-allowed; opacity: .5; }
     .topic-card__icon { display: flex; align-items: center; justify-content: space-between; color: #e86f45; font-family: 'DM Mono', monospace; font-size: .72rem; }
     .topic-card__title { margin-top: 1.25rem; font-family: 'Space Grotesk', sans-serif; font-size: 1.35rem; font-weight: 700; }
     .topic-card__meta { color: #68716c; font-size: .72rem; line-height: 1.45; }

@@ -113,7 +113,7 @@ if (subjectSelect && levelSelect && drawingCanvas && referenceCanvas && differen
       card.classList.toggle('is-locked', !unlocked);
       card.setAttribute('aria-disabled', String(!unlocked));
       if (status) {
-        status.textContent = unlocked ? 'OPEN' : '🔒';
+        status.textContent = unlocked ? 'OPEN' : '\u{1F512}';
         status.setAttribute('aria-label', unlocked ? 'Open' : 'Locked');
       }
     });
