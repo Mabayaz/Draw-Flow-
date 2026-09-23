@@ -10,6 +10,20 @@
       ],
       "isBackground": true,
       "problemMatcher": []
+    },
+    {
+      "label": "Auto Commit Changes",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/scripts/auto_commit.ps1"
+      ],
+      "isBackground": true,
+      "problemMatcher": []
     }
   ]
 }

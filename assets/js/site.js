@@ -8,6 +8,10 @@ const studyTitle = document.querySelector('#study-dialog-title');
 const studyDescription = document.querySelector('#study-dialog-description');
 const closeDialogButton = document.querySelector('[data-close-dialog]');
 const startStudyButton = document.querySelector('[data-start-study]');
+const videoPlayer = document.querySelector('[data-video-player]');
+const videoSpeed = document.querySelector('[data-video-speed]');
+const videoQuality = document.querySelector('[data-video-quality]');
+const videoFullscreen = document.querySelector('[data-video-fullscreen]');
 
 const updatePageProgress = () => {
   const pageHeight = document.documentElement.scrollHeight - window.innerHeight;
@@ -33,6 +37,39 @@ document.querySelectorAll('main section, main article, main aside').forEach((ele
 window.addEventListener('scroll', updatePageProgress, { passive: true });
 window.addEventListener('resize', updatePageProgress);
 updatePageProgress();
+
+videoSpeed?.addEventListener('change', () => {
+  if (videoPlayer) videoPlayer.playbackRate = Number(videoSpeed.value);
+});
+
+videoFullscreen?.addEventListener('click', async () => {
+  if (!videoPlayer) return;
+  if (document.fullscreenElement) {
+    await document.exitFullscreen();
+    return;
+  }
+  await videoPlayer.requestFullscreen();
+});
+
+if (videoPlayer && videoQuality) {
+  const qualitySources = [...videoPlayer.querySelectorAll('source[data-quality]')];
+  qualitySources.forEach((source) => {
+    const option = document.createElement('option');
+    option.value = source.dataset.quality;
+    option.textContent = source.dataset.quality;
+    videoQuality.append(option);
+  });
+
+  videoQuality.addEventListener('change', () => {
+    const selectedSource = qualitySources.find((source) => source.dataset.quality === videoQuality.value);
+    if (!selectedSource || videoPlayer.currentSrc === selectedSource.src) return;
+    const currentTime = videoPlayer.currentTime;
+    const wasPlaying = !videoPlayer.paused;
+    videoPlayer.src = selectedSource.src;
+    videoPlayer.currentTime = currentTime;
+    if (wasPlaying) videoPlayer.play();
+  });
+}
 
 const closeStudyDialog = () => {
   if (!studyDialog) return;
