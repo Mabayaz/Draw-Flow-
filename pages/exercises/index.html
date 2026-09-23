@@ -120,6 +120,8 @@
         <div class="studio-toolbar mt-6">
           <label class="studio-field">Subject<select id="studio-subject" aria-label="Exercise subject"></select></label>
           <label class="studio-field">Level<select id="studio-level" aria-label="Exercise level"></select></label>
+          <label class="studio-field">Brush size<input id="studio-brush-size" type="range" min="2" max="24" step="1" value="6" aria-label="Brush size"></label>
+          <label class="studio-field">Brush color<input id="studio-brush-color" type="color" value="#173e36" aria-label="Brush color"></label>
           <label class="studio-field">Trace opacity<input id="studio-opacity" type="range" min="0" max="0.8" step="0.05" value="0.28" aria-label="Trace opacity"></label>
           <div class="studio-actions">
             <button id="studio-undo" class="studio-button" type="button">Undo</button>
@@ -128,6 +130,7 @@
             <button id="studio-clear" class="studio-button" type="button">Clear</button>
           </div>
         </div>
+        <div id="studio-topic-progress" class="mt-5 grid gap-2 sm:grid-cols-4" aria-label="Topic progress"></div>
         <div class="studio-stepbar" role="tablist" aria-label="Exercise steps">
           <button class="studio-step is-active" type="button" data-studio-step="trace">1. Trace</button>
           <button class="studio-step" type="button" data-studio-step="freehand" disabled>2. Freehand</button>
@@ -137,10 +140,12 @@
           <div class="canvas-frame" aria-label="Drawing canvas">
             <canvas id="studio-reference-layer" aria-hidden="true"></canvas>
             <canvas id="studio-drawing-canvas" aria-label="Draw here"></canvas>
+            <canvas id="studio-difference-layer" aria-hidden="true"></canvas>
           </div>
           <aside class="studio-side">
             <div class="studio-score"><span class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-muted-foreground">Accuracy</span><strong id="studio-score">--%</strong><p id="studio-score-message" class="mt-2 studio-hint">Trace the guide, then check your work.</p></div>
             <p class="studio-hint">Your score allows small differences in line weight and placement. Trace accuracy unlocks freehand practice; freehand accuracy completes the level.</p>
+            <label class="studio-field">Review split<input id="studio-split" type="range" min="0" max="100" value="50" aria-label="Review split position"></label>
             <button id="studio-check" class="studio-button primary" type="button">Check trace accuracy</button>
           </aside>
         </div>
