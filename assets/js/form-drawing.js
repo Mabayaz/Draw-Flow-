@@ -159,7 +159,7 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
 
   const updateProgress = () => {
     progressOutput.textContent = `Round ${level}`;
-    [...levelSelect.options].forEach((option) => { option.disabled = false; });
+    [...levelSelect.options].forEach((option) => { option.disabled = Number(option.value) > formProgress.unlocked; });
   };
 
   const renderStage = () => {
@@ -176,7 +176,7 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     evaluationView.hidden = stage !== 'compare';
     submitButton.disabled = stage === 'compare';
     submitButton.textContent = stage === 'trace' ? 'Proceed to Freehand' : stage === 'freehand' ? (freehandFailed ? 'Try Freehand Again' : 'Judge / Evaluate') : 'Evaluation Complete';
-    nextButton.disabled = stage !== 'compare';
+    nextButton.disabled = stage !== 'compare' || level >= 3 || formProgress.unlocked <= level;
     peekButton.hidden = stage !== 'freehand';
     peekButton.textContent = `💡 Hint (${peekUses} Left)`;
     guideToggle.hidden = stage !== 'trace';
@@ -197,7 +197,8 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     userEvaluationCanvas.getContext('2d').drawImage(drawingCanvas, 0, 0);
     drawImage(targetEvaluationCanvas.getContext('2d'), reference);
     evaluationDifferenceCanvas.getContext('2d').drawImage(differenceCanvas, 0, 0);
-    targetEvaluationCanvas.style.clipPath = 'none';
+    const clip = `${100 - Number(evaluationSplitInput.value)}% 0 0`;
+    targetEvaluationCanvas.style.clipPath = `inset(0 ${clip})`;
   };
 
   const loadLevel = async () => {
