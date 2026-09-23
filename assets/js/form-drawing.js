@@ -158,8 +158,8 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
   };
 
   const updateProgress = () => {
-    progressOutput.textContent = `${completedCount()} / 3 levels`;
-    [...levelSelect.options].forEach((option) => { option.disabled = Number(option.value) > formProgress.unlocked; });
+    progressOutput.textContent = `Round ${level}`;
+    [...levelSelect.options].forEach((option) => { option.disabled = false; });
   };
 
   const renderStage = () => {
@@ -174,16 +174,16 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     document.querySelector('.canvas-wrap').hidden = stage === 'compare';
     evaluationActions.hidden = stage === 'compare';
     evaluationView.hidden = stage !== 'compare';
-    submitButton.disabled = stage === 'trace' ? traceCoverage < 80 : stage === 'compare';
-    submitButton.textContent = stage === 'trace' ? `Unlock Freehand Mode (${Math.round(traceCoverage)}%)` : stage === 'freehand' ? (freehandFailed ? 'Try Freehand Again' : 'Judge / Evaluate') : 'Evaluation Complete';
-    nextButton.disabled = stage !== 'compare' || level >= 3 || formProgress.unlocked <= level;
+    submitButton.disabled = stage === 'compare';
+    submitButton.textContent = stage === 'trace' ? 'Proceed to Freehand' : stage === 'freehand' ? (freehandFailed ? 'Try Freehand Again' : 'Judge / Evaluate') : 'Evaluation Complete';
+    nextButton.disabled = stage !== 'compare';
     peekButton.hidden = stage !== 'freehand';
     peekButton.textContent = `💡 Hint (${peekUses} Left)`;
     guideToggle.hidden = stage !== 'trace';
     guideOpacityControl.hidden = stage !== 'trace';
     coverageBar.style.width = `${traceCoverage}%`;
     coverageLabel.textContent = `${Math.round(traceCoverage)}%`;
-    messageOutput.textContent = stage === 'trace' ? `Trace at least 80% of the dashed guides to unlock freehand. Current: ${Math.round(traceCoverage)}%.` : stage === 'freehand' ? 'The guide is hidden. Draw the form from memory.' : 'Review the red marks and compare your drawing with the complete reference.';
+    messageOutput.textContent = stage === 'trace' ? 'Practice the faint perspective guides, then continue when ready.' : stage === 'freehand' ? 'The guide is hidden. Draw the form from memory.' : 'Review the red marks and compare your drawing with the complete reference.';
     readyBanner.classList.toggle('is-visible', stage === 'trace' && traceCoverage >= 80);
     stageBadge.textContent = `Stage ${stage === 'trace' ? '1: Trace' : stage === 'freehand' ? '2: Freehand' : '3: Evaluate'}`;
     hintBanner.textContent = stage === 'trace' ? 'Trace the dashed guides to build muscle memory.' : stage === 'freehand' ? 'Draw the missing lines from memory. Use Hint if stuck.' : 'Review your result against the complete reference.';
@@ -222,7 +222,7 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     clearInterval(peekInterval);
     peekTimer.textContent = '';
     differenceContext.clearRect(0, 0, differenceCanvas.width, differenceCanvas.height);
-    stage = 'trace';
+    stage = level <= 2 ? 'trace' : 'freehand';
     if (stage === 'freehand') drawImage(guideContext, blank);
     if (stage === 'compare') { drawImage(guideContext, complete); renderEvaluation(complete); }
     levelLabel.textContent = String(level);
