@@ -8,6 +8,7 @@ const studyTitle = document.querySelector('#study-dialog-title');
 const studyDescription = document.querySelector('#study-dialog-description');
 const closeDialogButton = document.querySelector('[data-close-dialog]');
 const startStudyButton = document.querySelector('[data-start-study]');
+const desktopNavMedia = window.matchMedia('(min-width: 768px)');
 
 const savedTheme = localStorage.getItem('drawflow-theme');
 if (savedTheme === 'dark') root.classList.add('dark-mode');
@@ -93,7 +94,7 @@ navigation?.querySelectorAll('a').forEach((link) => {
 });
 
 window.addEventListener('resize', () => {
-  if (window.matchMedia('(min-width: 768px)').matches) closeMobileMenu();
+  if (desktopNavMedia.matches) closeMobileMenu();
 });
 
 document.addEventListener('click', (event) => {
