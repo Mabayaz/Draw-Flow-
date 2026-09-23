@@ -59,6 +59,7 @@ const formIntroView = document.querySelector('#form-intro');
 const studioView = document.querySelector('#exercise-studio');
 const overviewProgress = document.querySelector('#overview-progress');
 const formIntroProgress = document.querySelector('#form-intro-progress');
+const topicCards = [...document.querySelectorAll('[data-topic-card]')];
 
 const TRACE_THRESHOLD = 75;
 const FREEHAND_THRESHOLD = 70;
@@ -77,21 +78,50 @@ if (subjectSelect && levelSelect && drawingCanvas && referenceCanvas && differen
   let progress = JSON.parse(localStorage.getItem(progressKey) || '{}');
 
   const levelKey = () => `${subjectSelect.value}-${levelSelect.value}`;
-  const topicComplete = (subject) => exerciseData[subject].levels.every((_, index) => progress[`${subject}-${index}`]?.freehand >= FREEHAND_THRESHOLD);
+  const challengeComplete = (subject) => {
+    try {
+      const challenge = JSON.parse(localStorage.getItem(`drawflow-${subject}-challenge`) || '{}');
+      return [1, 2, 3].every((level) => challenge.levels?.[level]?.freehand >= FREEHAND_THRESHOLD);
+    } catch {
+      return false;
+    }
+  };
+  const topicComplete = (subject) => challengeComplete(subject) || exerciseData[subject].levels.every((_, index) => progress[`${subject}-${index}`]?.freehand >= FREEHAND_THRESHOLD);
   const topicUnlocked = (subject) => {
     const topicIndex = topicOrder.indexOf(subject);
     return topicIndex === 0 || topicComplete(topicOrder[topicIndex - 1]);
   };
   const saveProgress = () => localStorage.setItem(progressKey, JSON.stringify(progress));
-  const completedFormLevels = () => exerciseData.form.levels.filter((_, index) => progress[`form-${index}`]?.freehand >= FREEHAND_THRESHOLD).length;
+  const completedFormLevels = () => {
+    try {
+      const challenge = JSON.parse(localStorage.getItem('drawflow-form-challenge') || '{}');
+      if (challenge.levels) return Object.values(challenge.levels).filter((record) => record.freehand >= FREEHAND_THRESHOLD).length;
+    } catch {
+      return 0;
+    }
+    return exerciseData.form.levels.filter((_, index) => progress[`form-${index}`]?.freehand >= FREEHAND_THRESHOLD).length;
+  };
   const updateOnboardingProgress = () => {
     const label = `${completedFormLevels()} / 3 levels completed`;
     if (overviewProgress) overviewProgress.textContent = label;
     if (formIntroProgress) formIntroProgress.textContent = label;
   };
+  const renderTopicCards = () => {
+    topicCards.forEach((card) => {
+      const unlocked = topicUnlocked(card.dataset.topicCard);
+      const status = card.querySelector('[data-topic-status]');
+      card.classList.toggle('is-locked', !unlocked);
+      card.setAttribute('aria-disabled', String(!unlocked));
+      if (status) {
+        status.textContent = unlocked ? 'OPEN' : '🔒';
+        status.setAttribute('aria-label', unlocked ? 'Open' : 'Locked');
+      }
+    });
+  };
   const showView = (view) => {
     [overviewView, formIntroView, studioView].forEach((candidate) => { if (candidate) candidate.hidden = candidate !== view; });
     updateOnboardingProgress();
+    renderTopicCards();
   };
 
   const imageCache = new Map();
@@ -140,6 +170,7 @@ if (subjectSelect && levelSelect && drawingCanvas && referenceCanvas && differen
 
   const renderTopicProgress = () => {
     updateOnboardingProgress();
+    renderTopicCards();
     topicProgress.replaceChildren();
     topicOrder.forEach((subject) => {
       const completedLevels = exerciseData[subject].levels.filter((_, index) => progress[`${subject}-${index}`]?.freehand >= FREEHAND_THRESHOLD).length;
@@ -335,6 +366,9 @@ if (subjectSelect && levelSelect && drawingCanvas && referenceCanvas && differen
     showView(studioView);
     loadLevel();
   });
+  topicCards.forEach((card) => card.addEventListener('click', (event) => {
+    if (card.getAttribute('aria-disabled') === 'true') event.preventDefault();
+  }));
   populateSubjects();
   populateLevels();
   loadLevel();
