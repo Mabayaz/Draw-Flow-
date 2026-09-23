@@ -1,10 +1,19 @@
-const formAssets = (level) => ({
-  trace: `/assets/drawing-exercise/form/lvl-${level}/${level === 3 ? 'trace.JPG' : 'trace.jpg'}`,
-  blank: `/assets/drawing-exercise/form/lvl-${level}/${level === 3 ? 'freehand.png' : 'freehand.jpg'}`,
-  complete: `/assets/drawing-exercise/form/lvl-${level}/${level === 3 ? 'complete.png' : 'complete.jpg'}`
-});
+const exerciseTopic = document.body.dataset.exerciseTopic || 'form';
+const topicLabels = { form: 'Form', perspective: 'Perspective', shadow: 'Shadow', depth: 'Depth' };
+const formAssets = (level) => {
+  if (exerciseTopic === 'form') return {
+    trace: `/assets/drawing-exercise/form/lvl-${level}/${level === 3 ? 'trace.JPG' : 'trace.jpg'}`,
+    blank: `/assets/drawing-exercise/form/lvl-${level}/${level === 3 ? 'freehand.png' : 'freehand.jpg'}`,
+    complete: `/assets/drawing-exercise/form/lvl-${level}/${level === 3 ? 'complete.png' : 'complete.jpg'}`
+  };
+  return {
+    trace: `/assets/exercises/${exerciseTopic}/level-${level}/trace.png`,
+    blank: `/assets/exercises/${exerciseTopic}/level-${level}/freehand.png`,
+    complete: `/assets/exercises/${exerciseTopic}/level-${level}/reference.png`
+  };
+};
 
-const formStateKey = 'drawflow-form-challenge';
+const formStateKey = `drawflow-${exerciseTopic}-challenge`;
 const formProgress = JSON.parse(localStorage.getItem(formStateKey) || '{"unlocked":1,"levels":{}}');
 const levelSelect = document.querySelector('#form-level');
 const levelLabel = document.querySelector('#form-level-label');
