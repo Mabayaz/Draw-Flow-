@@ -4,6 +4,7 @@ class CubeGame {
     if (!this.canvas) return;
 
     this.ctx = this.canvas.getContext('2d');
+    this.canvas.tabIndex = 0;
     this.strokes = [];
     this.currentStroke = [];
     this.isDrawing = false;
@@ -46,14 +47,14 @@ class CubeGame {
     });
     document.getElementById('btn-evaluate')?.addEventListener('click', () => this.evaluate());
     this.nextButton?.addEventListener('click', () => {
-      this.hideModal();
+      this.hideModal(this.canvas);
       this.strokes = [];
       this.generateNewPrompt();
       this.setStatus('New prompt');
       this.render();
     });
     document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape') this.hideModal();
+      if (event.key === 'Escape') this.hideModal(this.evaluateButton);
     });
   }
 
@@ -151,10 +152,10 @@ class CubeGame {
     this.nextButton?.focus();
   }
 
-  hideModal() {
+  hideModal(focusTarget = null) {
     this.modal?.classList.add('hidden');
     this.modal?.classList.remove('flex');
-    this.evaluateButton?.focus();
+    focusTarget?.focus();
   }
 
   calculateAccuracy() {
