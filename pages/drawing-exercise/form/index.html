@@ -622,6 +622,7 @@
           },
 
           // Dashed Grey Target Lines (Untitled47_20260921230057_10.png)
+// Dashed Grey Target Lines (Outer Shell + Upper Seam + Floating Central Cube)
           drawGuide: (ctx) => {
             ctx.save();
             ctx.strokeStyle = '#6b7280';
@@ -635,6 +636,10 @@
             ctx.moveTo(310, 80);
             ctx.lineTo(520, 200);
             ctx.lineTo(520, 440);
+
+            // 2. Upper Back Seam Line (Top apex down to top corner of inner cube)
+            ctx.moveTo(310, 80);
+            ctx.lineTo(310, 200);
 
             // 3. Central Inner Cube Structure
             ctx.moveTo(310, 440);
@@ -671,8 +676,9 @@
             ctx.lineTo(520, 200);
             ctx.lineTo(520, 440);
 
+            // Upper Back Seam Line
             ctx.moveTo(310, 80);
-            ctx.lineTo(310, 440);
+            ctx.lineTo(310, 200);
 
             ctx.moveTo(310, 440);
             ctx.lineTo(310, 320);
@@ -694,7 +700,6 @@
           }
         }
       };
-
       function updateLevelDropdownUI() {
         if (state.unlockedLevels[2]) {
           optLvl2.disabled = false;
