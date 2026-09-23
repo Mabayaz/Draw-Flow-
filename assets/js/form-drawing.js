@@ -278,6 +278,7 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     const near = (pixels, x, y) => { for (let dy = -radius; dy <= radius; dy += 1) for (let dx = -radius; dx <= radius; dx += 1) { const nx = x + dx; const ny = y + dy; if (nx >= 0 && ny >= 0 && nx < drawingCanvas.width && ny < drawingCanvas.height && ink(pixels, (ny * drawingCanvas.width + nx) * 4)) return true; } return false; };
     let expected = 0; let matched = 0; let drawn = 0; let aligned = 0;
     differenceContext.clearRect(0, 0, differenceCanvas.width, differenceCanvas.height);
+    const split = Number(splitInput.value) / 100;
     for (let y = 0; y < drawingCanvas.height; y += 2) for (let x = 0; x < drawingCanvas.width; x += 2) {
       const index = (y * drawingCanvas.width + x) * 4;
       const expectedInk = ink(referencePixels, index);
