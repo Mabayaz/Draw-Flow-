@@ -94,12 +94,38 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
   };
   const clearDrawing = () => { drawingContext.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height); snapshot(); };
 
+  const buildTraceNodes = () => {
+    const nodes = [];
+    for (let y = 0; y < guideCanvas.height; y += 8) for (let x = 0; x < guideCanvas.width; x += 8) {
+      const index = (y * guideCanvas.width + x) * 4;
+      const red = tracePixels[index];
+      if (red > 80 && red < 235 && Math.abs(red - tracePixels[index + 1]) < 8 && Math.abs(red - tracePixels[index + 2]) < 8) nodes.push({ x, y });
+    }
+    const stride = Math.max(1, Math.ceil(nodes.length / 32));
+    return nodes.filter((_, index) => index % stride === 0).slice(0, 40);
+  };
+
   const updateTraceCoverage = () => {
     if (!tracePixels) return;
     const width = drawingCanvas.width;
     const height = drawingCanvas.height;
     const drawingPixels = drawingContext.getImageData(0, 0, width, height).data;
     const radius = Math.max(4, Math.round(width / 150));
+    if (traceNodes.length) {
+      let covered = 0;
+      traceNodes.forEach(({ x, y }) => {
+        let hit = false;
+        for (let offsetY = -radius; offsetY <= radius && !hit; offsetY += 1) for (let offsetX = -radius; offsetX <= radius; offsetX += 1) {
+          const nearX = x + offsetX;
+          const nearY = y + offsetY;
+          if (nearX >= 0 && nearY >= 0 && nearX < width && nearY < height && drawingPixels[(nearY * width + nearX) * 4 + 3] > 30) { hit = true; break; }
+        }
+        if (hit) covered += 1;
+      });
+      traceCoverage = (covered / traceNodes.length) * 100;
+      renderStage();
+      return;
+    }
     const isDashedGuide = (index) => {
       const red = tracePixels[index];
       const green = tracePixels[index + 1];
