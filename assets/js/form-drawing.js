@@ -146,8 +146,10 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     submitButton.disabled = stage === 'trace' ? traceCoverage < 80 : stage === 'compare';
     submitButton.textContent = stage === 'trace' ? `Unlock Freehand Mode (${Math.round(traceCoverage)}%)` : stage === 'freehand' ? (freehandFailed ? 'Try Freehand Again' : 'Judge / Evaluate') : 'Evaluation Complete';
     nextButton.disabled = stage !== 'compare' || level >= 3 || formProgress.unlocked <= level;
-    studyButton.disabled = stage !== 'compare';
-    replayButton.disabled = stage !== 'compare' || strokes.length === 0;
+    peekButton.hidden = stage !== 'freehand';
+    peekButton.textContent = `💡 Peek Guide (${peekUses} Left)`;
+    coverageBar.style.width = `${traceCoverage}%`;
+    coverageLabel.textContent = `${Math.round(traceCoverage)}%`;
     messageOutput.textContent = stage === 'trace' ? `Trace at least 80% of the dashed guides to unlock freehand. Current: ${Math.round(traceCoverage)}%.` : stage === 'freehand' ? 'The guide is hidden. Draw the form from memory.' : 'Review the red marks and compare your drawing with the complete reference.';
     updateProgress();
   };
