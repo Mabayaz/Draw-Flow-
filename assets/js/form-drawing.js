@@ -105,7 +105,6 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     history.push(drawingContext.getImageData(0, 0, drawingCanvas.width, drawingCanvas.height));
     historyIndex = history.length - 1;
   };
-  const clearDrawing = () => { drawingContext.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height); snapshot(); };
   const clearDrawing = () => {
     drawingContext.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
     drawingContext.beginPath();
@@ -247,7 +246,6 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     targetEvaluationCanvas.style.clipPath = `inset(0 ${clip})`;
   };
 
-  const loadLevel = async () => {
   let loadRequest = 0;
   const loadLevel = async () => {
     const request = ++loadRequest;
@@ -256,7 +254,6 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     resetExerciseState();
     try {
       const trace = await loadImage(images.trace);
-      const blank = await loadImage(images.blank);
       await loadImage(images.complete);
       if (request !== loadRequest) return;
       setCanvasSize(trace);
@@ -275,19 +272,9 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
       delete formProgress.levels[level].freehandStrokes;
       saveState();
     }
-    freehandFailed = false;
-    guideVisible = true;
-    peekUses = 3;
-    peekActive = false;
-    clearTimeout(peekTimeout);
-    clearInterval(peekInterval);
-    peekTimer.textContent = '';
-    differenceContext.clearRect(0, 0, differenceCanvas.width, differenceCanvas.height);
-    stage = level <= 2 ? 'trace' : 'freehand';
-    if (stage === 'freehand') drawImage(guideContext, blank);
-    if (stage === 'compare') { drawImage(guideContext, complete); renderEvaluation(complete); }
+    stage = 'trace';
     levelLabel.textContent = String(level);
-    scoreOutput.textContent = '--%';
+    if (scoreOutput) scoreOutput.textContent = '--%';
     renderStage();
   };
 
@@ -329,6 +316,8 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     const ink = (pixels, index) => pixels[index + 3] > 30 && pixels[index] + pixels[index + 1] + pixels[index + 2] < 690;
     const near = (pixels, x, y) => { for (let dy = -radius; dy <= radius; dy += 1) for (let dx = -radius; dx <= radius; dx += 1) { const nx = x + dx; const ny = y + dy; if (nx >= 0 && ny >= 0 && nx < drawingCanvas.width && ny < drawingCanvas.height && ink(pixels, (ny * drawingCanvas.width + nx) * 4)) return true; } return false; };
     let expected = 0; let matched = 0; let drawn = 0; let aligned = 0;
+    let referenceMinX = drawingCanvas.width; let referenceMinY = drawingCanvas.height; let referenceMaxX = -1; let referenceMaxY = -1;
+    let drawingMinX = drawingCanvas.width; let drawingMinY = drawingCanvas.height; let drawingMaxX = -1; let drawingMaxY = -1;
     differenceContext.clearRect(0, 0, differenceCanvas.width, differenceCanvas.height);
     for (let y = 0; y < drawingCanvas.height; y += 2) for (let x = 0; x < drawingCanvas.width; x += 2) {
       const index = (y * drawingCanvas.width + x) * 4;
@@ -338,8 +327,8 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
       const drawingAligned = drawnInk && near(referencePixels, x, y);
       const missing = expectedInk && !targetAligned;
       const extra = drawnInk && !drawingAligned;
-      if (expectedInk) { expected += 1; if (targetAligned) matched += 1; }
-      if (drawnInk) { drawn += 1; if (drawingAligned) aligned += 1; }
+      if (expectedInk) { expected += 1; if (targetAligned) matched += 1; referenceMinX = Math.min(referenceMinX, x); referenceMinY = Math.min(referenceMinY, y); referenceMaxX = Math.max(referenceMaxX, x); referenceMaxY = Math.max(referenceMaxY, y); }
+      if (drawnInk) { drawn += 1; if (drawingAligned) aligned += 1; drawingMinX = Math.min(drawingMinX, x); drawingMinY = Math.min(drawingMinY, y); drawingMaxX = Math.max(drawingMaxX, x); drawingMaxY = Math.max(drawingMaxY, y); }
       if (targetAligned || drawingAligned) {
         differenceContext.fillStyle = 'rgba(47, 137, 108, .8)';
         differenceContext.fillRect(x, y, 4, 4);
