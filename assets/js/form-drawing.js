@@ -126,14 +126,14 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     drawingContext.lineCap = 'round';
     drawingContext.lineJoin = 'round';
     drawingContext.lineWidth = Number(brushSizeInput.value);
-    drawingContext.strokeStyle = erasing ? '#ffffff' : brushColorInput.value;
-    drawingContext.globalCompositeOperation = erasing ? 'destination-out' : 'source-over';
+    drawingContext.strokeStyle = tool === 'eraser' ? '#ffffff' : brushColorInput.value;
+    drawingContext.globalCompositeOperation = tool === 'eraser' ? 'destination-out' : 'source-over';
     drawingContext.lineTo(point.x, point.y);
     drawingContext.stroke();
   };
-  drawingCanvas.addEventListener('pointerdown', (event) => { drawing = true; drawingCanvas.setPointerCapture(event.pointerId); const point = pointFor(event); drawingContext.beginPath(); drawingContext.moveTo(point.x, point.y); drawPoint(event); });
-  drawingCanvas.addEventListener('pointermove', (event) => { if (drawing) drawPoint(event); });
-  drawingCanvas.addEventListener('pointerup', () => { drawing = false; drawingContext.closePath(); drawingContext.globalCompositeOperation = 'source-over'; snapshot(); });
+  drawingCanvas.addEventListener('pointerdown', (event) => { drawing = true; drawingCanvas.setPointerCapture(event.pointerId); const point = pointFor(event); activeStroke = [{ ...point, tool }]; drawingContext.beginPath(); drawingContext.moveTo(point.x, point.y); drawPoint(event); });
+  drawingCanvas.addEventListener('pointermove', (event) => { if (drawing) { const point = pointFor(event); activeStroke?.push({ ...point, tool }); drawPoint(event); } });
+  drawingCanvas.addEventListener('pointerup', () => { drawing = false; drawingContext.closePath(); drawingContext.globalCompositeOperation = 'source-over'; if (activeStroke?.length) strokes.push(activeStroke); activeStroke = null; snapshot(); });
   drawingCanvas.addEventListener('pointercancel', () => { drawing = false; drawingContext.globalCompositeOperation = 'source-over'; });
 
   const scoreCanvas = async () => {
