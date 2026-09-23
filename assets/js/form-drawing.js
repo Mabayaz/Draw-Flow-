@@ -362,7 +362,7 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     guideVisible = true;
     drawImage(guideContext, await loadImage(images.trace));
     guideCanvas.style.opacity = '.4';
-    let secondsLeft = 5;
+    let secondsLeft = 10;
     peekTimer.textContent = `${secondsLeft}s`;
     peekInterval = setInterval(() => { secondsLeft -= 1; peekTimer.textContent = secondsLeft > 0 ? `${secondsLeft}s` : ''; }, 1000);
     peekTimeout = setTimeout(async () => {
@@ -373,7 +373,7 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
       guideCanvas.style.opacity = '0';
       peekTimer.textContent = '';
       renderStage();
-    }, 5000);
+    }, 10000);
     renderStage();
   };
 
@@ -401,6 +401,8 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
   });
   penButton.addEventListener('click', () => { tool = 'pen'; penButton.classList.add('primary'); eraserButton.classList.remove('primary'); });
   eraserButton.addEventListener('click', () => { tool = 'eraser'; eraserButton.classList.add('primary'); penButton.classList.remove('primary'); });
+  splitInput.addEventListener('input', () => { if (stage === 'compare') scoreCanvas(); });
+  evaluationSplitInput.addEventListener('input', () => { if (stage === 'compare') loadImage(images.complete).then(renderEvaluation); });
   document.querySelector('#form-clear').addEventListener('click', () => { clearDrawing(); if (stage === 'trace') updateTraceCoverage(); });
   document.querySelector('#form-undo').addEventListener('click', () => { if (historyIndex > 0) { historyIndex -= 1; drawingContext.putImageData(history[historyIndex], 0, 0); if (stage === 'trace') updateTraceCoverage(); } });
   document.querySelector('#form-redo').addEventListener('click', () => { if (historyIndex < history.length - 1) { historyIndex += 1; drawingContext.putImageData(history[historyIndex], 0, 0); if (stage === 'trace') updateTraceCoverage(); } });
