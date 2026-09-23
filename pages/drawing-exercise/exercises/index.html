@@ -8,661 +8,385 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  
+  <script src="https://cdn.tailwindcss.com">
+</script>
+  <script src="/assets/js/tailwind-config.js">
+</script>
+  <link rel="stylesheet" href="/assets/css/site.css">
   <style>
-    body {
-      background-color: #fff8f0;
-      color: #3d3935;
-      font-family: 'DM Sans', sans-serif;
-      min-height: 100vh;
-    }
-
-    .topic-card-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 1rem;
-    }
-
-    .topic-card {
-      display: grid;
-      min-height: 9.5rem;
-      align-content: space-between;
-      border: 1px solid #d9d5c9;
-      border-radius: 1rem;
-      background: #fffdf8;
-      padding: 1.25rem;
-      color: inherit;
-      text-align: left;
-      cursor: pointer;
-      transition: all .2s ease;
-    }
-
-    .topic-card:hover, .topic-card.is-active {
-      border-color: #ff6b8b;
-      box-shadow: 0 12px 24px rgba(29, 41, 38, .08);
-      transform: translateY(-2px);
-    }
-
-    .topic-card.is-active {
-      background: #fff0f3;
-    }
-
-    .exercise-studio {
-      border: 1px solid #d9d5c9;
-      border-radius: 1.25rem;
-      background: #fffdf8;
-      padding: 1.25rem;
-      box-shadow: 0 18px 34px rgba(29, 41, 38, .08);
-    }
-
-    .canvas-frame {
-      position: relative;
-      overflow: hidden;
-      aspect-ratio: 1 / 1;
-      width: 100%;
-      max-width: 600px;
-      margin: 0 auto;
-      border: 1.5px solid #d9d5c9;
-      border-radius: 1rem;
-      background: #fff;
-    }
-
-    .canvas-frame canvas {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      touch-action: none;
-    }
-
-    #studio-base-canvas { z-index: 1; pointer-events: none; }
-    #studio-guide-canvas { z-index: 2; pointer-events: none; }
-    #studio-drawing-canvas { z-index: 3; cursor: crosshair; }
-
-    .evaluation-view[hidden] { display: none !important; }
-
-    .evaluation-frame {
-      position: relative;
-      overflow: hidden;
-      aspect-ratio: 1 / 1;
-      width: 100%;
-      max-width: 600px;
-      margin: 0 auto;
-      border: 1.5px solid #d9d5c9;
-      border-radius: 1rem;
-      background: #fff;
-    }
-
-    .evaluation-frame canvas {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-    }
-
-    #studio-user-evaluation { z-index: 1; }
-    #studio-target-evaluation { z-index: 2; clip-path: inset(0 50% 0 0); }
-
-    .studio-button {
-      border: 1px solid #e8e2d9;
-      border-radius: 999px;
-      background: #ffffff;
-      padding: 0.5rem 0.9rem;
-      color: #3d3935;
-      font-size: 0.75rem;
-      font-weight: 700;
-      transition: all 0.2s ease;
-      cursor: pointer;
-    }
-
-    .studio-button:hover:not(:disabled) {
-      background: #f7f1ea;
-      transform: translateY(-1px);
-    }
-
-    .studio-button.primary {
-      border: none;
-      background: #ff6b8b;
-      color: #ffffff;
-      box-shadow: 0 4px 12px rgba(255, 107, 139, 0.35);
-    }
-
-    .studio-button.active-tool {
-      border-color: #ff6b8b;
-      background: #fff0f3;
-      color: #a83d59;
-    }
-
-    .studio-button:disabled {
-      cursor: not-allowed;
-      opacity: .5;
-    }
-
-    .game-pill {
-      border: 1.5px solid #ebdcd0;
-      border-radius: 999px;
-      background: #fff;
-      padding: 0.5rem 1rem;
-      box-shadow: 0 2px 8px rgba(180, 160, 140, 0.15);
-      font-size: 0.75rem;
-      font-weight: 700;
-    }
-
-    @media (max-width: 800px) {
-      .topic-card-grid { grid-template-columns: 1fr 1fr; }
-    }
-    @media (max-width: 520px) {
-      .topic-card-grid { grid-template-columns: 1fr; }
-    }
+    .module-card { border: 1px solid #d9d5c9; border-radius: 1.25rem; background: #fffdf8; padding: 1.75rem; transition: border-color .25s ease, box-shadow .25s ease, opacity .25s ease; }
+    .module-card.is-active { border-color: #e86f45; box-shadow: 0 18px 34px rgba(29, 41, 38, .09); }
+    .module-card.is-locked { opacity: .58; background: rgba(232, 226, 215, .5); }
+    .module-card.is-complete { border-color: #2f896c; }
+    .stage-number { display: grid; width: 2.75rem; height: 2.75rem; place-items: center; flex: 0 0 auto; border-radius: 999px; background: #173e36; color: #f8f4eb; font-family: 'DM Mono', monospace; font-size: .8rem; font-weight: 500; }
+    .is-complete .stage-number { background: #2f896c; }
+    .lock-note { display: flex; align-items: center; gap: .55rem; border-radius: .75rem; background: #e8e2d7; padding: .75rem; color: #68716c; font-size: .75rem; }
+    .exercise-item { border-top: 1px solid #d9d5c9; padding-top: 1rem; }
+    .exercise-item + .exercise-item { margin-top: 1rem; }
+    .completion-button { display: inline-flex; align-items: center; gap: .5rem; border-radius: 999px; background: #173e36; padding: .75rem 1rem; color: #f8f4eb; font-size: .8rem; font-weight: 700; transition: transform .2s ease, background-color .2s ease; }
+    .completion-button:hover { background: #e86f45; color: #1d2926; transform: translateY(-2px); }
+    .completion-button:disabled { cursor: not-allowed; opacity: .55; }
+    .completion-button.is-complete { background: #2f896c; }
+    .progress-track { height: .55rem; overflow: hidden; border-radius: 999px; background: #e8e2d7; }
+    .progress-fill { height: 100%; width: 33.333%; border-radius: inherit; background: #e86f45; transition: width .45s ease; }
+    .shape-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; margin-top: 1.25rem; }
+    .shape-tile { display: grid; min-height: 7rem; place-items: center; border: 1px solid #d9d5c9; border-radius: .75rem; background: #f5f1e8; color: #173e36; }
+    .shape-cube { width: 3.2rem; height: 3.2rem; border: 3px solid currentColor; transform: rotate(30deg) skewY(-12deg); }
+    .shape-sphere { width: 3.4rem; height: 3.4rem; border: 3px solid currentColor; border-radius: 50%; box-shadow: inset -.6rem -.45rem 0 rgba(232, 111, 69, .28); }
+    .shape-cylinder { width: 3.3rem; height: 3.8rem; border: 3px solid currentColor; border-radius: 50% / 15%; box-shadow: inset 0 1.4rem 0 rgba(232, 111, 69, .18); }
+    .prompt-box { border-radius: .9rem; background: #dce9df; padding: 1rem; color: #31564a; font-size: .8rem; line-height: 1.6; }
+    .exercise-studio { border: 1px solid #d9d5c9; border-radius: 1.25rem; background: #fffdf8; padding: 1.25rem; box-shadow: 0 18px 34px rgba(29, 41, 38, .08); }
+    .studio-toolbar { display: flex; flex-wrap: wrap; align-items: end; gap: .75rem; }
+    .studio-field { display: grid; gap: .35rem; color: #68716c; font-family: 'DM Mono', monospace; font-size: .65rem; text-transform: uppercase; letter-spacing: .08em; }
+    .studio-field select, .studio-field input { min-height: 2.4rem; border: 1px solid #d9d5c9; border-radius: .5rem; background: #f5f1e8; padding: .45rem .65rem; color: #1d2926; font: inherit; text-transform: none; letter-spacing: 0; }
+    .studio-stepbar { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; margin: 1.25rem 0; }
+    .studio-step { border: 1px solid #d9d5c9; border-radius: .65rem; background: #f5f1e8; padding: .7rem .8rem; color: #68716c; font-size: .75rem; font-weight: 700; text-align: left; }
+    .studio-step.is-active { border-color: #e86f45; background: #fff1e9; color: #1d2926; }
+    .studio-step:disabled { cursor: not-allowed; opacity: .5; }
+    .studio-board { display: grid; gap: 1rem; grid-template-columns: minmax(0, 1.4fr) minmax(14rem, .6fr); align-items: start; }
+    .canvas-frame { position: relative; overflow: hidden; min-height: 20rem; border: 1px solid #d9d5c9; border-radius: .75rem; background: #fff; }
+    .canvas-frame canvas { display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; cursor: crosshair; touch-action: none; }
+    .canvas-frame canvas + canvas { position: absolute; inset: 0; }
+    #studio-difference-layer { pointer-events: none; }
+    .topic-progress-card { border: 1px solid #d9d5c9; border-radius: .65rem; background: #f5f1e8; padding: .65rem; color: #68716c; text-align: left; }
+    .topic-progress-card.is-current { border-color: #e86f45; color: #1d2926; }
+    .topic-progress-card.is-locked { cursor: not-allowed; opacity: .5; }
+    .topic-progress-card strong { display: block; font-family: 'DM Mono', monospace; font-size: .7rem; }
+    .topic-progress-card span { display: block; margin-top: .25rem; font-size: .68rem; }
+    .exercise-view[hidden] { display: none; }
+    .topic-card-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .75rem; }
+    .topic-card { display: grid; min-height: 9rem; align-content: space-between; border: 1px solid #d9d5c9; border-radius: 1rem; background: #fffdf8; padding: 1rem; color: inherit; text-align: left; text-decoration: none; transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease; }
+    .topic-card:not(:disabled):hover { border-color: #e86f45; box-shadow: 0 12px 24px rgba(29, 41, 38, .08); transform: translateY(-2px); }
+    .topic-card.is-locked { cursor: not-allowed; opacity: .5; }
+    .topic-card__icon { display: flex; align-items: center; justify-content: space-between; color: #e86f45; font-family: 'DM Mono', monospace; font-size: .72rem; }
+    .topic-card__title { margin-top: 1.25rem; font-family: 'Space Grotesk', sans-serif; font-size: 1.35rem; font-weight: 700; }
+    .topic-card__meta { color: #68716c; font-size: .72rem; line-height: 1.45; }
+    .intro-panel { display: grid; gap: 1.5rem; grid-template-columns: minmax(0, 1.2fr) minmax(16rem, .8fr); border: 1px solid #d9d5c9; border-radius: 1.25rem; background: #fffdf8; padding: clamp(1.25rem, 4vw, 2.5rem); box-shadow: 0 18px 34px rgba(29, 41, 38, .08); }
+    .intro-copy { max-width: 38rem; }
+    .level-preview { display: grid; gap: .65rem; align-content: start; }
+    .level-preview__item { display: flex; align-items: center; justify-content: space-between; gap: 1rem; border: 1px solid #d9d5c9; border-radius: .7rem; background: #f5f1e8; padding: .8rem; font-size: .8rem; }
+    .level-preview__item.is-ready { border-color: #e86f45; background: #fff1e9; }
+    .level-preview__item.is-locked { color: #68716c; opacity: .6; }
+    .intro-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .65rem; margin-top: 1.5rem; }
+    .secondary-button { border: 1px solid #d9d5c9; border-radius: .55rem; background: #f5f1e8; padding: .7rem 1rem; color: #1d2926; font-size: .8rem; font-weight: 700; }
+    @media (max-width: 800px) { .topic-card-grid, .intro-panel { grid-template-columns: 1fr 1fr; } .intro-panel { gap: 1rem; } }
+    @media (max-width: 520px) { .topic-card-grid, .intro-panel { grid-template-columns: 1fr; } }
+    .studio-side { display: grid; gap: .75rem; }
+    .studio-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .studio-button { border: 1px solid #d9d5c9; border-radius: .55rem; background: #f5f1e8; padding: .6rem .75rem; color: #1d2926; font-size: .75rem; font-weight: 700; }
+    .studio-button.primary { border-color: #173e36; background: #173e36; color: #f8f4eb; }
+    .studio-button:disabled { cursor: not-allowed; opacity: .5; }
+    .studio-score { border-radius: .75rem; background: #dce9df; padding: 1rem; }
+    .studio-score strong { display: block; color: #173e36; font-family: 'DM Mono', monospace; font-size: 2rem; }
+    .studio-hint { color: #68716c; font-size: .75rem; line-height: 1.55; }
+    @media (max-width: 800px) { .studio-board { grid-template-columns: 1fr; } .studio-stepbar { grid-template-columns: 1fr; } }
+    @media (max-width: 640px) { .shape-grid { grid-template-columns: 1fr; } .module-card { padding: 1.25rem; } }
   </style>
 </head>
 <body>
-  <div class="texture page-shell bg-background text-foreground min-h-screen flex flex-col">
-    
-    <!-- Connected Header Navigation -->
-    <header class="sticky top-0 z-40 border-b border-black/10 bg-[#fff8f0]/90 backdrop-blur-md">
+  <div class="texture page-shell bg-background text-foreground">
+    <header class="sticky top-0 z-40 border-b border-border/80 bg-background/90 backdrop-blur-md">
       <div class="mx-auto flex h-[4.5rem] max-w-7xl items-center justify-between px-5 sm:px-8">
-        <a href="/" class="flex items-center gap-3 rounded-md">
-          <span class="grid h-9 w-9 place-items-center rounded-[11px] bg-[#173e36] font-bold text-[#f8f4eb]">DF</span>
-          <span class="font-display text-[1.45rem] font-bold">DrawFlow<span class="text-[#ff6b8b]">.</span></span>
-        </a>
+        <a href="/" class="focus-ring flex items-center gap-3 rounded-md">
+<span class="grid h-9 w-9 place-items-center rounded-[11px] bg-primary font-bold text-primary-foreground">DF</span>
+<span class="font-display text-[1.45rem]">DrawFlow<span class="text-accent">.</span>
+</span>
+</a>
         <nav class="hidden items-center gap-1 md:flex" aria-label="Main navigation">
-          <a href="/" class="rounded-full px-3 py-2 text-sm font-semibold text-gray-600 hover:bg-black/5">Home</a>
-          <a href="/pages/lessons/" class="rounded-full px-3 py-2 text-sm font-semibold text-gray-600 hover:bg-black/5">Lessons</a>
-          <a href="/pages/exercises/" aria-current="page" class="rounded-full bg-black/5 px-3 py-2 text-sm font-semibold text-gray-900">Exercises</a>
-          <a href="/pages/self-check/" class="rounded-full px-3 py-2 text-sm font-semibold text-gray-600 hover:bg-black/5">Self-Check</a>
-          <a href="/pages/about/" class="rounded-full px-3 py-2 text-sm font-semibold text-gray-600 hover:bg-black/5">About</a>
-        </nav>
+<a href="/" class="focus-ring rounded-full px-3 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted">Home</a>
+<a href="/pages/lessons/" class="focus-ring rounded-full px-3 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted">Lessons</a>
+<a href="/pages/exercises/" aria-current="page" class="focus-ring rounded-full bg-muted px-3 py-2 text-sm font-semibold">Exercises</a>
+<a href="/pages/self-check/" class="focus-ring rounded-full px-3 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted">Self-Check</a>
+<a href="/pages/about/" class="focus-ring rounded-full px-3 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted">About</a>
+</nav>
         <div class="flex items-center gap-2">
-          <span class="text-xs font-mono text-gray-500 uppercase">Solid Drawing Training</span>
-        </div>
+<button type="button" aria-label="Switch to night mode" data-testid="button-theme-toggle" class="focus-ring grid h-10 w-10 place-items-center rounded-full border border-border bg-card text-muted-foreground">&#9790;</button>
+<button type="button" aria-label="Open menu" aria-expanded="false" data-testid="button-mobile-menu" class="focus-ring grid h-10 w-10 place-items-center rounded-full border border-border md:hidden">&#9776;</button>
+</div>
       </div>
     </header>
 
-    <main class="mx-auto max-w-7xl px-4 py-6 sm:px-8 flex-1 w-full flex flex-col gap-6">
-      
-      <!-- Topic Selection Cards -->
-      <section>
-        <h1 class="text-2xl font-bold font-display mb-3">Select Drawing Topic</h1>
+    <main class="mx-auto max-w-5xl px-5 pb-20 sm:px-8">
+      <section class="page-intro">
+<p class="font-mono-draw text-[10px] uppercase tracking-[.18em] text-accent">Progressive practice</p>
+<h1 class="mt-4 max-w-4xl font-display text-6xl leading-[.9] sm:text-8xl">Build the form, then make it believable.</h1>
+         <p class="mt-7 max-w-3xl text-base leading-7 text-muted-foreground">Move through four focused stages. Each exercise gives you one idea to test, one action to complete, and a clear next step.</p>
+</section>
+      <section class="mb-8 rounded-2xl border border-border bg-card p-5 sm:p-7" aria-label="Learning progress">
+<div class="flex flex-wrap items-end justify-between gap-4">
+<div>
+<p class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Your path</p>
+<h2 class="mt-2 font-display text-3xl">Solid Drawing foundations</h2>
+</div>
+<p id="progress-label" class="font-mono-draw text-xs text-muted-foreground">1 of 4 stages unlocked</p>
+</div>
+<div class="progress-track mt-5">
+<div id="progress-fill" class="progress-fill">
+</div>
+</div>
+<div class="mt-3 flex justify-between text-[10px] font-semibold uppercase tracking-[.12em] text-muted-foreground">
+<span>Form</span>
+<span>Perspective</span>
+<span>Shadow</span>
+<span>Depth</span>
+</div>
+</section>
+
+      <section id="exercise-overview" class="exercise-view" aria-labelledby="overview-title">
+        <div class="mb-6 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+          <div><p class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Choose a module</p><h2 id="overview-title" class="mt-2 font-display text-3xl">Your drawing path</h2><p class="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">Start with Form. Complete every level in a topic to unlock the next principle.</p></div>
+          <p id="overview-progress" class="font-mono-draw text-xs text-muted-foreground">0 / 3 levels completed</p>
+        </div>
         <div class="topic-card-grid">
-          <button id="topic-perspective" class="topic-card is-active" type="button">
-            <div class="flex justify-between items-center w-full">
-              <span class="font-mono text-xs text-[#ff6b8b] font-bold">TOPIC 01</span>
-              <span class="text-xs font-bold text-green-700">UNLOCKED</span>
-            </div>
-            <div class="font-display font-bold text-lg">Perspective</div>
-            <div class="text-xs text-gray-500">1-Point, 2-Point, and 3-Point perspective boxes.</div>
-          </button>
-
-          <button id="topic-form" class="topic-card" type="button">
-            <div class="flex justify-between items-center w-full">
-              <span class="font-mono text-xs text-[#ff6b8b] font-bold">TOPIC 02</span>
-              <span class="text-xs font-bold text-green-700">UNLOCKED</span>
-            </div>
-            <div class="font-display font-bold text-lg">Form</div>
-            <div class="text-xs text-gray-500">Pyramids, Cubes, and 3D compound geometry.</div>
-          </button>
-
-          <button id="topic-depth" class="topic-card" type="button">
-            <div class="flex justify-between items-center w-full">
-              <span class="font-mono text-xs text-[#ff6b8b] font-bold">TOPIC 03</span>
-              <span class="text-xs font-bold text-green-700">UNLOCKED</span>
-            </div>
-            <div class="font-display font-bold text-lg">Depth</div>
-            <div class="text-xs text-gray-500">Overlap and spatial depth arrangements.</div>
-          </button>
-
-          <button id="topic-shadow" class="topic-card" type="button">
-            <div class="flex justify-between items-center w-full">
-              <span class="font-mono text-xs text-[#ff6b8b] font-bold">TOPIC 04</span>
-              <span class="text-xs font-bold text-green-700">UNLOCKED</span>
-            </div>
-            <div class="font-display font-bold text-lg">Shadow</div>
-            <div class="text-xs text-gray-500">Light source projections and cast shadows.</div>
-          </button>
+          <a class="topic-card" data-topic-card="form" href="/pages/drawing-exercise/form/"><span class="topic-card__icon"><span>01</span><span data-topic-status>OPEN</span></span><span class="topic-card__title">Form</span><span class="topic-card__meta">Build volume from simple shapes. Begin here.</span></a>
+          <a class="topic-card is-locked" data-topic-card="perspective" href="/pages/drawing-exercise/perspective/" aria-disabled="true"><span class="topic-card__icon"><span>02</span><span data-topic-status aria-label="Locked">&#128274;</span></span><span class="topic-card__title">Perspective</span><span class="topic-card__meta">Complete all Form levels to unlock.</span></a>
+          <a class="topic-card is-locked" data-topic-card="shadow" href="/pages/drawing-exercise/shadow/" aria-disabled="true"><span class="topic-card__icon"><span>03</span><span data-topic-status aria-label="Locked">&#128274;</span></span><span class="topic-card__title">Shadow</span><span class="topic-card__meta">Complete Perspective first.</span></a>
+          <a class="topic-card is-locked" data-topic-card="depth" href="/pages/drawing-exercise/depth/" aria-disabled="true"><span class="topic-card__icon"><span>04</span><span data-topic-status aria-label="Locked">&#128274;</span></span><span class="topic-card__title">Depth</span><span class="topic-card__meta">Complete Shadow first.</span></a>
         </div>
       </section>
 
-      <!-- Exercise Studio -->
-      <section class="exercise-studio grid md:grid-cols-[1fr_18rem] gap-6">
-        
-        <!-- Left Side Interactive Canvas -->
-        <div class="flex flex-col gap-4">
-          <!-- Toolbar -->
-          <div class="flex flex-wrap items-center gap-3 p-3 bg-[#fffdf8] border border-[#e8e2d9] rounded-xl">
-            <div class="flex flex-col gap-1 text-[10px] font-mono text-gray-500 uppercase">
-              <label for="studio-level">Level</label>
-              <select id="studio-level" class="border border-[#d9d5c9] rounded p-1 text-xs font-bold bg-white">
-                <option value="1">Point 1 (1-Point Perspective)</option>
-                <option value="2">Point 2 (2-Point Perspective)</option>
-                <option value="3">Point 3 (3-Point Perspective)</option>
-              </select>
-            </div>
+      <section id="form-intro" class="exercise-view" aria-labelledby="form-intro-title" hidden>
+        <div class="intro-panel">
+          <div class="intro-copy"><p class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Form / Introduction</p><h2 id="form-intro-title" class="mt-3 font-display text-4xl sm:text-5xl">Make flat marks feel solid.</h2><p class="mt-5 text-sm leading-7 text-muted-foreground">Form is the foundation of believable drawing. You will practice turning lines into cubes, spheres, cylinders, and combined objects by paying attention to volume, proportion, centerlines, and the way surfaces turn in space.</p><p class="mt-3 text-sm leading-7 text-muted-foreground">Each level has three moments: trace the construction, redraw it from memory, then compare your result with the original.</p><div class="intro-actions"><a class="studio-button primary" href="/pages/drawing-exercise/form/">Start Challenge <span aria-hidden="true">&rarr;</span></a><button class="secondary-button" type="button" data-back-to-overview>Back to topics</button></div></div>
+          <div class="level-preview"><p class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Form levels</p><div class="level-preview__item is-ready"><span><strong>Level 1</strong><br><small>Primitives</small></span><span>READY</span></div><div class="level-preview__item is-locked"><span><strong>Level 2</strong><br><small>Combined forms</small></span><span>&#128274;</span></div><div class="level-preview__item is-locked"><span><strong>Level 3</strong><br><small>Complex volume</small></span><span>&#128274;</span></div><p id="form-intro-progress" class="studio-hint">0 / 3 levels completed</p></div>
+        </div>
+      </section>
 
-            <div class="flex flex-col gap-1 text-[10px] font-mono text-gray-500 uppercase">
-              <label for="studio-brush-size">Brush Size</label>
-              <input id="studio-brush-size" type="range" min="2" max="20" value="6" class="h-6">
-            </div>
-
-            <div class="flex flex-col gap-1 text-[10px] font-mono text-gray-500 uppercase">
-              <label for="studio-brush-color">Color</label>
-              <input id="studio-brush-color" type="color" value="#2563eb" class="w-10 h-7 p-0.5 rounded border border-[#d9d5c9]">
-            </div>
-
-            <div class="flex flex-wrap items-center gap-1.5 ml-auto">
-              <button id="studio-pen" class="studio-button active-tool" type="button">🖊️ Pen</button>
-              <button id="studio-eraser" class="studio-button" type="button">🧹 Eraser</button>
-              <button id="studio-undo" class="studio-button" type="button">↩️ Undo</button>
-              <button id="studio-redo" class="studio-button" type="button">↪️ Redo</button>
-              <button id="studio-clear" class="studio-button" type="button">🗑️ Clear</button>
-              <button id="studio-guide-toggle" class="studio-button" type="button">👁️ Guide On</button>
-            </div>
+      <section id="exercise-studio" class="exercise-studio exercise-view" aria-labelledby="studio-title" hidden>
+        <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+          <div>
+            <p class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Guided drawing lab</p>
+            <h2 id="studio-title" class="mt-2 font-display text-3xl">Trace it. Remember it. Draw it.</h2>
+            <p id="studio-description" class="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">Choose a subject and level, then work through the three-step practice flow.</p>
           </div>
-
-          <!-- Drawing Canvas -->
-          <div id="main-drawing-area" class="w-full">
-            <div class="canvas-frame">
-              <canvas id="studio-base-canvas" width="600" height="600"></canvas>
-              <canvas id="studio-guide-canvas" width="600" height="600"></canvas>
-              <canvas id="studio-drawing-canvas" width="600" height="600"></canvas>
-            </div>
-          </div>
-
-          <!-- Evaluation View (Hidden initially) -->
-          <div id="studio-evaluation" class="evaluation-view w-full" hidden>
-            <div class="flex justify-between items-center mb-2">
-              <p class="font-mono text-xs font-bold text-[#ff6b8b] uppercase">Your Drawing vs Target Comparison</p>
-              <span class="text-xs font-mono text-gray-500">Slide to split</span>
-            </div>
-            <div class="evaluation-frame">
-              <canvas id="studio-user-evaluation" width="600" height="600"></canvas>
-              <canvas id="studio-target-evaluation" width="600" height="600"></canvas>
-            </div>
-            <div class="mt-3 flex flex-col gap-1 text-[10px] font-mono text-gray-500 uppercase">
-              <label for="studio-eval-split">Comparison Split</label>
-              <input id="studio-eval-split" type="range" min="0" max="100" value="50">
-            </div>
-          </div>
-
-          <!-- Stage Actions -->
-          <div class="flex justify-between items-center pt-3 border-t border-[#d9d5c9]">
-            <div class="flex items-center gap-2">
-              <button id="studio-peek" class="studio-button" type="button">💡 Peek Hint (<span id="peek-count">3</span> Left)</button>
-              <span id="studio-peek-timer" class="font-mono text-xs text-[#ff6b8b] font-bold"></span>
-            </div>
-            <button id="studio-submit" class="studio-button primary py-2 px-6" type="button">Continue to Freehand Mode ➔</button>
+          <p id="studio-level-status" class="font-mono-draw text-xs text-muted-foreground">Level 1 ready</p>
+        </div>
+        <div class="studio-toolbar mt-6">
+          <label class="studio-field">Subject<select id="studio-subject" aria-label="Exercise subject"></select></label>
+          <label class="studio-field">Level<select id="studio-level" aria-label="Exercise level"></select></label>
+          <label class="studio-field">Brush size<input id="studio-brush-size" type="range" min="2" max="24" step="1" value="6" aria-label="Brush size"></label>
+          <label class="studio-field">Brush color<input id="studio-brush-color" type="color" value="#173e36" aria-label="Brush color"></label>
+          <label class="studio-field">Trace opacity<input id="studio-opacity" type="range" min="0" max="0.8" step="0.05" value="0.28" aria-label="Trace opacity"></label>
+          <div class="studio-actions">
+            <button id="studio-undo" class="studio-button" type="button">Undo</button>
+            <button id="studio-redo" class="studio-button" type="button">Redo</button>
+            <button id="studio-eraser" class="studio-button" type="button">Eraser</button>
+            <button id="studio-clear" class="studio-button" type="button">Clear</button>
           </div>
         </div>
-
-        <!-- Right Side Panel -->
-        <aside class="flex flex-col gap-4">
-          <div class="p-4 rounded-xl bg-[#eaf3ed] border border-[#cce2d3]">
-            <span class="font-mono text-[10px] uppercase font-bold text-gray-500">Accuracy Rank</span>
-            <strong id="studio-rank" class="block font-display text-3xl text-[#173e36] mt-1">--</strong>
-            <p id="studio-message" class="text-xs text-gray-600 mt-2">Trace over the guide lines, then proceed to Freehand Mode.</p>
+        <div id="studio-topic-progress" class="mt-5 grid gap-2 sm:grid-cols-4" aria-label="Topic progress"></div>
+        <div class="studio-stepbar" role="tablist" aria-label="Exercise steps">
+          <button class="studio-step is-active" type="button" data-studio-step="trace">1. Trace</button>
+          <button class="studio-step" type="button" data-studio-step="freehand" disabled>2. Freehand</button>
+          <button class="studio-step" type="button" data-studio-step="compare" disabled>3. Compare &amp; grade</button>
+        </div>
+        <div class="studio-board">
+          <div class="canvas-frame" aria-label="Drawing canvas">
+            <canvas id="studio-reference-layer" aria-hidden="true"></canvas>
+            <canvas id="studio-drawing-canvas" aria-label="Draw here"></canvas>
+            <canvas id="studio-difference-layer" aria-hidden="true"></canvas>
           </div>
-
-          <div class="p-4 border border-[#d9d5c9] rounded-xl bg-white">
-            <span class="font-mono text-[10px] uppercase font-bold text-[#ff6b8b]">Stage Progress</span>
-            <p id="studio-progress" class="font-display font-bold text-xl text-[#173e36] mt-1">Stage 1: Trace</p>
-            <p class="text-xs text-gray-500 mt-2">Stage 1 provides dashed guide lines for muscle memory. Stage 2 requires drawing from memory.</p>
-            <button id="studio-next-level" class="studio-button primary w-full mt-4" type="button" disabled>Next Level ➔</button>
-          </div>
-        </aside>
-
+          <aside class="studio-side">
+            <div class="studio-score"><span class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-muted-foreground">Accuracy</span><strong id="studio-score">--%</strong><p id="studio-score-message" class="mt-2 studio-hint">Trace the guide, then check your work.</p></div>
+            <p class="studio-hint">Your score allows small differences in line weight and placement. Trace accuracy unlocks freehand practice; freehand accuracy completes the level.</p>
+            <button id="studio-check" class="studio-button primary" type="button">Check trace accuracy</button>
+          </aside>
+        </div>
       </section>
+
+      <div class="space-y-5" hidden>
+        <section id="stage-form" class="module-card is-active" data-stage="1">
+<div class="flex flex-col justify-between gap-5 sm:flex-row sm:items-start">
+<div class="flex gap-4">
+<span class="stage-number">01</span>
+<div>
+<p class="stage-label font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Stage one / unlocked</p>
+<h2 class="mt-2 font-display text-4xl">Form and volume</h2>
+<p class="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">Turn flat marks into objects with weight. Start with the primitive forms that support almost every character, prop, and environment.</p>
+</div>
+</div>
+<span class="stage-state rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-secondary-foreground">Ready to practice</span>
+</div>
+<div class="shape-grid">
+<div class="shape-tile">
+<div class="shape-cube" aria-hidden="true">
+</div>
+<span class="sr-only">Cube</span>
+</div>
+<div class="shape-tile">
+<div class="shape-sphere" aria-hidden="true">
+</div>
+<span class="sr-only">Sphere</span>
+</div>
+<div class="shape-tile">
+<div class="shape-cylinder" aria-hidden="true">
+</div>
+<span class="sr-only">Cylinder</span>
+</div>
+</div>
+<div class="mt-6 space-y-4">
+<div class="exercise-item">
+<h3 class="font-display text-xl">Exercise A: Primitive inventory</h3>
+<p class="mt-2 text-sm leading-6 text-muted-foreground">Draw a cube, sphere, and cylinder from three angles. Add a centerline to each one so the volume remains clear when it turns.</p>
+</div>
+<div class="exercise-item">
+<h3 class="font-display text-xl">Exercise B: Combine the forms</h3>
+<p class="mt-2 text-sm leading-6 text-muted-foreground">Build a simple object from at least two primitives. Keep the overlaps visible and check that the parts share the same scale.</p>
+</div>
+</div>
+<div class="mt-7 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-5">
+<p class="text-xs text-muted-foreground">Complete both studies before moving to perspective.</p>
+<button type="button" class="completion-button" data-complete="1">Mark Form complete <span aria-hidden="true">&rarr;</span>
+</button>
+</div>
+</section>
+
+        <section id="stage-perspective" class="module-card is-locked" data-stage="2" aria-disabled="true">
+<div class="flex flex-col justify-between gap-5 sm:flex-row sm:items-start">
+<div class="flex gap-4">
+<span class="stage-number">02</span>
+<div>
+<p class="stage-label font-mono-draw text-[10px] uppercase tracking-[.15em] text-muted-foreground">Stage two / locked</p>
+<h2 class="mt-2 font-display text-4xl">Perspective and space</h2>
+<p class="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">Use horizon lines and vanishing points to place your forms inside a believable world.</p>
+</div>
+</div>
+<span class="stage-state rounded-full bg-muted px-3 py-1 text-xs font-semibold text-muted-foreground">Locked</span>
+</div>
+<div class="lock-note mt-6">
+<span aria-hidden="true">&#128274;</span>
+<span>Complete Stage 1 to unlock this exercise.</span>
+</div>
+<div class="mt-6 grid gap-4 sm:grid-cols-2">
+<div class="prompt-box">
+<strong class="block text-foreground">One-point practice</strong>
+<span>Draw a box facing you. Send every depth edge toward one vanishing point on the horizon.</span>
+</div>
+<div class="prompt-box">
+<strong class="block text-foreground">Two-point practice</strong>
+<span>Turn the box. Establish left and right vanishing points before drawing its top and bottom edges.</span>
+</div>
+</div>
+<div class="mt-7 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-5">
+<button type="button" class="completion-button" data-complete="2" disabled>Mark Perspective complete <span aria-hidden="true">&rarr;</span>
+</button>
+</div>
+</section>
+
+        <section id="stage-shadow" class="module-card is-locked" data-stage="3" aria-disabled="true">
+<div class="flex flex-col justify-between gap-5 sm:flex-row sm:items-start">
+<div class="flex gap-4">
+<span class="stage-number">03</span>
+<div>
+<p class="stage-label font-mono-draw text-[10px] uppercase tracking-[.15em] text-muted-foreground">Stage three / locked</p>
+<h2 class="mt-2 font-display text-4xl">Shadow</h2>
+<p class="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">Use a clear light source to describe core shadows, form shadows, and cast shadows without flattening the object.</p>
+</div>
+</div>
+<span class="stage-state rounded-full bg-muted px-3 py-1 text-xs font-semibold text-muted-foreground">Locked</span>
+</div>
+<div class="lock-note mt-6">
+<span aria-hidden="true">&#128274;</span>
+<span>Complete Stage 2 to unlock this exercise.</span>
+</div>
+<div class="mt-6 grid gap-4 sm:grid-cols-3">
+<div class="rounded-xl border border-border bg-background p-4">
+<strong class="font-display">Core shadow</strong>
+<p class="mt-2 text-xs leading-5 text-muted-foreground">Find the turning point where the form faces away from the light.</p>
+</div>
+<div class="rounded-xl border border-border bg-background p-4">
+<strong class="font-display">Cast shadow</strong>
+<p class="mt-2 text-xs leading-5 text-muted-foreground">Project the object’s shadow across the receiving surface.</p>
+</div>
+<div class="rounded-xl border border-border bg-background p-4">
+<strong class="font-display">Light source</strong>
+<p class="mt-2 text-xs leading-5 text-muted-foreground">Keep highlight, half-tone, and shadow consistent with one direction.</p>
+</div>
+</div>
+<div class="mt-7 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-5">
+<p class="text-xs text-muted-foreground">Identify the light source before you shade.</p>
+<button type="button" class="completion-button" data-complete="3" disabled>Mark Shadow complete <span aria-hidden="true">&rarr;</span>
+</button>
+</div>
+</section>
+
+<section id="stage-depth" class="module-card is-locked" data-stage="4" aria-disabled="true">
+<div class="flex flex-col justify-between gap-5 sm:flex-row sm:items-start">
+<div class="flex gap-4">
+<span class="stage-number">04</span>
+<div>
+<p class="stage-label font-mono-draw text-[10px] uppercase tracking-[.15em] text-muted-foreground">Stage four / locked</p>
+<h2 class="mt-2 font-display text-4xl">Depth</h2>
+<p class="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">Combine scale, overlap, atmospheric perspective, and parallax to make a 2D scene feel deep and spatial.</p>
+</div>
+</div>
+<span class="stage-state rounded-full bg-muted px-3 py-1 text-xs font-semibold text-muted-foreground">Locked</span>
+</div>
+<div class="lock-note mt-6"><span aria-hidden="true">&#128274;</span><span>Complete Stage 3 to unlock this exercise.</span></div>
+<div class="mt-6 grid gap-4 sm:grid-cols-3"><div class="rounded-xl border border-border bg-background p-4"><strong class="font-display">Scale</strong><p class="mt-2 text-xs leading-5 text-muted-foreground">Make distant objects smaller while keeping their structure believable.</p></div><div class="rounded-xl border border-border bg-background p-4"><strong class="font-display">Overlap</strong><p class="mt-2 text-xs leading-5 text-muted-foreground">Use foreground shapes to hide and reveal space between layers.</p></div><div class="rounded-xl border border-border bg-background p-4"><strong class="font-display">Atmosphere</strong><p class="mt-2 text-xs leading-5 text-muted-foreground">Reduce contrast and detail as forms move farther into the scene.</p></div></div>
+<div class="mt-7 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-5"><p class="text-xs text-muted-foreground">Finish with the Self-Check to review all four principles.</p><a href="/pages/self-check/" class="focus-ring rounded-full border border-border px-4 py-3 text-xs font-bold hover:border-accent hover:text-accent">Open Self-Check</a><button type="button" class="completion-button" data-complete="4" disabled>Mark Depth complete <span aria-hidden="true">&rarr;</span></button></div>
+</section>
+      </div>
+
+      <section class="mt-8 rounded-2xl border border-accent/40 bg-accent/10 p-5 sm:p-6">
+<div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+<div>
+<p class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Need a reset?</p>
+<p class="mt-2 text-sm text-muted-foreground">Clear your module progress and start the sequence again.</p>
+</div>
+<button type="button" data-reset-progress class="focus-ring rounded-full border border-border bg-card px-4 py-3 text-xs font-bold hover:border-accent">Reset progress</button>
+</div>
+</section>
     </main>
+
+    <footer class="mx-auto flex w-full max-w-5xl flex-col gap-4 border-t border-border px-5 py-8 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-8">
+<span class="font-display text-lg text-foreground">DrawFlow<span class="text-accent">.</span>
+</span>
+<a href="/pages/lessons/" class="focus-ring text-foreground underline decoration-accent underline-offset-4">Review lessons</a>
+</footer>
   </div>
-
+  <script src="/assets/js/site.js">
+</script>
+  <script src="/assets/js/exercise-studio.js">
+</script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const CANVAS_SIZE = 600;
+    const stages = [...document.querySelectorAll('[data-stage]')];
+    const completeButtons = [...document.querySelectorAll('[data-complete]')];
+    const progressLabel = document.querySelector('#progress-label');
+    const progressFill = document.querySelector('#progress-fill');
+    let completedStages = new Set();
 
-      const state = {
-        topic: 'perspective',
-        level: 1,
-        stage: 'trace',
-        tool: 'pen',
-        brushSize: 6,
-        brushColor: '#2563eb',
-        guideOpacity: 0.7,
-        guideVisible: true,
-        peekCount: 3,
-        peekTimer: null,
-        isDrawing: false,
-        lastX: 0, lastY: 0,
-        history: [], historyStep: -1,
-        calculatedAccuracy: 0
-      };
-
-      // Elements
-      const levelSelect = document.getElementById('studio-level');
-      const brushSizeInput = document.getElementById('studio-brush-size');
-      const brushColorInput = document.getElementById('studio-brush-color');
-      const penBtn = document.getElementById('studio-pen');
-      const eraserBtn = document.getElementById('studio-eraser');
-      const undoBtn = document.getElementById('studio-undo');
-      const redoBtn = document.getElementById('studio-redo');
-      const clearBtn = document.getElementById('studio-clear');
-      const guideToggleBtn = document.getElementById('studio-guide-toggle');
-      const peekBtn = document.getElementById('studio-peek');
-      const peekCountSpan = document.getElementById('peek-count');
-      const peekTimerSpan = document.getElementById('studio-peek-timer');
-      const submitBtn = document.getElementById('studio-submit');
-      const nextLevelBtn = document.getElementById('studio-next-level');
-
-      const rankText = document.getElementById('studio-rank');
-      const messageText = document.getElementById('studio-message');
-      const progressText = document.getElementById('studio-progress');
-
-      const drawingWrap = document.getElementById('main-drawing-area');
-      const evalWrap = document.getElementById('studio-evaluation');
-      const evalSplitInput = document.getElementById('studio-eval-split');
-
-      const baseCanvas = document.getElementById('studio-base-canvas');
-      const guideCanvas = document.getElementById('studio-guide-canvas');
-      const drawingCanvas = document.getElementById('studio-drawing-canvas');
-      const userEvalCanvas = document.getElementById('studio-user-evaluation');
-      const targetEvalCanvas = document.getElementById('studio-target-evaluation');
-
-      const ctxBase = baseCanvas.getContext('2d');
-      const ctxGuide = guideCanvas.getContext('2d');
-      const ctxDrawing = drawingCanvas.getContext('2d', { willReadFrequently: true });
-      const ctxUserEval = userEvalCanvas.getContext('2d');
-      const ctxTargetEval = targetEvalCanvas.getContext('2d');
-
-      function drawVanishingPoint(ctx, x, y) {
-        ctx.save();
-        ctx.strokeStyle = '#ef4444';
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.arc(x, y, 16, 0, Math.PI * 2);
-        ctx.stroke();
-
-        ctx.lineWidth = 2.5;
-        ctx.beginPath();
-        ctx.moveTo(x - 6, y - 6); ctx.lineTo(x + 6, y + 6);
-        ctx.moveTo(x + 6, y - 6); ctx.lineTo(x - 6, y + 6);
-        ctx.stroke();
-        ctx.restore();
-      }
-
-      const geometries = {
-        1: {
-          drawBase: (ctx) => {
-            ctx.save();
-            ctx.strokeStyle = '#6b7280'; ctx.lineWidth = 3;
-            ctx.beginPath(); ctx.moveTo(0, 140); ctx.lineTo(600, 140); ctx.stroke();
-            drawVanishingPoint(ctx, 500, 140);
-
-            ctx.strokeStyle = '#1d2926'; ctx.lineWidth = 6; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-            ctx.beginPath(); ctx.rect(160, 270, 150, 150); ctx.stroke();
-            ctx.restore();
-          },
-          drawGuide: (ctx) => {
-            ctx.save();
-            ctx.strokeStyle = '#9ca3af'; ctx.lineWidth = 3.5;
-            ctx.beginPath();
-            ctx.moveTo(310, 270); ctx.lineTo(500, 140);
-            ctx.moveTo(310, 420); ctx.lineTo(500, 140);
-            ctx.moveTo(160, 270); ctx.lineTo(500, 140);
-            ctx.stroke();
-
-            ctx.strokeStyle = '#6b7280'; ctx.lineWidth = 4; ctx.setLineDash([10, 8]);
-            ctx.beginPath();
-            ctx.moveTo(250, 228); ctx.lineTo(350, 228);
-            ctx.moveTo(350, 228); ctx.lineTo(350, 315);
-            ctx.moveTo(310, 270); ctx.lineTo(250, 228);
-            ctx.stroke();
-            ctx.restore();
-          },
-          drawComplete: (ctx) => {
-            geometries[1].drawBase(ctx);
-            ctx.save();
-            ctx.strokeStyle = '#1d2926'; ctx.lineWidth = 6; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-            ctx.beginPath();
-            ctx.moveTo(160, 270); ctx.lineTo(250, 228); ctx.lineTo(350, 228); ctx.lineTo(310, 270);
-            ctx.moveTo(310, 270); ctx.lineTo(350, 228); ctx.lineTo(350, 315); ctx.lineTo(310, 420);
-            ctx.stroke();
-            ctx.restore();
-          }
-        },
-        2: {
-          drawBase: (ctx) => {
-            ctx.save();
-            ctx.strokeStyle = '#000000'; ctx.lineWidth = 3.5;
-            ctx.beginPath(); ctx.moveTo(0, 210); ctx.lineTo(600, 210); ctx.stroke();
-            drawVanishingPoint(ctx, 70, 210); drawVanishingPoint(ctx, 530, 210);
-
-            ctx.strokeStyle = '#1d2926'; ctx.lineWidth = 6; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-            ctx.beginPath();
-            ctx.moveTo(275, 320); ctx.lineTo(355, 290); ctx.lineTo(355, 375); ctx.lineTo(275, 430); ctx.closePath();
-            ctx.stroke();
-            ctx.restore();
-          },
-          drawGuide: (ctx) => {
-            ctx.save();
-            ctx.strokeStyle = '#9ca3af'; ctx.lineWidth = 3.5;
-            ctx.beginPath();
-            ctx.moveTo(355, 290); ctx.lineTo(70, 210); ctx.moveTo(355, 375); ctx.lineTo(70, 210);
-            ctx.moveTo(275, 320); ctx.lineTo(530, 210); ctx.moveTo(275, 430); ctx.lineTo(530, 210);
-            ctx.stroke();
-
-            ctx.strokeStyle = '#6b7280'; ctx.lineWidth = 4; ctx.setLineDash([10, 8]);
-            ctx.beginPath();
-            ctx.moveTo(220, 260); ctx.lineTo(220, 368);
-            ctx.moveTo(275, 320); ctx.lineTo(220, 260);
-            ctx.moveTo(355, 290); ctx.lineTo(288, 242);
-            ctx.moveTo(220, 260); ctx.lineTo(288, 242);
-            ctx.moveTo(275, 430); ctx.lineTo(220, 368);
-            ctx.stroke();
-            ctx.restore();
-          },
-          drawComplete: (ctx) => {
-            geometries[2].drawBase(ctx);
-            ctx.save();
-            ctx.strokeStyle = '#1d2926'; ctx.lineWidth = 6; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-            ctx.beginPath();
-            ctx.moveTo(355, 290); ctx.lineTo(435, 270); ctx.lineTo(435, 345); ctx.lineTo(355, 375);
-            ctx.moveTo(355, 290); ctx.lineTo(368, 242); ctx.lineTo(288, 242); ctx.lineTo(275, 320);
-            ctx.moveTo(355, 290); ctx.lineTo(355, 375);
-            ctx.stroke();
-            ctx.restore();
-          }
-        },
-        3: {
-          drawBase: (ctx) => {
-            ctx.save();
-            ctx.strokeStyle = '#000000'; ctx.lineWidth = 3.5;
-            ctx.beginPath(); ctx.moveTo(0, 150); ctx.lineTo(600, 150); ctx.stroke();
-            drawVanishingPoint(ctx, 110, 150); drawVanishingPoint(ctx, 485, 150); drawVanishingPoint(ctx, 275, 475);
-
-            ctx.strokeStyle = '#1d2926'; ctx.lineWidth = 6; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-            ctx.beginPath();
-            ctx.moveTo(275, 215); ctx.lineTo(338, 238); ctx.lineTo(275, 270); ctx.lineTo(212, 238); ctx.closePath();
-            ctx.stroke();
-            ctx.restore();
-          },
-          drawGuide: (ctx) => {
-            ctx.save();
-            ctx.strokeStyle = '#9ca3af'; ctx.lineWidth = 3.5;
-            ctx.beginPath();
-            ctx.moveTo(212, 238); ctx.lineTo(110, 150); ctx.moveTo(275, 215); ctx.lineTo(110, 150);
-            ctx.moveTo(338, 238); ctx.lineTo(485, 150); ctx.moveTo(275, 215); ctx.lineTo(485, 150);
-            ctx.moveTo(212, 238); ctx.lineTo(275, 475); ctx.moveTo(338, 238); ctx.lineTo(275, 475); ctx.moveTo(275, 270); ctx.lineTo(275, 475);
-            ctx.stroke();
-
-            ctx.strokeStyle = '#6b7280'; ctx.lineWidth = 4; ctx.setLineDash([10, 8]);
-            ctx.beginPath();
-            ctx.moveTo(275, 270); ctx.lineTo(275, 340);
-            ctx.moveTo(212, 238); ctx.lineTo(228, 310);
-            ctx.moveTo(338, 238); ctx.lineTo(322, 310);
-            ctx.moveTo(228, 310); ctx.lineTo(275, 340);
-            ctx.moveTo(322, 310); ctx.lineTo(275, 340);
-            ctx.stroke();
-            ctx.restore();
-          },
-          drawComplete: (ctx) => {
-            geometries[3].drawBase(ctx);
-            ctx.save();
-            ctx.strokeStyle = '#1d2926'; ctx.lineWidth = 6; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-            ctx.beginPath();
-            ctx.moveTo(275, 270); ctx.lineTo(275, 340);
-            ctx.moveTo(212, 238); ctx.lineTo(228, 310); ctx.lineTo(275, 340);
-            ctx.moveTo(338, 238); ctx.lineTo(322, 310); ctx.lineTo(275, 340);
-            ctx.stroke();
-            ctx.restore();
-          }
-        }
-      };
-
-      function renderLevel() {
-        ctxBase.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-        ctxGuide.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-
-        const geo = geometries[state.level];
-        geo.drawBase(ctxBase);
-
-        if (state.stage === 'trace' && state.guideVisible) {
-          guideCanvas.style.display = 'block';
-          ctxGuide.globalAlpha = state.guideOpacity;
-          geo.drawGuide(ctxGuide);
-        } else {
-          guideCanvas.style.display = 'none';
-        }
-
-        if (state.stage === 'trace') {
-          submitBtn.textContent = 'Continue to Freehand Mode ➔';
-          progressText.textContent = 'Stage 1: Trace';
-        } else if (state.stage === 'freehand') {
-          submitBtn.textContent = 'Evaluate Drawing ➔';
-          progressText.textContent = 'Stage 2: Freehand';
-        } else {
-          submitBtn.textContent = 'Retry Level 🔄';
-          progressText.textContent = 'Stage 3: Completed';
-        }
-      }
-
-      function resetCanvasState() {
-        ctxDrawing.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-        state.history = []; state.historyStep = -1;
-        saveHistoryState();
-      }
-
-      function saveHistoryState() {
-        state.historyStep++;
-        if (state.historyStep < state.history.length) state.history.length = state.historyStep;
-        state.history.push(ctxDrawing.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE));
-      }
-
-      function getCanvasCoordinates(e) {
-        const rect = drawingCanvas.getBoundingClientRect();
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-        return {
-          x: (clientX - rect.left) * (CANVAS_SIZE / rect.width),
-          y: (clientY - rect.top) * (CANVAS_SIZE / rect.height)
-        };
-      }
-
-      function startDrawing(e) {
-        if (state.stage === 'evaluate') return;
-        e.preventDefault();
-        state.isDrawing = true;
-        const coords = getCanvasCoordinates(e);
-        state.lastX = coords.x; state.lastY = coords.y;
-      }
-
-      function draw(e) {
-        if (!state.isDrawing || state.stage === 'evaluate') return;
-        e.preventDefault();
-        const coords = getCanvasCoordinates(e);
-
-        ctxDrawing.save();
-        ctxDrawing.beginPath();
-        ctxDrawing.moveTo(state.lastX, state.lastY);
-        ctxDrawing.lineTo(coords.x, coords.y);
-        ctxDrawing.lineCap = 'round'; ctxDrawing.lineJoin = 'round';
-
-        if (state.tool === 'pen') {
-          ctxDrawing.globalCompositeOperation = 'source-over';
-          ctxDrawing.strokeStyle = state.brushColor;
-          ctxDrawing.lineWidth = state.brushSize;
-        } else {
-          ctxDrawing.globalCompositeOperation = 'destination-out';
-          ctxDrawing.lineWidth = state.brushSize * 2;
-        }
-
-        ctxDrawing.stroke(); ctxDrawing.restore();
-        state.lastX = coords.x; state.lastY = coords.y;
-      }
-
-      function stopDrawing() {
-        if (state.isDrawing) { state.isDrawing = false; saveHistoryState(); }
-      }
-
-      drawingCanvas.addEventListener('mousedown', startDrawing);
-      drawingCanvas.addEventListener('mousemove', draw);
-      window.addEventListener('mouseup', stopDrawing);
-
-      drawingCanvas.addEventListener('touchstart', startDrawing, { passive: false });
-      drawingCanvas.addEventListener('touchmove', draw, { passive: false });
-      window.addEventListener('touchend', stopDrawing);
-
-      levelSelect.addEventListener('change', (e) => {
-        state.level = parseInt(e.target.value, 10);
-        state.stage = 'trace';
-        drawingWrap.hidden = false;
-        evalWrap.hidden = true;
-        resetCanvasState();
-        renderLevel();
+    const renderStages = () => {
+      stages.forEach((stage) => {
+        const stageNumber = Number(stage.dataset.stage);
+        const unlocked = stageNumber === 1 || completedStages.has(stageNumber - 1);
+        const completed = completedStages.has(stageNumber);
+        const state = stage.querySelector('.stage-state');
+        const label = stage.querySelector('.stage-label');
+        const button = stage.querySelector('[data-complete]');
+        stage.classList.toggle('is-locked', !unlocked);
+        stage.classList.toggle('is-active', unlocked && !completed);
+        stage.classList.toggle('is-complete', completed);
+        stage.setAttribute('aria-disabled', String(!unlocked));
+        const lockNote = stage.querySelector('.lock-note');
+        if (lockNote) lockNote.hidden = unlocked;
+        if (state) state.textContent = completed ? 'Complete' : unlocked ? 'Ready to practice' : 'Locked';
+        if (label) label.textContent = `Stage ${['', 'one', 'two', 'three', 'four'][stageNumber]} / ${completed ? 'complete' : unlocked ? 'unlocked' : 'locked'}`;
+        if (button) { button.disabled = !unlocked || completed; button.classList.toggle('is-complete', completed); button.innerHTML = completed ? 'Completed &#10003;' : `Mark ${['', 'Form', 'Perspective', 'Shadow', 'Depth'][stageNumber]} complete <span aria-hidden="true">&rarr;</span>`; }
       });
+      const unlockedCount = stages.filter((stage) => Number(stage.dataset.stage) === 1 || completedStages.has(Number(stage.dataset.stage) - 1)).length;
+      progressLabel.textContent = `${unlockedCount} of 4 stages unlocked`;
+      progressFill.style.width = `${(unlockedCount / 4) * 100}%`;
+    };
 
-      penBtn.addEventListener('click', () => { state.tool = 'pen'; penBtn.classList.add('active-tool'); eraserBtn.classList.remove('active-tool'); });
-      eraserBtn.addEventListener('click', () => { state.tool = 'eraser'; eraserBtn.classList.add('active-tool'); penBtn.classList.remove('active-tool'); });
-      clearBtn.addEventListener('click', resetCanvasState);
-
-      guideToggleBtn.addEventListener('click', () => {
-        state.guideVisible = !state.guideVisible;
-        guideToggleBtn.textContent = state.guideVisible ? '👁️ Guide On' : '🙈 Guide Off';
-        renderLevel();
-      });
-
-      submitBtn.addEventListener('click', () => {
-        if (state.stage === 'trace') {
-          state.stage = 'freehand'; state.guideVisible = false; resetCanvasState(); renderLevel();
-        } else if (state.stage === 'freehand') {
-          state.stage = 'evaluate';
-          drawingWrap.hidden = true; evalWrap.hidden = false;
-          ctxUserEval.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-          geometries[state.level].drawBase(ctxUserEval);
-          ctxUserEval.drawImage(drawingCanvas, 0, 0);
-
-          ctxTargetEval.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-          geometries[state.level].drawComplete(ctxTargetEval);
-          rankText.textContent = 'A Class 🎯';
-          nextLevelBtn.disabled = false;
-        } else {
-          state.stage = 'trace'; state.guideVisible = true; drawingWrap.hidden = false; evalWrap.hidden = true; resetCanvasState(); renderLevel();
-        }
-      });
-
-      evalSplitInput.addEventListener('input', (e) => {
-        targetEvalCanvas.style.clipPath = `inset(0 0 0 ${e.target.value}%)`;
-      });
-
-      // Topic selector buttons
-      ['topic-perspective', 'topic-form', 'topic-depth', 'topic-shadow'].forEach(id => {
-        document.getElementById(id).addEventListener('click', (e) => {
-          document.querySelectorAll('.topic-card').forEach(c => c.classList.remove('is-active'));
-          e.currentTarget.classList.add('is-active');
-        });
-      });
-
-      renderLevel();
-    });
+    completeButtons.forEach((button) => button.addEventListener('click', () => {
+      const stage = Number(button.dataset.complete);
+      completedStages.add(stage);
+      renderStages();
+      document.querySelector(`[data-stage="${Math.min(stage + 1, 4)}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }));
+    document.querySelector('[data-reset-progress]')?.addEventListener('click', () => { completedStages = new Set(); renderStages(); });
+    renderStages();
   </script>
 </body>
 </html>
