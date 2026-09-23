@@ -23,7 +23,6 @@ const messageOutput = document.querySelector('#form-message');
 const progressOutput = document.querySelector('#form-progress');
 const submitButton = document.querySelector('#form-submit');
 const nextButton = document.querySelector('#form-next-level');
-const splitInput = document.querySelector('#form-review-split');
 const guideToggle = document.querySelector('#form-guide-toggle');
 const rankOutput = document.querySelector('#form-rank');
 const evaluationView = document.querySelector('#form-evaluation');
@@ -32,7 +31,6 @@ const evaluationActions = document.querySelector('.challenge-actions');
 const userEvaluationCanvas = document.querySelector('#form-user-evaluation');
 const targetEvaluationCanvas = document.querySelector('#form-target-evaluation');
 const evaluationDifferenceCanvas = document.querySelector('#form-evaluation-difference');
-const evaluationSplitInput = document.querySelector('#form-evaluation-split');
 const penButton = document.querySelector('#form-pen');
 const eraserButton = document.querySelector('#form-eraser');
 const peekButton = document.querySelector('#form-peek');
@@ -197,8 +195,7 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     userEvaluationCanvas.getContext('2d').drawImage(drawingCanvas, 0, 0);
     drawImage(targetEvaluationCanvas.getContext('2d'), reference);
     evaluationDifferenceCanvas.getContext('2d').drawImage(differenceCanvas, 0, 0);
-    const clip = `${100 - Number(evaluationSplitInput.value)}% 0 0`;
-    targetEvaluationCanvas.style.clipPath = `inset(0 ${clip})`;
+    targetEvaluationCanvas.style.clipPath = 'none';
   };
 
   const loadLevel = async () => {
@@ -278,7 +275,6 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     const near = (pixels, x, y) => { for (let dy = -radius; dy <= radius; dy += 1) for (let dx = -radius; dx <= radius; dx += 1) { const nx = x + dx; const ny = y + dy; if (nx >= 0 && ny >= 0 && nx < drawingCanvas.width && ny < drawingCanvas.height && ink(pixels, (ny * drawingCanvas.width + nx) * 4)) return true; } return false; };
     let expected = 0; let matched = 0; let drawn = 0; let aligned = 0;
     differenceContext.clearRect(0, 0, differenceCanvas.width, differenceCanvas.height);
-    const split = Number(splitInput.value) / 100;
     for (let y = 0; y < drawingCanvas.height; y += 2) for (let x = 0; x < drawingCanvas.width; x += 2) {
       const index = (y * drawingCanvas.width + x) * 4;
       const expectedInk = ink(referencePixels, index);
@@ -293,7 +289,7 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
         differenceContext.fillStyle = 'rgba(47, 137, 108, .8)';
         differenceContext.fillRect(x, y, 4, 4);
       }
-      if ((missing && x / drawingCanvas.width <= split) || (extra && x / drawingCanvas.width > split)) {
+      if (missing || extra) {
         differenceContext.fillStyle = 'rgba(220, 60, 90, .85)';
         differenceContext.fillRect(x, y, 4, 4);
       }
@@ -382,8 +378,6 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
   opacityInput.addEventListener('input', renderStage);
   guideToggle.addEventListener('click', () => { guideVisible = !guideVisible; guideToggle.textContent = guideVisible ? 'Guide On' : 'Guide Off'; guideToggle.classList.toggle('primary', guideVisible); renderStage(); });
   peekButton.addEventListener('click', startPeek);
-  splitInput.addEventListener('input', () => { if (stage === 'compare') scoreCanvas(); });
-  evaluationSplitInput.addEventListener('input', () => { if (stage === 'compare') loadImage(images.complete).then(renderEvaluation); });
   submitButton.addEventListener('click', async () => {
     if (stage === 'trace') {
       formProgress.levels[level] = { ...(levelRecord()), traceStrokes: strokes, traceReady: true };
