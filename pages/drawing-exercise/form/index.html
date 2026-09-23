@@ -417,7 +417,6 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // --- CONFIG & STATE ---
       const CANVAS_SIZE = 600;
 
       const state = {
@@ -434,7 +433,7 @@
         isDrawing: false,
         lastX: 0,
         lastY: 0,
-        history: [],        // Canvas ImageData snapshots
+        history: [],        
         historyStep: -1,
         calculatedAccuracy: 0,
       };
@@ -484,13 +483,12 @@
       const ctxUserEval = userEvalCanvas.getContext('2d');
       const ctxTargetEval = targetEvalCanvas.getContext('2d');
 
-      // Ensure crisp high-DPI canvas resolution
+      // Set canvas resolution
       [baseCanvas, guideCanvas, drawingCanvas, userEvalCanvas, targetEvalCanvas].forEach(c => {
         c.width = CANVAS_SIZE;
         c.height = CANVAS_SIZE;
       });
 
-      // --- VECTOR GEOMETRY DEFINITIONS ---
       const geometries = {
         1: {
           name: "Level 1: Pyramid",
@@ -595,7 +593,7 @@
         },
         3: {
           name: "Level 3: 3D Geometry",
-          // Base solid boundary matching user reference Untitled47_20260921230057_2.png
+          // EXACT SOLID BASE GEOMETRY MATCHING image_15d95f.png / image_15d6b7.png
           drawBase: (ctx) => {
             ctx.save();
             ctx.strokeStyle = '#1d2926';
@@ -603,23 +601,21 @@
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
             ctx.beginPath();
-            // Outer isometric frame
-            ctx.moveTo(100, 200);
-            ctx.lineTo(310, 80);
-            ctx.moveTo(100, 200);
+            // Outer left wall
+            ctx.moveTo(100, 280);
             ctx.lineTo(100, 440);
-            ctx.lineTo(300, 560);
-            ctx.lineTo(510, 440);
-            // Inner floor isometric base
-            ctx.moveTo(100, 440);
-            ctx.lineTo(205, 380);
-            ctx.lineTo(300, 435);
-            ctx.lineTo(410, 375);
-            ctx.lineTo(510, 440);
+            ctx.lineTo(285, 545);
+            ctx.lineTo(470, 440);
+            ctx.lineTo(285, 335);
+            ctx.lineTo(100, 440);
+
+            // Left upper boundary edge leading to top vertex
+            ctx.moveTo(100, 280);
+            ctx.lineTo(285, 170);
             ctx.stroke();
             ctx.restore();
           },
-          // Dashed guidelines for inner cube completion
+          // EXACT DASHED GUIDE GEOMETRY MATCHING image_15d95f.png / image_15d6b7.png
           drawGuide: (ctx) => {
             ctx.save();
             ctx.strokeStyle = '#6b7280';
@@ -628,25 +624,31 @@
             ctx.lineJoin = 'round';
             ctx.setLineDash([12, 10]);
             ctx.beginPath();
-            // Outer wall dashed extensions
-            ctx.moveTo(310, 80);
-            ctx.lineTo(510, 195);
-            ctx.lineTo(510, 440);
 
-            // Center vertical dashed pillar
-            ctx.moveTo(310, 80);
-            ctx.lineTo(310, 320);
+            // 1. Outer Right Back Wall Guides
+            ctx.moveTo(285, 170);
+            ctx.lineTo(470, 275);
+            ctx.lineTo(470, 440);
 
-            // Inner suspended box structure
-            ctx.moveTo(205, 260);
-            ctx.lineTo(310, 200);
-            ctx.lineTo(410, 260);
-            ctx.lineTo(310, 320);
+            // 2. Center Vertical Divider Guide Line
+            ctx.moveTo(285, 170);
+            ctx.lineTo(285, 335);
+
+            // 3. Floating Inner Isometric Cube Structure
+            // Top Cap Diamond
+            ctx.moveTo(285, 335);
+            ctx.lineTo(192, 282);
+            ctx.lineTo(285, 230);
+            ctx.lineTo(378, 282);
             ctx.closePath();
 
-            ctx.moveTo(205, 260); ctx.lineTo(205, 380);
-            ctx.moveTo(310, 320); ctx.lineTo(300, 435);
-            ctx.moveTo(410, 260); ctx.lineTo(410, 375);
+            // Vertical Isometric Legs descending to lower wall corners
+            ctx.moveTo(192, 282);
+            ctx.lineTo(192, 388);
+
+            ctx.moveTo(378, 282);
+            ctx.lineTo(378, 388);
+
             ctx.stroke();
             ctx.restore();
           },
@@ -658,14 +660,29 @@
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
             ctx.beginPath();
-            ctx.moveTo(310, 80); ctx.lineTo(510, 195); ctx.lineTo(510, 440);
-            ctx.moveTo(310, 80); ctx.lineTo(310, 320);
 
-            ctx.moveTo(205, 260); ctx.lineTo(310, 200); ctx.lineTo(410, 260); ctx.lineTo(310, 320); ctx.closePath();
+            // Outer Back Right Wall Solid Lines
+            ctx.moveTo(285, 170);
+            ctx.lineTo(470, 275);
+            ctx.lineTo(470, 440);
 
-            ctx.moveTo(205, 260); ctx.lineTo(205, 380);
-            ctx.moveTo(310, 320); ctx.lineTo(300, 435);
-            ctx.moveTo(410, 260); ctx.lineTo(410, 375);
+            // Center Vertical Solid Line
+            ctx.moveTo(285, 170);
+            ctx.lineTo(285, 335);
+
+            // Floating Inner Cube Solid Lines
+            ctx.moveTo(285, 335);
+            ctx.lineTo(192, 282);
+            ctx.lineTo(285, 230);
+            ctx.lineTo(378, 282);
+            ctx.closePath();
+
+            ctx.moveTo(192, 282);
+            ctx.lineTo(192, 388);
+
+            ctx.moveTo(378, 282);
+            ctx.lineTo(378, 388);
+
             ctx.stroke();
             ctx.restore();
           }
@@ -758,7 +775,6 @@
         nextLevelBtn.disabled = true;
       }
 
-      // --- UNDO / REDO HISTORY ---
       function saveHistoryState() {
         state.historyStep++;
         if (state.historyStep < state.history.length) {
@@ -789,7 +805,6 @@
         redoBtn.disabled = state.historyStep >= state.history.length - 1;
       }
 
-      // --- CANVAS DRAWING MECHANICS ---
       function getCanvasCoordinates(e) {
         const rect = drawingCanvas.getBoundingClientRect();
         const clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -855,7 +870,6 @@
       drawingCanvas.addEventListener('touchmove', draw, { passive: false });
       window.addEventListener('touchend', stopDrawing);
 
-      // --- PRECISION EVALUATION ENGINE ---
       function evaluateDrawing() {
         const targetCanvas = document.createElement('canvas');
         targetCanvas.width = CANVAS_SIZE;
@@ -954,7 +968,7 @@
         let rank = 'S';
         let msg = '';
 
-        // Unlock next level if score passed minimum requirement
+        // Unlock next level sequentially
         if (score >= 40) {
           if (state.level === 1 && !state.unlockedLevels[2]) {
             state.unlockedLevels[2] = true;
@@ -982,7 +996,6 @@
         rankText.textContent = rank;
         messageText.textContent = msg;
 
-        // Enable Next Level button if next level exists and is unlocked
         if (state.level < 3 && state.unlockedLevels[state.level + 1]) {
           nextLevelBtn.disabled = false;
           nextLevelBtn.textContent = `Proceed to Level ${state.level + 1} ➔`;
@@ -1073,7 +1086,6 @@
           levelSelect.value = nextLvl;
           switchLevel(nextLvl);
         } else {
-          // Reset exercise back to Level 1
           state.unlockedLevels = { 1: true, 2: false, 3: false };
           updateLevelDropdownUI();
           levelSelect.value = 1;
