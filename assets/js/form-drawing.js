@@ -49,6 +49,7 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
   let activeStroke = null;
   let studyMode = false;
   let freehandFailed = false;
+  let lastPoint = null;
 
   const cache = new Map();
   const loadImage = (source) => {
@@ -150,13 +151,19 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     drawingContext.lineWidth = Number(brushSizeInput.value);
     drawingContext.strokeStyle = tool === 'eraser' ? '#ffffff' : brushColorInput.value;
     drawingContext.globalCompositeOperation = tool === 'eraser' ? 'destination-out' : 'source-over';
-    drawingContext.lineTo(point.x, point.y);
+    if (lastPoint) {
+      const midPoint = { x: (lastPoint.x + point.x) / 2, y: (lastPoint.y + point.y) / 2 };
+      drawingContext.quadraticCurveTo(lastPoint.x, lastPoint.y, midPoint.x, midPoint.y);
+    } else {
+      drawingContext.lineTo(point.x, point.y);
+    }
     drawingContext.stroke();
+    lastPoint = point;
   };
-  drawingCanvas.addEventListener('pointerdown', (event) => { drawing = true; drawingCanvas.setPointerCapture(event.pointerId); const point = pointFor(event); activeStroke = [{ ...point, tool }]; drawingContext.beginPath(); drawingContext.moveTo(point.x, point.y); drawPoint(event); });
+  drawingCanvas.addEventListener('pointerdown', (event) => { event.preventDefault(); drawing = true; drawingCanvas.setPointerCapture(event.pointerId); const point = pointFor(event); activeStroke = [{ ...point, tool }]; lastPoint = null; drawingContext.beginPath(); drawingContext.moveTo(point.x, point.y); drawPoint(event); });
   drawingCanvas.addEventListener('pointermove', (event) => { if (drawing) { const point = pointFor(event); activeStroke?.push({ ...point, tool }); drawPoint(event); } });
-  drawingCanvas.addEventListener('pointerup', () => { drawing = false; drawingContext.closePath(); drawingContext.globalCompositeOperation = 'source-over'; if (activeStroke?.length) strokes.push(activeStroke); activeStroke = null; snapshot(); });
-  drawingCanvas.addEventListener('pointercancel', () => { drawing = false; drawingContext.globalCompositeOperation = 'source-over'; });
+  drawingCanvas.addEventListener('pointerup', (event) => { event.preventDefault(); drawing = false; drawingContext.closePath(); drawingContext.globalCompositeOperation = 'source-over'; if (activeStroke?.length) strokes.push(activeStroke); activeStroke = null; lastPoint = null; snapshot(); });
+  drawingCanvas.addEventListener('pointercancel', () => { drawing = false; drawingContext.globalCompositeOperation = 'source-over'; activeStroke = null; lastPoint = null; });
 
   const scoreCanvas = async () => {
     const reference = await loadImage(images.complete);
