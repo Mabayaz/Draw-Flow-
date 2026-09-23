@@ -292,8 +292,8 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     const score = Math.round(((expected ? matched / expected : 0) * .65 + (drawn ? aligned / drawn : 0) * .35) * 100);
     scoreOutput.textContent = `${score}%`;
     rankOutput.textContent = `Rank ${score >= 95 ? 'S' : score >= 85 ? 'A' : score >= 70 ? 'B' : score >= 50 ? 'C' : 'D'}`;
-    if (stage === 'trace' && score >= 75) { formProgress.levels[level] = { ...(levelRecord()), trace: score }; stage = 'freehand'; messageOutput.textContent = 'Trace passed. The guide is hidden; redraw the form from memory.'; }
-    else if (stage === 'freehand' && score >= 70) { formProgress.levels[level] = { ...(levelRecord()), freehand: score }; formProgress.unlocked = Math.max(formProgress.unlocked, Math.min(3, level + 1)); stage = 'compare'; messageOutput.textContent = 'Level passed. Review your result, then continue to the next level.'; }
+      if (stage === 'trace' && score >= 75) { formProgress.levels[level] = { ...(levelRecord()), trace: score }; stage = 'freehand'; messageOutput.textContent = 'Trace passed. The guide is hidden; redraw the form from memory.'; }
+      formProgress.levels[level] = { ...(levelRecord()), freehand: score }; formProgress.unlocked = Math.max(formProgress.unlocked, Math.min(3, level + 1)); stage = 'compare'; messageOutput.textContent = 'Review your result, then continue to the next level.';
     else if (stage === 'trace') messageOutput.textContent = 'Proceed to freehand when you have completed the guided trace.';
     else if (stage === 'freehand') { freehandFailed = true; messageOutput.textContent = 'Freehand accuracy needs to reach 70%. Try the freehand stage again.'; }
     saveState();
