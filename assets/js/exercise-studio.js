@@ -97,7 +97,7 @@ if (subjectSelect && levelSelect && drawingCanvas && referenceCanvas && differen
 
   const setCanvasSize = (image) => {
     const size = Math.max(image.naturalWidth, image.naturalHeight, 640);
-    [drawingCanvas, referenceCanvas].forEach((canvas) => {
+    [drawingCanvas, referenceCanvas, differenceCanvas].forEach((canvas) => {
       canvas.width = size;
       canvas.height = size;
     });
@@ -178,6 +178,7 @@ if (subjectSelect && levelSelect && drawingCanvas && referenceCanvas && differen
     const traceImage = await loadImage(level.trace);
     setCanvasSize(traceImage);
     drawCentered(referenceContext, traceImage);
+    differenceContext.clearRect(0, 0, differenceCanvas.width, differenceCanvas.height);
     clearDrawing();
     updateControls();
   };
