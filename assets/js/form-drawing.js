@@ -211,6 +211,7 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     freehandFailed = false;
     guideVisible = true;
     peekUses = 3;
+    peekActive = false;
     clearTimeout(peekTimeout);
     clearInterval(peekInterval);
     peekTimer.textContent = '';
@@ -320,6 +321,7 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     clearTimeout(peekTimeout);
     clearInterval(peekInterval);
     peekUses -= 1;
+    peekActive = true;
     guideVisible = true;
     drawImage(guideContext, await loadImage(images.trace));
     guideCanvas.style.opacity = '.4';
@@ -328,6 +330,7 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     peekInterval = setInterval(() => { secondsLeft -= 1; peekTimer.textContent = secondsLeft > 0 ? `${secondsLeft}s` : ''; }, 1000);
     peekTimeout = setTimeout(async () => {
       clearInterval(peekInterval);
+      peekActive = false;
       guideVisible = false;
       drawImage(guideContext, await loadImage(images.blank));
       guideCanvas.style.opacity = '0';
@@ -352,6 +355,7 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
       stage = 'freehand';
       freehandFailed = false;
       guideVisible = false;
+      peekActive = false;
       clearDrawing();
       drawImage(guideContext, await loadImage(images.blank));
       renderStage();
