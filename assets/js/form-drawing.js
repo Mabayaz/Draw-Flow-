@@ -87,6 +87,38 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
   };
   const clearDrawing = () => { drawingContext.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height); snapshot(); };
 
+  const updateTraceCoverage = () => {
+    if (!tracePixels) return;
+    const width = drawingCanvas.width;
+    const height = drawingCanvas.height;
+    const drawingPixels = drawingContext.getImageData(0, 0, width, height).data;
+    const radius = Math.max(4, Math.round(width / 150));
+    const isDashedGuide = (index) => {
+      const red = tracePixels[index];
+      const green = tracePixels[index + 1];
+      const blue = tracePixels[index + 2];
+      return red > 80 && red < 235 && Math.abs(red - green) < 8 && Math.abs(green - blue) < 8;
+    };
+    const hasUserInkNear = (x, y) => {
+      for (let offsetY = -radius; offsetY <= radius; offsetY += 1) for (let offsetX = -radius; offsetX <= radius; offsetX += 1) {
+        const nearX = x + offsetX;
+        const nearY = y + offsetY;
+        if (nearX < 0 || nearY < 0 || nearX >= width || nearY >= height) continue;
+        const index = (nearY * width + nearX) * 4;
+        if (drawingPixels[(nearY * width + nearX) * 4 + 3] > 30) return true;
+      }
+      return false;
+    };
+    let guideCount = 0;
+    let coveredCount = 0;
+    for (let y = 0; y < height; y += 3) for (let x = 0; x < width; x += 3) {
+      const index = (y * width + x) * 4;
+      if (isDashedGuide(index)) { guideCount += 1; if (hasUserInkNear(x, y)) coveredCount += 1; }
+    }
+    traceCoverage = guideCount ? (coveredCount / guideCount) * 100 : 0;
+    renderStage();
+  };
+
   const updateProgress = () => {
     progressOutput.textContent = `${completedCount()} / 3 levels`;
     [...levelSelect.options].forEach((option) => { option.disabled = Number(option.value) > formProgress.unlocked; });
@@ -132,6 +164,8 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     const complete = await loadImage(images.complete);
     setCanvasSize(trace);
     drawImage(guideContext, trace);
+    tracePixels = guideContext.getImageData(0, 0, guideCanvas.width, guideCanvas.height).data;
+    traceCoverage = 0;
     clearDrawing();
     strokes = [];
     studyMode = false;
@@ -167,7 +201,7 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
   };
   drawingCanvas.addEventListener('pointerdown', (event) => { event.preventDefault(); drawing = true; drawingCanvas.setPointerCapture(event.pointerId); const point = pointFor(event); activeStroke = [{ ...point, tool }]; lastPoint = null; drawingContext.beginPath(); drawingContext.moveTo(point.x, point.y); drawPoint(event); });
   drawingCanvas.addEventListener('pointermove', (event) => { if (drawing) { const point = pointFor(event); activeStroke?.push({ ...point, tool }); drawPoint(event); } });
-  drawingCanvas.addEventListener('pointerup', (event) => { event.preventDefault(); drawing = false; drawingContext.closePath(); drawingContext.globalCompositeOperation = 'source-over'; if (activeStroke?.length) strokes.push(activeStroke); activeStroke = null; lastPoint = null; snapshot(); });
+  drawingCanvas.addEventListener('pointerup', (event) => { event.preventDefault(); drawing = false; drawingContext.closePath(); drawingContext.globalCompositeOperation = 'source-over'; if (activeStroke?.length) strokes.push(activeStroke); activeStroke = null; lastPoint = null; snapshot(); if (stage === 'trace') updateTraceCoverage(); });
   drawingCanvas.addEventListener('pointercancel', () => { drawing = false; drawingContext.globalCompositeOperation = 'source-over'; activeStroke = null; lastPoint = null; });
 
   const scoreCanvas = async () => {
