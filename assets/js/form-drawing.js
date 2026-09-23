@@ -133,7 +133,7 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     differenceContext.clearRect(0, 0, differenceCanvas.width, differenceCanvas.height);
     stage = levelRecord().freehand >= 70 ? 'compare' : levelRecord().trace >= 75 ? 'freehand' : 'trace';
     if (stage === 'freehand') drawImage(guideContext, blank);
-    if (stage === 'compare') drawImage(guideContext, complete);
+    if (stage === 'compare') { drawImage(guideContext, complete); renderEvaluation(complete); }
     levelLabel.textContent = String(level);
     scoreOutput.textContent = '--%';
     renderStage();
@@ -228,6 +228,7 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
   levelSelect.addEventListener('change', loadLevel);
   opacityInput.addEventListener('input', renderStage);
   splitInput.addEventListener('input', () => { if (stage === 'compare') scoreCanvas(); });
+  evaluationSplitInput.addEventListener('input', () => { if (stage === 'compare') loadImage(images.complete).then(renderEvaluation); });
   submitButton.addEventListener('click', async () => {
     if (stage === 'trace') {
       stage = 'freehand';
