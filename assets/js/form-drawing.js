@@ -168,7 +168,7 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
       button.classList.toggle('is-active', name === stage);
       button.disabled = name === 'freehand' ? stage === 'trace' : name === 'compare' ? !(levelRecord().freehand >= 70) : false;
     });
-    guideCanvas.style.opacity = guideVisible ? (stage === 'trace' ? opacityInput.value : stage === 'freehand' && peekActive ? '.4' : stage === 'compare' ? '1' : '0') : '0';
+    guideCanvas.style.opacity = stage === 'freehand' ? (peekActive ? '.4' : '1') : guideVisible ? (stage === 'trace' ? opacityInput.value : stage === 'compare' ? '1' : '0') : '0';
     differenceCanvas.style.opacity = stage === 'compare' ? '1' : '0';
     formToolbar.hidden = stage === 'compare';
     document.querySelector('.canvas-wrap').hidden = stage === 'compare';
