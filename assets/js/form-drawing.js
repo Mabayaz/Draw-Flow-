@@ -1,7 +1,7 @@
 const formAssets = (level) => ({
-  trace: `/assets/drawing-exercise/form/level-${level}/${level === 1 ? 'trace.jpg' : level === 3 ? 'trace.JPG' : 'trace.jpg'}`,
-  blank: `/assets/drawing-exercise/form/level-${level}/${level === 1 || level === 2 ? 'freehand.jpg' : 'freehand.png'}`,
-  complete: `/assets/drawing-exercise/form/level-${level}/${level === 1 || level === 2 ? 'complete.jpg' : 'complete.png'}`
+  trace: `/assets/drawing-exercise/form/${level === 1 ? 'lvl-1' : `level-${level}`}/${level === 3 ? 'trace.JPG' : 'trace.jpg'}`,
+  blank: `/assets/drawing-exercise/form/${level === 1 ? 'lvl-1' : `level-${level}`}/${level === 3 ? 'freehand.png' : 'freehand.jpg'}`,
+  complete: `/assets/drawing-exercise/form/${level === 1 ? 'lvl-1' : `level-${level}`}/${level === 3 ? 'complete.png' : 'complete.jpg'}`
 });
 
 const formStateKey = 'drawflow-form-challenge';
@@ -24,6 +24,13 @@ const progressOutput = document.querySelector('#form-progress');
 const submitButton = document.querySelector('#form-submit');
 const nextButton = document.querySelector('#form-next-level');
 const splitInput = document.querySelector('#form-review-split');
+const evaluationView = document.querySelector('#form-evaluation');
+const formToolbar = document.querySelector('#form-toolbar');
+const evaluationActions = document.querySelector('.challenge-actions');
+const userEvaluationCanvas = document.querySelector('#form-user-evaluation');
+const targetEvaluationCanvas = document.querySelector('#form-target-evaluation');
+const evaluationDifferenceCanvas = document.querySelector('#form-evaluation-difference');
+const evaluationSplitInput = document.querySelector('#form-evaluation-split');
 const penButton = document.querySelector('#form-pen');
 const eraserButton = document.querySelector('#form-eraser');
 const studyButton = document.querySelector('#form-study-mode');
@@ -87,6 +94,10 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     });
     guideCanvas.style.opacity = stage === 'trace' ? opacityInput.value : stage === 'compare' ? '1' : '.25';
     differenceCanvas.style.opacity = stage === 'compare' ? '1' : '0';
+    formToolbar.hidden = stage === 'compare';
+    document.querySelector('.canvas-wrap').hidden = stage === 'compare';
+    evaluationActions.hidden = stage === 'compare';
+    evaluationView.hidden = stage !== 'compare';
     submitButton.disabled = stage === 'compare';
     submitButton.textContent = stage === 'trace' ? 'Proceed to Freehand' : stage === 'freehand' ? (freehandFailed ? 'Try Freehand Again' : 'Judge / Evaluate') : 'Evaluation Complete';
     nextButton.disabled = stage !== 'compare' || level >= 3 || formProgress.unlocked <= level;
