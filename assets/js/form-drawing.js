@@ -39,6 +39,7 @@ const peekButton = document.querySelector('#form-peek');
 const coverageBar = document.querySelector('#form-coverage-bar');
 const coverageLabel = document.querySelector('#form-coverage-label');
 const peekTimer = document.querySelector('#form-peek-timer');
+const guideOpacityControl = document.querySelector('#form-guide-opacity-control');
 
 if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideContext && drawingContext && differenceContext) {
   let level = 1;
@@ -60,6 +61,7 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
   let peekUses = 3;
   let peekTimeout = null;
   let peekInterval = null;
+  let peekActive = false;
   let traceImage = null;
   let blankImage = null;
 
@@ -163,7 +165,7 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
       button.classList.toggle('is-active', name === stage);
       button.disabled = name === 'freehand' ? stage === 'trace' : name === 'compare' ? !(levelRecord().freehand >= 70) : false;
     });
-    guideCanvas.style.opacity = guideVisible ? (stage === 'trace' ? opacityInput.value : stage === 'compare' ? '1' : '.25') : '0';
+    guideCanvas.style.opacity = guideVisible ? (stage === 'trace' ? opacityInput.value : stage === 'freehand' && peekActive ? '.4' : stage === 'compare' ? '1' : '0') : '0';
     differenceCanvas.style.opacity = stage === 'compare' ? '1' : '0';
     formToolbar.hidden = stage === 'compare';
     document.querySelector('.canvas-wrap').hidden = stage === 'compare';
@@ -173,7 +175,9 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     submitButton.textContent = stage === 'trace' ? `Unlock Freehand Mode (${Math.round(traceCoverage)}%)` : stage === 'freehand' ? (freehandFailed ? 'Try Freehand Again' : 'Judge / Evaluate') : 'Evaluation Complete';
     nextButton.disabled = stage !== 'compare' || level >= 3 || formProgress.unlocked <= level;
     peekButton.hidden = stage !== 'freehand';
-    peekButton.textContent = `💡 Peek Guide (${peekUses} Left)`;
+    peekButton.textContent = `💡 Hint (${peekUses} Left)`;
+    guideToggle.hidden = stage !== 'trace';
+    guideOpacityControl.hidden = stage !== 'trace';
     coverageBar.style.width = `${traceCoverage}%`;
     coverageLabel.textContent = `${Math.round(traceCoverage)}%`;
     messageOutput.textContent = stage === 'trace' ? `Trace at least 80% of the dashed guides to unlock freehand. Current: ${Math.round(traceCoverage)}%.` : stage === 'freehand' ? 'The guide is hidden. Draw the form from memory.' : 'Review the red marks and compare your drawing with the complete reference.';
