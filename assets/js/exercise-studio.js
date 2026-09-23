@@ -36,10 +36,14 @@ const exerciseData = {
 const subjectSelect = document.querySelector('#studio-subject');
 const levelSelect = document.querySelector('#studio-level');
 const opacityInput = document.querySelector('#studio-opacity');
+const brushSizeInput = document.querySelector('#studio-brush-size');
+const brushColorInput = document.querySelector('#studio-brush-color');
 const drawingCanvas = document.querySelector('#studio-drawing-canvas');
 const referenceCanvas = document.querySelector('#studio-reference-layer');
+const differenceCanvas = document.querySelector('#studio-difference-layer');
 const drawingContext = drawingCanvas?.getContext('2d');
 const referenceContext = referenceCanvas?.getContext('2d');
+const differenceContext = differenceCanvas?.getContext('2d');
 const stepButtons = [...document.querySelectorAll('[data-studio-step]')];
 const scoreOutput = document.querySelector('#studio-score');
 const scoreMessage = document.querySelector('#studio-score-message');
@@ -49,8 +53,15 @@ const undoButton = document.querySelector('#studio-undo');
 const redoButton = document.querySelector('#studio-redo');
 const eraserButton = document.querySelector('#studio-eraser');
 const clearButton = document.querySelector('#studio-clear');
+const splitInput = document.querySelector('#studio-split');
+const topicProgress = document.querySelector('#studio-topic-progress');
 
-if (subjectSelect && levelSelect && drawingCanvas && referenceCanvas && drawingContext && referenceContext) {
+const TRACE_THRESHOLD = 75;
+const FREEHAND_THRESHOLD = 70;
+const progressKey = 'drawflow-exercise-progress';
+const topicOrder = ['form', 'perspective', 'shadow', 'depth'];
+
+if (subjectSelect && levelSelect && drawingCanvas && referenceCanvas && differenceCanvas && drawingContext && referenceContext && differenceContext) {
   let currentStep = 'trace';
   let currentImages = null;
   let drawing = false;
@@ -59,6 +70,15 @@ if (subjectSelect && levelSelect && drawingCanvas && referenceCanvas && drawingC
   let historyIndex = -1;
   let tracePassed = false;
   let freehandPassed = false;
+  let progress = JSON.parse(localStorage.getItem(progressKey) || '{}');
+
+  const levelKey = () => `${subjectSelect.value}-${levelSelect.value}`;
+  const topicComplete = (subject) => exerciseData[subject].levels.every((_, index) => progress[`${subject}-${index}`]?.freehand >= FREEHAND_THRESHOLD);
+  const topicUnlocked = (subject) => {
+    const topicIndex = topicOrder.indexOf(subject);
+    return topicIndex === 0 || topicComplete(topicOrder[topicIndex - 1]);
+  };
+  const saveProgress = () => localStorage.setItem(progressKey, JSON.stringify(progress));
 
   const imageCache = new Map();
 
