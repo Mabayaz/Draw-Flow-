@@ -593,7 +593,7 @@
         },
         3: {
           name: "Level 3: 3D Geometry",
-          // Solid black lines matching the left wall and outer base[cite: 1]
+          // Base solid black structure: Outer left panel + Bottom floor diamond
           drawBase: (ctx) => {
             ctx.save();
             ctx.strokeStyle = '#1d2926';
@@ -602,22 +602,23 @@
             ctx.lineJoin = 'round';
             ctx.beginPath();
 
-            // Outer boundary (Left side)[cite: 1]
-            ctx.moveTo(100, 390); // Left outer vertex[cite: 1]
-            ctx.lineTo(300, 500); // Bottom corner[cite: 1]
-            ctx.lineTo(500, 390); // Right outer corner[cite: 1]
-            ctx.lineTo(300, 280); // Center inner floor vertex[cite: 1]
-            ctx.lineTo(100, 390); // Close base floor diamond notch[cite: 1]
+            // Bottom floor diamond notch
+            ctx.moveTo(100, 440);
+            ctx.lineTo(310, 560);
+            ctx.lineTo(520, 440);
+            ctx.lineTo(310, 320);
+            ctx.closePath();
 
-            ctx.moveTo(100, 390);
-            ctx.lineTo(100, 180); // Vertical left outer edge[cite: 1]
-            ctx.lineTo(300, 70);  // Top center peak[cite: 1]
+            // Left outer vertical panel
+            ctx.moveTo(100, 440);
+            ctx.lineTo(100, 200);
+            ctx.lineTo(310, 80);
 
             ctx.stroke();
             ctx.restore();
           },
 
-          // Dashed grey lines matching the right wall and inner cube[cite: 1]
+          // Dashed grey guide lines: Outer top-right shell + Inner floating cube
           drawGuide: (ctx) => {
             ctx.save();
             ctx.strokeStyle = '#6b7280';
@@ -627,40 +628,37 @@
             ctx.setLineDash([12, 10]);
             ctx.beginPath();
 
-            // Top-right outer boundary[cite: 1]
-            ctx.moveTo(300, 70);
-            ctx.lineTo(500, 180);
-            ctx.lineTo(500, 390);
+            // Outer top-right boundary
+            ctx.moveTo(310, 80);
+            ctx.lineTo(520, 200);
+            ctx.lineTo(520, 440);
 
-            // Center-back vertical axis line[cite: 1]
-            ctx.moveTo(300, 70);
-            ctx.lineTo(300, 280);
+            // Center vertical axis line
+            ctx.moveTo(310, 80);
+            ctx.lineTo(310, 320);
 
-            // Inner floating central cube[cite: 1]
-            // 1. Center front vertical edge[cite: 1]
-            ctx.moveTo(300, 280);
-            ctx.lineTo(300, 170);
+            // Inner Central Floating Cube
+            ctx.moveTo(310, 320);
+            ctx.lineTo(310, 200); // Center vertical edge
 
-            // 2. Left vertical edge[cite: 1]
-            ctx.moveTo(200, 230);
-            ctx.lineTo(200, 125);
+            ctx.moveTo(205, 260);
+            ctx.lineTo(205, 140); // Left vertical edge
 
-            // 3. Right vertical edge[cite: 1]
-            ctx.moveTo(400, 230);
-            ctx.lineTo(400, 125);
+            ctx.moveTo(415, 260);
+            ctx.lineTo(415, 140); // Right vertical edge
 
-            // 4. Cube top face diamond[cite: 1]
-            ctx.moveTo(300, 170);
-            ctx.lineTo(200, 125);
-            ctx.lineTo(300, 70);
-            ctx.lineTo(400, 125);
+            // Top diamond cap of central cube
+            ctx.moveTo(310, 200);
+            ctx.lineTo(205, 140);
+            ctx.lineTo(310, 80);
+            ctx.lineTo(415, 140);
             ctx.closePath();
 
             ctx.stroke();
             ctx.restore();
           },
 
-          // Full structure for final comparison view[cite: 1]
+          // Complete geometry for evaluation comparison
           drawComplete: (ctx) => {
             geometries[3].drawBase(ctx);
             ctx.save();
@@ -670,29 +668,29 @@
             ctx.lineJoin = 'round';
             ctx.beginPath();
 
-            // Top-right outer boundary[cite: 1]
-            ctx.moveTo(300, 70);
-            ctx.lineTo(500, 180);
-            ctx.lineTo(500, 390);
+            // Outer top-right boundary
+            ctx.moveTo(310, 80);
+            ctx.lineTo(520, 200);
+            ctx.lineTo(520, 440);
 
-            // Center-back vertical axis line[cite: 1]
-            ctx.moveTo(300, 70);
-            ctx.lineTo(300, 280);
+            // Center vertical axis line
+            ctx.moveTo(310, 80);
+            ctx.lineTo(310, 320);
 
-            // Inner floating central cube[cite: 1]
-            ctx.moveTo(300, 280);
-            ctx.lineTo(300, 170);
+            // Inner Central Floating Cube
+            ctx.moveTo(310, 320);
+            ctx.lineTo(310, 200);
 
-            ctx.moveTo(200, 230);
-            ctx.lineTo(200, 125);
+            ctx.moveTo(205, 260);
+            ctx.lineTo(205, 140);
 
-            ctx.moveTo(400, 230);
-            ctx.lineTo(400, 125);
+            ctx.moveTo(415, 260);
+            ctx.lineTo(415, 140);
 
-            ctx.moveTo(300, 170);
-            ctx.lineTo(200, 125);
-            ctx.lineTo(300, 70);
-            ctx.lineTo(400, 125);
+            ctx.moveTo(310, 200);
+            ctx.lineTo(205, 140);
+            ctx.lineTo(310, 80);
+            ctx.lineTo(415, 140);
             ctx.closePath();
 
             ctx.stroke();
