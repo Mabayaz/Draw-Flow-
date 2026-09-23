@@ -1,4 +1,10 @@
 const root = document.documentElement;
+
+if (window.location.pathname.endsWith('/index.html')) {
+  const cleanPath = window.location.pathname.slice(0, -'index.html'.length) || '/';
+  window.history.replaceState({}, document.title, `${cleanPath}${window.location.search}${window.location.hash}`);
+}
+
 const themeToggle = document.querySelector('[data-testid="button-theme-toggle"]');
 const menuToggle = document.querySelector('[data-testid="button-mobile-menu"]');
 const navigation = document.querySelector('nav');
