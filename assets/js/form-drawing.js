@@ -270,7 +270,7 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     drawImage(referenceCopyContext, reference);
     const referencePixels = referenceCopyContext.getImageData(0, 0, drawingCanvas.width, drawingCanvas.height).data;
     const drawingPixels = drawingContext.getImageData(0, 0, drawingCanvas.width, drawingCanvas.height).data;
-    const radius = Math.max(3, Math.round(drawingCanvas.width / 160));
+    const radius = Math.max(6, Math.round(drawingCanvas.width / 120));
     const ink = (pixels, index) => pixels[index + 3] > 30 && pixels[index] + pixels[index + 1] + pixels[index + 2] < 690;
     const near = (pixels, x, y) => { for (let dy = -radius; dy <= radius; dy += 1) for (let dx = -radius; dx <= radius; dx += 1) { const nx = x + dx; const ny = y + dy; if (nx >= 0 && ny >= 0 && nx < drawingCanvas.width && ny < drawingCanvas.height && ink(pixels, (ny * drawingCanvas.width + nx) * 4)) return true; } return false; };
     let expected = 0; let matched = 0; let drawn = 0; let aligned = 0;
@@ -294,7 +294,7 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
         differenceContext.fillRect(x, y, 4, 4);
       }
     }
-    const score = Math.round(((expected ? matched / expected : 0) * .65 + (drawn ? aligned / drawn : 0) * .35) * 100);
+    const score = Math.round(((expected ? matched / expected : 0) * .75 + (drawn ? aligned / drawn : 0) * .25) * 100);
     scoreOutput.textContent = `${score}%`;
     rankOutput.textContent = `Rank ${score >= 95 ? 'S' : score >= 85 ? 'A' : score >= 70 ? 'B' : score >= 50 ? 'C' : 'D'}`;
     if (stage === 'trace') {
