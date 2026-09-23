@@ -205,6 +205,11 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     clearDrawing();
     strokes = [];
     freehandFailed = false;
+    guideVisible = true;
+    peekUses = 3;
+    clearTimeout(peekTimeout);
+    clearInterval(peekInterval);
+    peekTimer.textContent = '';
     differenceContext.clearRect(0, 0, differenceCanvas.width, differenceCanvas.height);
     stage = 'trace';
     if (stage === 'freehand') drawImage(guideContext, blank);
@@ -306,10 +311,33 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     tick();
   };
 
+  const startPeek = async () => {
+    if (stage !== 'freehand' || peekUses <= 0) return;
+    clearTimeout(peekTimeout);
+    clearInterval(peekInterval);
+    peekUses -= 1;
+    guideVisible = true;
+    drawImage(guideContext, await loadImage(images.trace));
+    guideCanvas.style.opacity = '.4';
+    let secondsLeft = 5;
+    peekTimer.textContent = `${secondsLeft}s`;
+    peekInterval = setInterval(() => { secondsLeft -= 1; peekTimer.textContent = secondsLeft > 0 ? `${secondsLeft}s` : ''; }, 1000);
+    peekTimeout = setTimeout(async () => {
+      clearInterval(peekInterval);
+      guideVisible = false;
+      drawImage(guideContext, await loadImage(images.blank));
+      guideCanvas.style.opacity = '0';
+      peekTimer.textContent = '';
+      renderStage();
+    }, 5000);
+    renderStage();
+  };
+
   stageButtons.forEach((button) => button.addEventListener('click', () => { if (!button.disabled) { stage = button.dataset.formStage; if (stage === 'freehand') loadImage(images.blank).then((image) => drawImage(guideContext, image)); if (stage === 'compare') loadImage(images.complete).then((image) => drawImage(guideContext, image)); renderStage(); } }));
   levelSelect.addEventListener('change', loadLevel);
   opacityInput.addEventListener('input', renderStage);
   guideToggle.addEventListener('click', () => { guideVisible = !guideVisible; guideToggle.textContent = guideVisible ? 'Guide On' : 'Guide Off'; guideToggle.classList.toggle('primary', guideVisible); renderStage(); });
+  peekButton.addEventListener('click', startPeek);
   splitInput.addEventListener('input', () => { if (stage === 'compare') scoreCanvas(); });
   evaluationSplitInput.addEventListener('input', () => { if (stage === 'compare') loadImage(images.complete).then(renderEvaluation); });
   submitButton.addEventListener('click', async () => {
@@ -319,6 +347,7 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
       console.info(`Form Level ${level} trace saved and ready for freehand.`);
       stage = 'freehand';
       freehandFailed = false;
+      guideVisible = false;
       clearDrawing();
       drawImage(guideContext, await loadImage(images.blank));
       renderStage();
