@@ -21,7 +21,7 @@ for %%P in (py.exe python.exe python3.exe) do (
 for /f "delims=" %%I in ('dir /b /s "%LocalAppData%\Programs\Python\Python*\python.exe" 2^>nul') do (
   set "PY_EXE=%%I"
   goto :run_server
-)
+) 
 
 echo Python is not installed or not available in PATH.
 echo.
