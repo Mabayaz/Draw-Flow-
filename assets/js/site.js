@@ -44,33 +44,62 @@ const closeStudyDialog = () => {
   if (startStudyButton) startStudyButton.textContent = 'Start study →';
 };
 
+const mobileMenuClasses = ['!flex', 'absolute', 'right-5', 'left-5', 'top-20', 'flex-col', 'items-stretch', 'gap-2', 'rounded-2xl', 'border', 'border-border', 'bg-background', 'p-3', 'shadow-xl'];
+
+const closeMobileMenu = () => {
+  if (!menuToggle || !navigation) return;
+  navigation.classList.remove(...mobileMenuClasses);
+  menuToggle.setAttribute('aria-expanded', 'false');
+  menuToggle.setAttribute('aria-label', 'Open menu');
+  document.body.classList.remove('overflow-hidden');
+};
+
+const openMobileMenu = () => {
+  if (!menuToggle || !navigation) return;
+  navigation.classList.add(...mobileMenuClasses);
+  menuToggle.setAttribute('aria-expanded', 'true');
+  menuToggle.setAttribute('aria-label', 'Close menu');
+  document.body.classList.add('overflow-hidden');
+};
+
 themeToggle?.addEventListener('click', () => {
   root.classList.toggle('dark-mode');
   const isDark = root.classList.contains('dark-mode');
   localStorage.setItem('drawflow-theme', isDark ? 'dark' : 'light');
   themeToggle.setAttribute('aria-label', isDark ? 'Switch to day mode' : 'Switch to night mode');
+  themeToggle.setAttribute('aria-pressed', String(isDark));
 });
 
 if (themeToggle) {
   themeToggle.setAttribute('aria-label', root.classList.contains('dark-mode') ? 'Switch to day mode' : 'Switch to night mode');
+  themeToggle.setAttribute('aria-pressed', String(root.classList.contains('dark-mode')));
 }
 
-menuToggle?.addEventListener('click', () => {
-  const isOpen = navigation.classList.toggle('!flex');
-  navigation.classList.toggle('absolute', isOpen);
-  navigation.classList.toggle('right-5', isOpen);
-  navigation.classList.toggle('top-20', isOpen);
-  navigation.classList.toggle('flex-col', isOpen);
-  navigation.classList.toggle('bg-background', isOpen);
-  navigation.classList.toggle('p-3', isOpen);
-  menuToggle.setAttribute('aria-expanded', String(isOpen));
-});
+if (menuToggle && navigation) {
+  navigation.id ||= 'site-navigation';
+  menuToggle.setAttribute('aria-controls', navigation.id);
+  menuToggle.addEventListener('click', () => {
+    const isOpen = navigation.classList.contains('!flex');
+    if (isOpen) closeMobileMenu();
+    else openMobileMenu();
+  });
+}
 
 navigation?.querySelectorAll('a').forEach((link) => {
   link.addEventListener('click', () => {
     if (!menuToggle || !navigation.classList.contains('!flex')) return;
-    menuToggle.click();
+    closeMobileMenu();
   });
+});
+
+window.addEventListener('resize', () => {
+  if (window.matchMedia('(min-width: 768px)').matches) closeMobileMenu();
+});
+
+document.addEventListener('click', (event) => {
+  if (!menuToggle || !navigation || !navigation.classList.contains('!flex')) return;
+  if (navigation.contains(event.target) || menuToggle.contains(event.target)) return;
+  closeMobileMenu();
 });
 
 document.querySelectorAll('[data-study]').forEach((studyCard) => {
@@ -100,7 +129,10 @@ studyDialog?.addEventListener('click', (event) => {
   if (event.target === studyDialog) closeStudyDialog();
 });
 document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape') closeStudyDialog();
+  if (event.key === 'Escape') {
+    closeStudyDialog();
+    closeMobileMenu();
+  }
 });
 startStudyButton?.addEventListener('click', () => {
   closeStudyDialog();

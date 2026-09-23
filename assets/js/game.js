@@ -11,6 +11,8 @@ class CubeGame {
     this.promptFace = null;
     this.targetEdges = [];
     this.dpr = window.devicePixelRatio || 1;
+    this.modal = document.getElementById('game-modal');
+    this.nextButton = document.getElementById('btn-next-level');
 
     this.bindControls();
     this.resizeCanvas();
@@ -18,6 +20,7 @@ class CubeGame {
     this.canvas.addEventListener('pointerdown', (event) => this.startDraw(event));
     this.canvas.addEventListener('pointermove', (event) => this.draw(event));
     window.addEventListener('pointerup', () => this.endDraw());
+    this.canvas.addEventListener('pointercancel', () => this.endDraw());
     this.generateNewPrompt();
     this.updateScore();
     this.render();
@@ -41,25 +44,48 @@ class CubeGame {
       this.render();
     });
     document.getElementById('btn-evaluate')?.addEventListener('click', () => this.evaluate());
-    document.getElementById('btn-next-level')?.addEventListener('click', () => {
-      document.getElementById('game-modal')?.classList.add('hidden');
+    this.nextButton?.addEventListener('click', () => {
+      this.hideModal();
       this.strokes = [];
       this.generateNewPrompt();
       this.setStatus('New prompt');
       this.render();
     });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') this.hideModal();
+    });
   }
 
   resizeCanvas() {
     const rect = this.canvas.getBoundingClientRect();
+    const previousWidth = this.width;
+    const previousHeight = this.height;
     this.dpr = window.devicePixelRatio || 1;
     this.canvas.width = Math.max(1, Math.floor(rect.width * this.dpr));
     this.canvas.height = Math.max(1, Math.floor(rect.height * this.dpr));
     this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
     this.width = rect.width;
     this.height = rect.height;
-    this.generateNewPrompt(false);
+    if (!previousWidth || !previousHeight || !this.promptFace) this.generateNewPrompt(false);
+    else this.scaleGeometry(previousWidth, previousHeight, this.width, this.height);
     this.render();
+  }
+
+  scalePoint(point, scaleX, scaleY) {
+    return { x: point.x * scaleX, y: point.y * scaleY };
+  }
+
+  scaleGeometry(previousWidth, previousHeight, nextWidth, nextHeight) {
+    const scaleX = nextWidth / previousWidth;
+    const scaleY = nextHeight / previousHeight;
+    this.promptFace = this.promptFace.map((point) => this.scalePoint(point, scaleX, scaleY));
+    this.vanishingPoint = this.scalePoint(this.vanishingPoint, scaleX, scaleY);
+    this.targetEdges = this.targetEdges.map((edge) => ({
+      start: this.scalePoint(edge.start, scaleX, scaleY),
+      end: this.scalePoint(edge.end, scaleX, scaleY),
+    }));
+    this.strokes = this.strokes.map((stroke) => stroke.map((point) => this.scalePoint(point, scaleX, scaleY)));
+    this.currentStroke = this.currentStroke.map((point) => this.scalePoint(point, scaleX, scaleY));
   }
 
   getPos(event) {
@@ -68,6 +94,7 @@ class CubeGame {
   }
 
   startDraw(event) {
+    if (this.modal && !this.modal.classList.contains('hidden')) return;
     event.preventDefault();
     this.canvas.setPointerCapture?.(event.pointerId);
     this.isDrawing = true;
@@ -118,7 +145,14 @@ class CubeGame {
     document.getElementById('hud-status').textContent = 'Evaluated';
     document.getElementById('modal-score').textContent = `${accuracy}% accuracy`;
     document.getElementById('modal-desc').textContent = accuracy > 85 ? 'Strong construction. Your edges are tracking toward a coherent vanishing point.' : 'Good attempt. Compare your stroke direction with the guide lines and try another prompt.';
-    document.getElementById('game-modal').classList.remove('hidden');
+    this.modal?.classList.remove('hidden');
+    this.modal?.classList.add('flex');
+    this.nextButton?.focus();
+  }
+
+  hideModal() {
+    this.modal?.classList.add('hidden');
+    this.modal?.classList.remove('flex');
   }
 
   calculateAccuracy() {

@@ -18,6 +18,9 @@
     .home-progress__fill { width: 0%; height: 100%; border-radius: inherit; background: #e86f45; transition: width .35s ease; }
     .lesson-status { display: inline-flex; align-items: center; border-radius: 999px; background: #e8e2d7; padding: .3rem .55rem; color: #68716c; font-family: 'DM Mono', monospace; font-size: .58rem; letter-spacing: .04em; text-transform: uppercase; }
     .lesson-status.is-complete { background: rgba(47, 137, 108, .14); color: #2f896c; }
+    @media (max-width: 767px) {
+      .lesson-summary { min-height: auto; border-top-color: rgba(217, 213, 201, .8); opacity: 1; }
+    }
   </style>
 </head>
 <body class="bg-background text-foreground antialiased selection:bg-accent selection:text-background">
@@ -83,14 +86,18 @@
           </div>
         </div>
 
-        <!-- INTRODUCTION VIDEO CONTAINER -->
+        <!-- QUICK START CONTAINER -->
         <div class="relative overflow-hidden rounded-3xl border border-border bg-card shadow-2xl">
-          <div class="aspect-video w-full bg-muted/50 flex flex-col items-center justify-center p-6 text-center group cursor-pointer">
-            <div class="h-16 w-16 rounded-full bg-accent text-background flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
-              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          <div class="aspect-video w-full bg-muted/50 flex flex-col items-center justify-center p-6 text-center">
+            <div class="h-16 w-16 rounded-full bg-accent text-background flex items-center justify-center shadow-xl">
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V4.5"/><path d="M12 19.5V9"/><path d="M20 19.5V13.5"/></svg>
             </div>
-            <span class="mt-4 font-display text-lg font-bold">INTRODUCTION VIDEO</span>
-            <span class="text-xs text-muted-foreground mt-1">Click to watch DrawFlow Orientation</span>
+            <span class="mt-4 font-display text-lg font-bold">ORIENTATION &amp; QUICK START</span>
+            <span class="mt-1 max-w-sm text-xs text-muted-foreground">Follow the full learning path: read the lessons, practice the staged exercises, then test your perspective skills on the cube challenge.</span>
+            <div class="mt-5 flex flex-wrap justify-center gap-3">
+              <a href="pages/lessons.html" class="focus-ring rounded-full bg-primary px-5 py-2.5 text-xs font-bold text-primary-foreground shadow-md hover:bg-primary/90">Open lessons</a>
+              <a href="pages/game.html" class="focus-ring rounded-full border border-border px-5 py-2.5 text-xs font-bold hover:bg-muted">Try cube challenge</a>
+            </div>
           </div>
         </div>
       </section>
@@ -137,7 +144,7 @@
               <strong class="text-foreground">Solid Drawing</strong>—The skill of conveying a 3D character or object in a 2D drawing. It emphasizes drawing what will appear solid, balanced and believable by demonstrating key elements of form, weight, proportion, structure, and depth. Solid Drawing is an important part of 2D Animation because it allows animators to create consistent and believable character animation from various angles and poses. It also enables artists to become aware of the use of objects and the human body in space in relation to light and movement.
             </p>
             <p>
-              In DrawFlow, you will learn four important lessons: <strong>Form</strong>, <strong>Shadow</strong>, <strong>Perspective</strong>, and <strong>Depth</strong>. Every lesson contains straightforward explanations, illustrations and videos to help you grasp each concept. You will also have drawing practice activities which will allow you to put into practice your learning. Learn the lessons step by step and practice each technique to continue to develop your Solid Drawing skills and draw more believable objects for animation.
+              In DrawFlow, you will learn four important lessons: <strong>Form</strong>, <strong>Perspective</strong>, <strong>Shadow</strong>, and <strong>Depth</strong>. Every lesson contains straightforward explanations, illustrations and videos to help you grasp each concept. You will also have drawing practice activities which will allow you to put into practice your learning. Learn the lessons step by step and practice each technique to continue to develop your Solid Drawing skills and draw more believable objects for animation.
             </p>
           </div>
 
@@ -153,7 +160,7 @@
       <!-- 4 SIMPLE CARDS WITH CROSSHAIR HOVER EFFECT -->
       <section class="py-12 border-t border-border">
         <h2 class="font-display text-3xl font-bold">What You'll Learn</h2>
-        <p class="text-xs text-muted-foreground mt-1">Hover over any card to reveal its core definition.</p>
+        <p class="text-xs text-muted-foreground mt-1">Hover or tap any card to reveal its core definition.</p>
 
         <div class="home-progress mt-7" aria-label="Overall lesson progress">
           <div class="mb-2 flex items-center justify-between gap-3 font-mono text-[10px] uppercase tracking-[.12em] text-muted-foreground"><span>Your learning path</span><span id="home-progress-label">0 of 4 complete</span></div>
@@ -170,39 +177,39 @@
             </div>
             <h3 class="mt-3 font-display text-2xl font-bold">Form</h3>
             <!-- Definition visible on hover -->
-            <div class="mt-4 min-h-[4.5rem] border-t border-transparent pt-4 opacity-0 transition-all duration-300 group-hover:border-accent group-hover:opacity-100 group-focus-visible:border-accent group-focus-visible:opacity-100">
+            <div class="lesson-summary mt-4 min-h-[4.5rem] border-t border-transparent pt-4 opacity-0 transition-all duration-300 group-hover:border-accent group-hover:opacity-100 group-focus-visible:border-accent group-focus-visible:opacity-100">
               <p class="text-xs leading-relaxed text-muted-foreground group-hover:text-foreground font-medium">
                 Learn how to create solid and believable shapes using basic forms.
               </p>
             </div>
           </a>
 
-          <!-- Card 2: Shadow -->
-          <a href="pages/shadow.html" data-lesson-card="shadow" class="group relative overflow-hidden rounded-2xl border border-card-border bg-card p-6 transition-all duration-300 hover:border-accent hover:shadow-xl cursor-crosshair">
+          <!-- Card 2: Perspective -->
+          <a href="pages/perspective.html" data-lesson-card="perspective" class="group relative overflow-hidden rounded-2xl border border-card-border bg-card p-6 transition-all duration-300 hover:border-accent hover:shadow-xl cursor-crosshair">
             <div class="flex items-center justify-between">
               <p class="font-mono text-xs font-bold text-accent">Lesson 02</p>
               <span class="flex items-center gap-3"><span data-lesson-status class="lesson-status">Not started</span><span class="text-xl leading-none text-muted-foreground group-hover:text-accent">+</span></span>
             </div>
-            <h3 class="mt-3 font-display text-2xl font-bold">Shadow</h3>
+            <h3 class="mt-3 font-display text-2xl font-bold">Perspective</h3>
             <!-- Definition visible on hover -->
-            <div class="mt-4 min-h-[4.5rem] border-t border-transparent pt-4 opacity-0 transition-all duration-300 group-hover:border-accent group-hover:opacity-100 group-focus-visible:border-accent group-focus-visible:opacity-100">
+            <div class="lesson-summary mt-4 min-h-[4.5rem] border-t border-transparent pt-4 opacity-0 transition-all duration-300 group-hover:border-accent group-hover:opacity-100 group-focus-visible:border-accent group-focus-visible:opacity-100">
               <p class="text-xs leading-relaxed text-muted-foreground group-hover:text-foreground font-medium">
-                Understand how light and shadow give your drawings depth and volume.
+                Learn how to show objects and characters correctly in space.
               </p>
             </div>
           </a>
 
-          <!-- Card 3: Perspective -->
-          <a href="pages/perspective.html" data-lesson-card="perspective" class="group relative overflow-hidden rounded-2xl border border-card-border bg-card p-6 transition-all duration-300 hover:border-accent hover:shadow-xl cursor-crosshair">
+          <!-- Card 3: Shadow -->
+          <a href="pages/shadow.html" data-lesson-card="shadow" class="group relative overflow-hidden rounded-2xl border border-card-border bg-card p-6 transition-all duration-300 hover:border-accent hover:shadow-xl cursor-crosshair">
             <div class="flex items-center justify-between">
               <p class="font-mono text-xs font-bold text-accent">Lesson 03</p>
               <span class="flex items-center gap-3"><span data-lesson-status class="lesson-status">Not started</span><span class="text-xl leading-none text-muted-foreground group-hover:text-accent">+</span></span>
             </div>
-            <h3 class="mt-3 font-display text-2xl font-bold">Perspective</h3>
+            <h3 class="mt-3 font-display text-2xl font-bold">Shadow</h3>
             <!-- Definition visible on hover -->
-            <div class="mt-4 min-h-[4.5rem] border-t border-transparent pt-4 opacity-0 transition-all duration-300 group-hover:border-accent group-hover:opacity-100 group-focus-visible:border-accent group-focus-visible:opacity-100">
+            <div class="lesson-summary mt-4 min-h-[4.5rem] border-t border-transparent pt-4 opacity-0 transition-all duration-300 group-hover:border-accent group-hover:opacity-100 group-focus-visible:border-accent group-focus-visible:opacity-100">
               <p class="text-xs leading-relaxed text-muted-foreground group-hover:text-foreground font-medium">
-                Learn how to show objects and characters correctly in space.
+                Understand how light and shadow give your drawings depth and volume.
               </p>
             </div>
           </a>
@@ -215,7 +222,7 @@
             </div>
             <h3 class="mt-3 font-display text-2xl font-bold">Depth</h3>
             <!-- Definition visible on hover -->
-            <div class="mt-4 min-h-[4.5rem] border-t border-transparent pt-4 opacity-0 transition-all duration-300 group-hover:border-accent group-hover:opacity-100 group-focus-visible:border-accent group-focus-visible:opacity-100">
+            <div class="lesson-summary mt-4 min-h-[4.5rem] border-t border-transparent pt-4 opacity-0 transition-all duration-300 group-hover:border-accent group-hover:opacity-100 group-focus-visible:border-accent group-focus-visible:opacity-100">
               <p class="text-xs leading-relaxed text-muted-foreground group-hover:text-foreground font-medium">
                 Discover how to create a sense of distance and space in your drawings.
               </p>
@@ -241,7 +248,7 @@
   <script src="assets/js/site.js"></script>
   <script>
     (() => {
-      const lessons = ['form', 'shadow', 'perspective', 'depth'];
+      const lessons = ['form', 'perspective', 'shadow', 'depth'];
       const completed = JSON.parse(localStorage.getItem('drawflow-completed-lessons') || '[]');
       const count = lessons.filter((lesson) => completed.includes(lesson)).length;
       const percentage = (count / lessons.length) * 100;
