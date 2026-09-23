@@ -35,6 +35,27 @@
     .shape-sphere { width: 3.4rem; height: 3.4rem; border: 3px solid currentColor; border-radius: 50%; box-shadow: inset -.6rem -.45rem 0 rgba(232, 111, 69, .28); }
     .shape-cylinder { width: 3.3rem; height: 3.8rem; border: 3px solid currentColor; border-radius: 50% / 15%; box-shadow: inset 0 1.4rem 0 rgba(232, 111, 69, .18); }
     .prompt-box { border-radius: .9rem; background: #dce9df; padding: 1rem; color: #31564a; font-size: .8rem; line-height: 1.6; }
+    .exercise-studio { border: 1px solid #d9d5c9; border-radius: 1.25rem; background: #fffdf8; padding: 1.25rem; box-shadow: 0 18px 34px rgba(29, 41, 38, .08); }
+    .studio-toolbar { display: flex; flex-wrap: wrap; align-items: end; gap: .75rem; }
+    .studio-field { display: grid; gap: .35rem; color: #68716c; font-family: 'DM Mono', monospace; font-size: .65rem; text-transform: uppercase; letter-spacing: .08em; }
+    .studio-field select, .studio-field input { min-height: 2.4rem; border: 1px solid #d9d5c9; border-radius: .5rem; background: #f5f1e8; padding: .45rem .65rem; color: #1d2926; font: inherit; text-transform: none; letter-spacing: 0; }
+    .studio-stepbar { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; margin: 1.25rem 0; }
+    .studio-step { border: 1px solid #d9d5c9; border-radius: .65rem; background: #f5f1e8; padding: .7rem .8rem; color: #68716c; font-size: .75rem; font-weight: 700; text-align: left; }
+    .studio-step.is-active { border-color: #e86f45; background: #fff1e9; color: #1d2926; }
+    .studio-step:disabled { cursor: not-allowed; opacity: .5; }
+    .studio-board { display: grid; gap: 1rem; grid-template-columns: minmax(0, 1.4fr) minmax(14rem, .6fr); align-items: start; }
+    .canvas-frame { position: relative; overflow: hidden; min-height: 20rem; border: 1px solid #d9d5c9; border-radius: .75rem; background: #fff; }
+    .canvas-frame canvas { display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; cursor: crosshair; touch-action: none; }
+    .canvas-frame canvas + canvas { position: absolute; inset: 0; }
+    .studio-side { display: grid; gap: .75rem; }
+    .studio-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .studio-button { border: 1px solid #d9d5c9; border-radius: .55rem; background: #f5f1e8; padding: .6rem .75rem; color: #1d2926; font-size: .75rem; font-weight: 700; }
+    .studio-button.primary { border-color: #173e36; background: #173e36; color: #f8f4eb; }
+    .studio-button:disabled { cursor: not-allowed; opacity: .5; }
+    .studio-score { border-radius: .75rem; background: #dce9df; padding: 1rem; }
+    .studio-score strong { display: block; color: #173e36; font-family: 'DM Mono', monospace; font-size: 2rem; }
+    .studio-hint { color: #68716c; font-size: .75rem; line-height: 1.55; }
+    @media (max-width: 800px) { .studio-board { grid-template-columns: 1fr; } .studio-stepbar { grid-template-columns: 1fr; } }
     @media (max-width: 640px) { .shape-grid { grid-template-columns: 1fr; } .module-card { padding: 1.25rem; } }
   </style>
 </head>
@@ -87,7 +108,45 @@
 </div>
 </section>
 
-      <div class="space-y-5">
+      <section class="exercise-studio" aria-labelledby="studio-title">
+        <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+          <div>
+            <p class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Guided drawing lab</p>
+            <h2 id="studio-title" class="mt-2 font-display text-3xl">Trace it. Remember it. Draw it.</h2>
+            <p id="studio-description" class="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">Choose a subject and level, then work through the three-step practice flow.</p>
+          </div>
+          <p id="studio-level-status" class="font-mono-draw text-xs text-muted-foreground">Level 1 ready</p>
+        </div>
+        <div class="studio-toolbar mt-6">
+          <label class="studio-field">Subject<select id="studio-subject" aria-label="Exercise subject"></select></label>
+          <label class="studio-field">Level<select id="studio-level" aria-label="Exercise level"></select></label>
+          <label class="studio-field">Trace opacity<input id="studio-opacity" type="range" min="0" max="0.8" step="0.05" value="0.28" aria-label="Trace opacity"></label>
+          <div class="studio-actions">
+            <button id="studio-undo" class="studio-button" type="button">Undo</button>
+            <button id="studio-redo" class="studio-button" type="button">Redo</button>
+            <button id="studio-eraser" class="studio-button" type="button">Eraser</button>
+            <button id="studio-clear" class="studio-button" type="button">Clear</button>
+          </div>
+        </div>
+        <div class="studio-stepbar" role="tablist" aria-label="Exercise steps">
+          <button class="studio-step is-active" type="button" data-studio-step="trace">1. Trace</button>
+          <button class="studio-step" type="button" data-studio-step="freehand" disabled>2. Freehand</button>
+          <button class="studio-step" type="button" data-studio-step="compare" disabled>3. Compare &amp; grade</button>
+        </div>
+        <div class="studio-board">
+          <div class="canvas-frame" aria-label="Drawing canvas">
+            <canvas id="studio-reference-layer" aria-hidden="true"></canvas>
+            <canvas id="studio-drawing-canvas" aria-label="Draw here"></canvas>
+          </div>
+          <aside class="studio-side">
+            <div class="studio-score"><span class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-muted-foreground">Accuracy</span><strong id="studio-score">--%</strong><p id="studio-score-message" class="mt-2 studio-hint">Trace the guide, then check your work.</p></div>
+            <p class="studio-hint">Your score allows small differences in line weight and placement. Trace accuracy unlocks freehand practice; freehand accuracy completes the level.</p>
+            <button id="studio-check" class="studio-button primary" type="button">Check trace accuracy</button>
+          </aside>
+        </div>
+      </section>
+
+      <div class="space-y-5" hidden>
         <section id="stage-form" class="module-card is-active" data-stage="1">
 <div class="flex flex-col justify-between gap-5 sm:flex-row sm:items-start">
 <div class="flex gap-4">
