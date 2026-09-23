@@ -207,7 +207,10 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
   opacityInput.addEventListener('input', renderStage);
   splitInput.addEventListener('input', () => { if (stage === 'compare') scoreCanvas(); });
   submitButton.addEventListener('click', scoreCanvas);
-  document.querySelector('#form-eraser').addEventListener('click', (event) => { erasing = !erasing; event.currentTarget.classList.toggle('primary', erasing); });
+  penButton.addEventListener('click', () => { tool = 'pen'; penButton.classList.add('primary'); eraserButton.classList.remove('primary'); });
+  eraserButton.addEventListener('click', () => { tool = 'eraser'; eraserButton.classList.add('primary'); penButton.classList.remove('primary'); });
+  studyButton.addEventListener('click', () => { studyMode = !studyMode; studyButton.classList.toggle('primary', studyMode); if (studyMode) drawStudyGuides(); else scoreCanvas(); });
+  replayButton.addEventListener('click', replayStrokes);
   document.querySelector('#form-clear').addEventListener('click', clearDrawing);
   document.querySelector('#form-undo').addEventListener('click', () => { if (historyIndex > 0) { historyIndex -= 1; drawingContext.putImageData(history[historyIndex], 0, 0); } });
   document.querySelector('#form-redo').addEventListener('click', () => { if (historyIndex < history.length - 1) { historyIndex += 1; drawingContext.putImageData(history[historyIndex], 0, 0); } });
