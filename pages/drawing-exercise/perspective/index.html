@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Perspective drawing challenge: 1-point, 2-point, and 3-point perspective geometry training.">
+  <meta name="description" content="Perspective drawing challenge: trace, draw from memory, and evaluate your perspective precision.">
   <title>Perspective Drawing Challenge | DrawFlow</title>
   
   <!-- Fonts -->
@@ -13,6 +13,8 @@
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/assets/js/progression.js"></script>
+  <script>if (window.DrawFlowProgression) DrawFlowProgression.guardPage('perspective');</script>
   <script>
     tailwind.config = {
       theme: {
@@ -264,7 +266,7 @@
     }
   </style>
 </head>
-<body data-exercise-topic="perspective">
+<body data-exercise-topic="form">
   <div class="texture page-shell min-h-screen flex flex-col">
     <!-- Header -->
     <header class="sticky top-0 z-40 border-b border-borderCustom/80 bg-background/90 backdrop-blur-md">
@@ -285,7 +287,7 @@
       <!-- Game Header -->
       <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 max-w-6xl mx-auto w-full">
         <div class="flex flex-wrap items-center gap-2">
-          <span id="form-level-badge" class="game-pill text-primary">Point 1: 1-Point Perspective</span>
+          <span id="form-level-badge" class="game-pill text-primary">Level 1: 1 Point Perspective</span>
           <span id="form-stage-badge" class="game-pill text-accent">Stage 1: Trace</span>
         </div>
         <div id="form-hint-banner" class="game-hint-banner font-medium">
@@ -294,7 +296,7 @@
       </div>
 
       <!-- Main Challenge Area -->
-      <section class="form-challenge" aria-label="Perspective drawing challenge">
+      <section class="form-challenge" aria-label="Form drawing challenge">
         <!-- Interactive Canvas Card -->
         <div class="challenge-card flex flex-col justify-between">
           
@@ -302,10 +304,10 @@
           <div id="form-toolbar" class="challenge-tools">
             <div class="challenge-field">
               <label for="form-level">Level Selection</label>
-              <select id="form-level" aria-label="Perspective level">
-                <option value="1">Point 1 (1-Point Perspective)</option>
-                <option value="2" id="opt-lvl-2" disabled>🔒 Point 2 (2-Point Perspective - Locked)</option>
-                <option value="3" id="opt-lvl-3" disabled>🔒 Point 3 (3-Point Perspective - Locked)</option>
+              <select id="form-level" aria-label="Form level">
+                <option value="1">Level 1 (1 Point Perspective)</option>
+                <option value="2" id="opt-lvl-2" disabled>🔒 Level 2 (2 Point Perspective - Locked)</option>
+                <option value="3" id="opt-lvl-3" disabled>🔒 Level 3 (3 Point Perspective - Locked)</option>
               </select>
             </div>
 
@@ -351,7 +353,7 @@
             <div class="canvas-wrap">
               <canvas id="form-base-canvas" width="600" height="600" aria-hidden="true"></canvas>
               <canvas id="form-guide-canvas" width="600" height="600" aria-hidden="true"></canvas>
-              <canvas id="form-drawing-canvas" width="600" height="600" aria-label="Perspective drawing canvas"></canvas>
+              <canvas id="form-drawing-canvas" width="600" height="600" aria-label="Form drawing canvas"></canvas>
             </div>
           </div>
 
@@ -395,7 +397,7 @@
             <span class="font-mono text-[10px] uppercase tracking-[0.15em] text-muted font-bold">Accuracy Rank</span>
             <strong id="form-rank">--</strong>
             <p id="form-message" class="mt-2 text-xs leading-relaxed text-muted">
-              Trace over the dashed guide lines accurately. When ready, proceed to Freehand Mode.
+              Trace over the guide lines accurately. When ready, proceed to Freehand Mode.
             </p>
           </div>
 
@@ -437,6 +439,53 @@
         historyStep: -1,
         calculatedAccuracy: 0,
       };
+
+      // Folder Image Asset Map
+      const imageAssets = {
+        1: {
+          name: "Level 1: 1 Point Perspective",
+          trace: "/assets/exercises/perspective/level-1/trace.png",
+          freehand: "/assets/exercises/perspective/level-1/freehand.png",
+          complete: "/assets/exercises/perspective/level-1/reference.png"
+        },
+        2: {
+          name: "Level 2: 2 Point Perspective",
+          trace: "/assets/exercises/perspective/level-2/trace.png",
+          freehand: "/assets/exercises/perspective/level-2/freehand.png",
+          complete: "/assets/exercises/perspective/level-2/reference.png"
+        },
+        3: {
+          name: "Level 3: 3 Point Perspective",
+          trace: "/assets/exercises/perspective/level-3/trace.png",
+          freehand: "/assets/exercises/perspective/level-3/freehand.png",
+          complete: "/assets/exercises/perspective/level-3/reference.png"
+        }
+      };
+
+      const loadedImages = {};
+
+      function preloadImages(callback) {
+        let total = 0;
+        let loaded = 0;
+
+        Object.keys(imageAssets).forEach(lvl => {
+          loadedImages[lvl] = {};
+          ['trace', 'freehand', 'complete'].forEach(type => {
+            total++;
+            const img = new Image();
+            img.src = imageAssets[lvl][type];
+            img.onload = () => {
+              loadedImages[lvl][type] = img;
+              loaded++;
+              if (loaded === total && callback) callback();
+            };
+            img.onerror = () => {
+              loaded++;
+              if (loaded === total && callback) callback();
+            };
+          });
+        });
+      }
 
       // --- DOM ELEMENTS ---
       const levelSelect = document.getElementById('form-level');
@@ -483,271 +532,26 @@
       const ctxUserEval = userEvalCanvas.getContext('2d');
       const ctxTargetEval = targetEvalCanvas.getContext('2d');
 
-      // Set canvas resolution
       [baseCanvas, guideCanvas, drawingCanvas, userEvalCanvas, targetEvalCanvas].forEach(c => {
         c.width = CANVAS_SIZE;
         c.height = CANVAS_SIZE;
       });
 
-      // Helper function to draw red target circles with cross markers
-      function drawVanishingPoint(ctx, x, y) {
-        ctx.save();
-        ctx.strokeStyle = '#ef4444';
-        ctx.fillStyle = '#ef4444';
-        ctx.lineWidth = 3;
-
-        ctx.beginPath();
-        ctx.arc(x, y, 16, 0, Math.PI * 2);
-        ctx.stroke();
-
-        ctx.lineWidth = 2.5;
-        ctx.beginPath();
-        ctx.moveTo(x - 6, y - 6);
-        ctx.lineTo(x + 6, y + 6);
-        ctx.moveTo(x + 6, y - 6);
-        ctx.lineTo(x - 6, y + 6);
-        ctx.stroke();
-        ctx.restore();
-      }
-
-      const geometries = {
-        // --- POINT 1: 1-Point Perspective (Untitled53_20260923235919, Untitled53_20260924000101, Untitled53_20260924000108) ---
-        1: {
-          name: "Point 1: 1-Point Perspective",
-          drawBase: (ctx) => {
-            ctx.save();
-            ctx.strokeStyle = '#6b7280';
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            ctx.moveTo(0, 140);
-            ctx.lineTo(600, 140);
-            ctx.stroke();
-
-            drawVanishingPoint(ctx, 500, 140);
-
-            ctx.strokeStyle = '#1d2926';
-            ctx.lineWidth = 6;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-            ctx.beginPath();
-            ctx.rect(160, 270, 150, 150);
-            ctx.stroke();
-
-            ctx.restore();
-          },
-          drawGuide: (ctx) => {
-            ctx.save();
-            ctx.strokeStyle = '#9ca3af';
-            ctx.lineWidth = 3.5;
-            ctx.beginPath();
-            ctx.moveTo(310, 270); ctx.lineTo(500, 140);
-            ctx.moveTo(310, 420); ctx.lineTo(500, 140);
-            ctx.moveTo(160, 270); ctx.lineTo(500, 140);
-            ctx.stroke();
-
-            ctx.strokeStyle = '#6b7280';
-            ctx.lineWidth = 4;
-            ctx.setLineDash([10, 8]);
-            ctx.beginPath();
-            ctx.moveTo(250, 228); ctx.lineTo(350, 228);
-            ctx.moveTo(350, 228); ctx.lineTo(350, 315);
-            ctx.moveTo(310, 270); ctx.lineTo(250, 228);
-            ctx.stroke();
-
-            ctx.restore();
-          },
-          drawComplete: (ctx) => {
-            geometries[1].drawBase(ctx);
-            ctx.save();
-            ctx.strokeStyle = '#1d2926';
-            ctx.lineWidth = 6;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-            ctx.beginPath();
-
-            ctx.moveTo(160, 270); ctx.lineTo(250, 228);
-            ctx.lineTo(350, 228); ctx.lineTo(310, 270);
-            
-            ctx.moveTo(310, 270); ctx.lineTo(350, 228);
-            ctx.lineTo(350, 315); ctx.lineTo(310, 420);
-
-            ctx.stroke();
-            ctx.restore();
-          }
-        },
-
-        // --- POINT 2: 2-Point Perspective (Untitled54_20260923234439, Untitled54_20260923234544, Untitled54_20260923234828) ---
-        2: {
-          name: "Point 2: 2-Point Perspective",
-          drawBase: (ctx) => {
-            ctx.save();
-            ctx.strokeStyle = '#000000';
-            ctx.lineWidth = 3.5;
-            ctx.beginPath();
-            ctx.moveTo(0, 210);
-            ctx.lineTo(600, 210);
-            ctx.stroke();
-
-            drawVanishingPoint(ctx, 70, 210);
-            drawVanishingPoint(ctx, 530, 210);
-
-            ctx.strokeStyle = '#1d2926';
-            ctx.lineWidth = 6;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-            ctx.beginPath();
-            ctx.moveTo(275, 320);
-            ctx.lineTo(355, 290);
-            ctx.lineTo(355, 375);
-            ctx.lineTo(275, 430);
-            ctx.closePath();
-            ctx.stroke();
-
-            ctx.restore();
-          },
-          drawGuide: (ctx) => {
-            ctx.save();
-            ctx.strokeStyle = '#9ca3af';
-            ctx.lineWidth = 3.5;
-            ctx.beginPath();
-            ctx.moveTo(355, 290); ctx.lineTo(70, 210);
-            ctx.moveTo(355, 375); ctx.lineTo(70, 210);
-
-            ctx.moveTo(275, 320); ctx.lineTo(530, 210);
-            ctx.moveTo(275, 430); ctx.lineTo(530, 210);
-            ctx.stroke();
-
-            ctx.strokeStyle = '#6b7280';
-            ctx.lineWidth = 4;
-            ctx.setLineDash([10, 8]);
-            ctx.beginPath();
-            ctx.moveTo(220, 260); ctx.lineTo(220, 368);
-            ctx.moveTo(275, 320); ctx.lineTo(220, 260);
-            ctx.moveTo(355, 290); ctx.lineTo(288, 242);
-            ctx.moveTo(220, 260); ctx.lineTo(288, 242);
-            ctx.moveTo(275, 430); ctx.lineTo(220, 368);
-            ctx.stroke();
-
-            ctx.restore();
-          },
-          drawComplete: (ctx) => {
-            geometries[2].drawBase(ctx);
-            ctx.save();
-            ctx.strokeStyle = '#1d2926';
-            ctx.lineWidth = 6;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-            ctx.beginPath();
-
-            ctx.moveTo(355, 290); ctx.lineTo(435, 270);
-            ctx.lineTo(435, 345); ctx.lineTo(355, 375);
-
-            ctx.moveTo(355, 290); ctx.lineTo(368, 242);
-            ctx.lineTo(288, 242); ctx.lineTo(275, 320);
-
-            ctx.moveTo(355, 290); ctx.lineTo(355, 375);
-
-            ctx.stroke();
-            ctx.restore();
-          }
-        },
-
-        // --- POINT 3: 3-Point Perspective (Untitled55_20260923224600, Untitled55_20260923224658, Untitled55_20260923224705) ---
-        3: {
-          name: "Point 3: 3-Point Perspective",
-          drawBase: (ctx) => {
-            ctx.save();
-            ctx.strokeStyle = '#000000';
-            ctx.lineWidth = 3.5;
-            ctx.beginPath();
-            ctx.moveTo(0, 150);
-            ctx.lineTo(600, 150);
-            ctx.stroke();
-
-            drawVanishingPoint(ctx, 110, 150);
-            drawVanishingPoint(ctx, 485, 150);
-            drawVanishingPoint(ctx, 275, 475);
-
-            ctx.strokeStyle = '#1d2926';
-            ctx.lineWidth = 6;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-            ctx.beginPath();
-            ctx.moveTo(275, 215);
-            ctx.lineTo(338, 238);
-            ctx.lineTo(275, 270);
-            ctx.lineTo(212, 238);
-            ctx.closePath();
-            ctx.stroke();
-
-            ctx.restore();
-          },
-          drawGuide: (ctx) => {
-            ctx.save();
-            ctx.strokeStyle = '#9ca3af';
-            ctx.lineWidth = 3.5;
-            ctx.beginPath();
-            ctx.moveTo(212, 238); ctx.lineTo(110, 150);
-            ctx.moveTo(275, 215); ctx.lineTo(110, 150);
-            ctx.moveTo(338, 238); ctx.lineTo(485, 150);
-            ctx.moveTo(275, 215); ctx.lineTo(485, 150);
-
-            ctx.moveTo(212, 238); ctx.lineTo(275, 475);
-            ctx.moveTo(338, 238); ctx.lineTo(275, 475);
-            ctx.moveTo(275, 270); ctx.lineTo(275, 475);
-            ctx.stroke();
-
-            ctx.strokeStyle = '#6b7280';
-            ctx.lineWidth = 4;
-            ctx.setLineDash([10, 8]);
-            ctx.beginPath();
-            ctx.moveTo(275, 270); ctx.lineTo(275, 340);
-            ctx.moveTo(212, 238); ctx.lineTo(228, 310);
-            ctx.moveTo(338, 238); ctx.lineTo(322, 310);
-            ctx.moveTo(228, 310); ctx.lineTo(275, 340);
-            ctx.moveTo(322, 310); ctx.lineTo(275, 340);
-            ctx.stroke();
-
-            ctx.restore();
-          },
-          drawComplete: (ctx) => {
-            geometries[3].drawBase(ctx);
-            ctx.save();
-            ctx.strokeStyle = '#1d2926';
-            ctx.lineWidth = 6;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-            ctx.beginPath();
-
-            ctx.moveTo(275, 270); ctx.lineTo(275, 340);
-
-            ctx.moveTo(212, 238); ctx.lineTo(228, 310);
-            ctx.lineTo(275, 340);
-
-            ctx.moveTo(338, 238); ctx.lineTo(322, 310);
-            ctx.lineTo(275, 340);
-
-            ctx.stroke();
-            ctx.restore();
-          }
-        }
-      };
-
       function updateLevelDropdownUI() {
         if (state.unlockedLevels[2]) {
           optLvl2.disabled = false;
-          optLvl2.textContent = "Point 2 (2-Point Perspective)";
+          optLvl2.textContent = "Level 2 (2 Point Perspective)";
         } else {
           optLvl2.disabled = true;
-          optLvl2.textContent = "🔒 Point 2 (2-Point Perspective - Locked)";
+          optLvl2.textContent = "🔒 Level 2 (2 Point - Locked)";
         }
 
         if (state.unlockedLevels[3]) {
           optLvl3.disabled = false;
-          optLvl3.textContent = "Point 3 (3-Point Perspective)";
+          optLvl3.textContent = "Level 3 (3 Point Perspective)";
         } else {
           optLvl3.disabled = true;
-          optLvl3.textContent = "🔒 Point 3 (3-Point Perspective - Locked)";
+          optLvl3.textContent = "🔒 Level 3 (3 Point - Locked)";
         }
       }
 
@@ -755,34 +559,334 @@
         ctxBase.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
         ctxGuide.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
-        const currentGeo = geometries[state.level];
-        currentGeo.drawBase(ctxBase);
+        const imgs = loadedImages[state.level];
+        if (!imgs) return;
 
-        if (state.stage === 'trace' && state.guideVisible) {
-          guideCanvas.style.display = 'block';
-          ctxGuide.globalAlpha = state.guideOpacity;
-          currentGeo.drawGuide(ctxGuide);
-        } else {
+        if (state.stage === 'trace') {
+          if (imgs.freehand) ctxBase.drawImage(imgs.freehand, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
+          if (state.guideVisible && imgs.trace) {
+            guideCanvas.style.display = 'block';
+            ctxGuide.globalAlpha = state.guideOpacity;
+            ctxGuide.drawImage(imgs.trace, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
+          } else {
+            guideCanvas.style.display = 'none';
+          }
+        } else if (state.stage === 'freehand') {
+          if (imgs.freehand) ctxBase.drawImage(imgs.freehand, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
           guideCanvas.style.display = 'none';
         }
 
-        levelBadge.textContent = currentGeo.name;
+        levelBadge.textContent = imageAssets[state.level].name;
         if (state.stage === 'trace') {
           stageBadge.textContent = 'Stage 1: Trace';
-          hintBanner.textContent = 'Trace the dashed guides accurately to build perspective muscle memory.';
+          hintBanner.textContent = 'Trace the guided perspective lines accurately.';
           submitBtn.textContent = 'Continue to Freehand Mode ➔';
           progressText.textContent = 'Stage 1: Trace';
         } else if (state.stage === 'freehand') {
           stageBadge.textContent = 'Stage 2: Freehand';
-          hintBanner.textContent = 'The guide lines are hidden! Recreate the missing perspective lines from memory.';
+          hintBanner.textContent = 'Trace guides are hidden! Draw the missing perspective lines from memory.';
           submitBtn.textContent = 'Evaluate Drawing ➔';
           progressText.textContent = 'Stage 2: Freehand';
         } else {
           stageBadge.textContent = 'Stage 3: Evaluation';
-          hintBanner.textContent = 'Review your drawing against the ideal geometry using the comparison slider.';
+          hintBanner.textContent = 'Compare your drawing against the reference using the slider.';
           submitBtn.textContent = 'Retry Current Level 🔄';
           progressText.textContent = 'Stage 3: Completed';
         }
+      }
+
+      function drawPerspectiveTraceOnly(ctx, freehandImg, traceImg) {
+        if (!traceImg) return;
+        if (!freehandImg) {
+          ctx.drawImage(traceImg, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
+          return;
+        }
+
+        const freehandCanvas = document.createElement('canvas');
+        const traceCanvas = document.createElement('canvas');
+        freehandCanvas.width = CANVAS_SIZE;
+        freehandCanvas.height = CANVAS_SIZE;
+        traceCanvas.width = CANVAS_SIZE;
+        traceCanvas.height = CANVAS_SIZE;
+
+        const freehandCtx = freehandCanvas.getContext('2d');
+        const traceCtx = traceCanvas.getContext('2d');
+        freehandCtx.drawImage(freehandImg, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
+        traceCtx.drawImage(traceImg, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
+
+        const freehandData = freehandCtx.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE).data;
+        const traceImageData = traceCtx.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+        const traceData = traceImageData.data;
+
+        const pixelCount = CANVAS_SIZE * CANVAS_SIZE;
+        const freehandMask = new Uint8Array(pixelCount);
+        const keepMask = new Uint8Array(pixelCount);
+
+        function isDarkLine(data, idx) {
+          const a = data[idx + 3];
+          if (a < 20) return false;
+          const r = data[idx];
+          const g = data[idx + 1];
+          const b = data[idx + 2];
+          const brightness = (r + g + b) / 3;
+          const maxC = Math.max(r, g, b);
+          const minC = Math.min(r, g, b);
+          const saturation = maxC - minC;
+          return brightness < 95 && saturation < 65;
+        }
+
+        function isTraceStroke(data, idx) {
+          const a = data[idx + 3];
+          if (a < 20) return false;
+          const r = data[idx];
+          const g = data[idx + 1];
+          const b = data[idx + 2];
+          const brightness = (r + g + b) / 3;
+          const maxC = Math.max(r, g, b);
+          const minC = Math.min(r, g, b);
+          const saturation = maxC - minC;
+
+          // Stage 1 guide should keep only gray helper lines, not dark geometry edges.
+          const isGrayGuide = brightness >= 120 && brightness <= 245 && saturation <= 45;
+          return isGrayGuide;
+        }
+
+        for (let i = 0, p = 0; p < pixelCount; i += 4, p++) {
+          if (isDarkLine(freehandData, i)) freehandMask[p] = 1;
+        }
+
+        function hasMaskNeighbor(mask, x, y, radius) {
+          for (let dy = -radius; dy <= radius; dy++) {
+            const ny = y + dy;
+            if (ny < 0 || ny >= CANVAS_SIZE) continue;
+            for (let dx = -radius; dx <= radius; dx++) {
+              const nx = x + dx;
+              if (nx < 0 || nx >= CANVAS_SIZE) continue;
+              if (mask[ny * CANVAS_SIZE + nx]) return true;
+            }
+          }
+          return false;
+        }
+
+        function countNeighbors(mask, x, y, radius) {
+          let count = 0;
+          for (let dy = -radius; dy <= radius; dy++) {
+            const ny = y + dy;
+            if (ny < 0 || ny >= CANVAS_SIZE) continue;
+            for (let dx = -radius; dx <= radius; dx++) {
+              if (dx === 0 && dy === 0) continue;
+              const nx = x + dx;
+              if (nx < 0 || nx >= CANVAS_SIZE) continue;
+              if (mask[ny * CANVAS_SIZE + nx]) count++;
+            }
+          }
+          return count;
+        }
+
+        for (let y = 0; y < CANVAS_SIZE; y++) {
+          for (let x = 0; x < CANVAS_SIZE; x++) {
+            const p = y * CANVAS_SIZE + x;
+            const idx = p * 4;
+
+            if (!isTraceStroke(traceData, idx)) continue;
+            if (hasMaskNeighbor(freehandMask, x, y, 2)) continue;
+
+            keepMask[p] = 1;
+          }
+        }
+
+        for (let y = 0; y < CANVAS_SIZE; y++) {
+          for (let x = 0; x < CANVAS_SIZE; x++) {
+            const p = y * CANVAS_SIZE + x;
+            const idx = p * 4;
+
+            if (!keepMask[p] || countNeighbors(keepMask, x, y, 1) < 1) {
+              traceData[idx + 3] = 0;
+            }
+          }
+        }
+
+        traceCtx.putImageData(traceImageData, 0, 0);
+        ctx.drawImage(traceCanvas, 0, 0);
+      }
+
+      function drawPerspectiveBaseOnly(ctx, img) {
+        if (!img) return;
+
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = CANVAS_SIZE;
+        tempCanvas.height = CANVAS_SIZE;
+        const tempCtx = tempCanvas.getContext('2d');
+
+        tempCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+        tempCtx.drawImage(img, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
+
+        const imageData = tempCtx.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+        const data = imageData.data;
+        const pixelCount = CANVAS_SIZE * CANVAS_SIZE;
+        const mask = new Uint8Array(pixelCount);
+
+        // Keep only dark strokes (base geometry), remove gray/red guide artifacts.
+        for (let i = 0, p = 0; i < data.length; i += 4, p++) {
+          const r = data[i];
+          const g = data[i + 1];
+          const b = data[i + 2];
+          const a = data[i + 3];
+
+          if (a < 20) {
+            continue;
+          }
+
+          const brightness = (r + g + b) / 3;
+          const maxC = Math.max(r, g, b);
+          const minC = Math.min(r, g, b);
+          const saturation = maxC - minC;
+
+          const isDarkLine = brightness < 95 && saturation < 65;
+          if (isDarkLine) {
+            mask[p] = 1;
+          }
+        }
+
+        function countNeighbors(localMask, x, y, radius) {
+          let count = 0;
+          for (let dy = -radius; dy <= radius; dy++) {
+            const ny = y + dy;
+            if (ny < 0 || ny >= CANVAS_SIZE) continue;
+            for (let dx = -radius; dx <= radius; dx++) {
+              if (dx === 0 && dy === 0) continue;
+              const nx = x + dx;
+              if (nx < 0 || nx >= CANVAS_SIZE) continue;
+              if (localMask[ny * CANVAS_SIZE + nx]) count++;
+            }
+          }
+          return count;
+        }
+
+        for (let y = 0; y < CANVAS_SIZE; y++) {
+          for (let x = 0; x < CANVAS_SIZE; x++) {
+            const p = y * CANVAS_SIZE + x;
+            const idx = p * 4;
+
+            if (mask[p] && countNeighbors(mask, x, y, 1) >= 2) {
+              data[idx] = 29;
+              data[idx + 1] = 41;
+              data[idx + 2] = 38;
+              data[idx + 3] = 255;
+            } else {
+              data[idx + 3] = 0;
+            }
+          }
+        }
+
+        tempCtx.putImageData(imageData, 0, 0);
+        ctx.drawImage(tempCanvas, 0, 0);
+      }
+
+      function drawPerspectiveTargetLinesOnly(ctx, freehandImg, completeImg) {
+        if (!freehandImg || !completeImg) return;
+
+        const freehandCanvas = document.createElement('canvas');
+        const completeCanvas = document.createElement('canvas');
+        freehandCanvas.width = CANVAS_SIZE;
+        freehandCanvas.height = CANVAS_SIZE;
+        completeCanvas.width = CANVAS_SIZE;
+        completeCanvas.height = CANVAS_SIZE;
+
+        const freehandCtx = freehandCanvas.getContext('2d');
+        const completeCtx = completeCanvas.getContext('2d');
+
+        freehandCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+        completeCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+        freehandCtx.drawImage(freehandImg, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
+        completeCtx.drawImage(completeImg, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
+
+        const freehandData = freehandCtx.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE).data;
+        const completeData = completeCtx.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE).data;
+
+        const pixelCount = CANVAS_SIZE * CANVAS_SIZE;
+        const freehandMask = new Uint8Array(pixelCount);
+        const completeMask = new Uint8Array(pixelCount);
+
+        function isDarkLine(data, idx) {
+          const a = data[idx + 3];
+          if (a < 20) return false;
+
+          const r = data[idx];
+          const g = data[idx + 1];
+          const b = data[idx + 2];
+          const brightness = (r + g + b) / 3;
+          const maxC = Math.max(r, g, b);
+          const minC = Math.min(r, g, b);
+          const saturation = maxC - minC;
+          return brightness < 95 && saturation < 65;
+        }
+
+        for (let i = 0, p = 0; p < pixelCount; i += 4, p++) {
+          if (isDarkLine(freehandData, i)) freehandMask[p] = 1;
+          if (isDarkLine(completeData, i)) completeMask[p] = 1;
+        }
+
+        function hasMaskNeighbor(mask, x, y, radius) {
+          for (let dy = -radius; dy <= radius; dy++) {
+            const ny = y + dy;
+            if (ny < 0 || ny >= CANVAS_SIZE) continue;
+            for (let dx = -radius; dx <= radius; dx++) {
+              const nx = x + dx;
+              if (nx < 0 || nx >= CANVAS_SIZE) continue;
+              if (mask[ny * CANVAS_SIZE + nx]) return true;
+            }
+          }
+          return false;
+        }
+
+        const out = ctx.createImageData(CANVAS_SIZE, CANVAS_SIZE);
+        const outData = out.data;
+        const targetMask = new Uint8Array(pixelCount);
+
+        for (let y = 0; y < CANVAS_SIZE; y++) {
+          for (let x = 0; x < CANVAS_SIZE; x++) {
+            const p = y * CANVAS_SIZE + x;
+
+            if (!completeMask[p]) continue;
+
+            // Keep only the lines missing from freehand/base, i.e. the lines users are expected to draw.
+            if (hasMaskNeighbor(freehandMask, x, y, 2)) continue;
+
+            targetMask[p] = 1;
+          }
+        }
+
+        function countNeighbors(localMask, x, y, radius) {
+          let count = 0;
+          for (let dy = -radius; dy <= radius; dy++) {
+            const ny = y + dy;
+            if (ny < 0 || ny >= CANVAS_SIZE) continue;
+            for (let dx = -radius; dx <= radius; dx++) {
+              if (dx === 0 && dy === 0) continue;
+              const nx = x + dx;
+              if (nx < 0 || nx >= CANVAS_SIZE) continue;
+              if (localMask[ny * CANVAS_SIZE + nx]) count++;
+            }
+          }
+          return count;
+        }
+
+        for (let y = 0; y < CANVAS_SIZE; y++) {
+          for (let x = 0; x < CANVAS_SIZE; x++) {
+            const p = y * CANVAS_SIZE + x;
+            const idx = p * 4;
+
+            if (!targetMask[p] || countNeighbors(targetMask, x, y, 1) < 2) continue;
+
+            outData[idx] = 29;
+            outData[idx + 1] = 41;
+            outData[idx + 2] = 38;
+            outData[idx + 3] = 255;
+          }
+        }
+
+        ctx.putImageData(out, 0, 0);
       }
 
       function resetCanvasState(resetHistory = true) {
@@ -797,7 +901,7 @@
 
       function switchLevel(newLevel) {
         if (!state.unlockedLevels[newLevel]) {
-          alert(`Point ${newLevel} is currently locked! Complete the previous level evaluation first to unlock it.`);
+          alert(`Level ${newLevel} is locked! Complete the previous level evaluation first.`);
           levelSelect.value = state.level;
           return;
         }
@@ -919,7 +1023,11 @@
         targetCanvas.width = CANVAS_SIZE;
         targetCanvas.height = CANVAS_SIZE;
         const ctxTarget = targetCanvas.getContext('2d');
-        geometries[state.level].drawGuide(ctxTarget);
+        drawPerspectiveTargetLinesOnly(
+          ctxTarget,
+          loadedImages[state.level].freehand,
+          loadedImages[state.level].complete
+        );
 
         const targetImgData = ctxTarget.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE).data;
         const userImgData = ctxDrawing.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE).data;
@@ -928,7 +1036,6 @@
         let matchedPixelCount = 0;
         let userStrokeCount = 0;
         let strayPixelCount = 0;
-
         const tolerance = 14;
 
         for (let y = 0; y < CANVAS_SIZE; y += 2) {
@@ -965,7 +1072,6 @@
         }
 
         if (targetPixelCount === 0) return 0;
-
         const recall = matchedPixelCount / targetPixelCount;
         const precision = userStrokeCount > 0 ? Math.max(0, 1 - (strayPixelCount / userStrokeCount) * 0.4) : 0;
         
@@ -999,11 +1105,20 @@
         evalWrap.hidden = false;
 
         ctxUserEval.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-        geometries[state.level].drawBase(ctxUserEval);
+        if (loadedImages[state.level].freehand) {
+          ctxUserEval.drawImage(loadedImages[state.level].freehand, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
+        }
         ctxUserEval.drawImage(drawingCanvas, 0, 0);
 
         ctxTargetEval.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-        geometries[state.level].drawComplete(ctxTargetEval);
+        if (loadedImages[state.level].complete) {
+          ctxTargetEval.drawImage(loadedImages[state.level].complete, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
+        }
+        // Keep user strokes visible by punching them out of the top comparison overlay.
+        ctxTargetEval.save();
+        ctxTargetEval.globalCompositeOperation = 'destination-out';
+        ctxTargetEval.drawImage(drawingCanvas, 0, 0);
+        ctxTargetEval.restore();
 
         updateEvaluationSplit(50);
         evalSplitInput.value = 50;
@@ -1020,20 +1135,27 @@
             state.unlockedLevels[3] = true;
             updateLevelDropdownUI();
           }
+          if (window.DrawFlowProgression) {
+            if (state.level < 3) DrawFlowProgression.unlockLevel('perspective', state.level + 1);
+            if (state.level === 3) {
+              DrawFlowProgression.completeTopic('perspective');
+              setTimeout(() => DrawFlowProgression.showCompletionModal('perspective'), 300);
+            }
+          }
         }
 
         if (score >= 90) {
           rank = 'S Class ⭐';
-          msg = 'Masterful spatial precision! Your perspective geometry is spot on.';
+          msg = 'Masterful precision! Your perspective geometry is spot on.';
         } else if (score >= 70) {
           rank = 'A Class 🎯';
-          msg = 'Great job! Strong structural alignment and proportion control.';
+          msg = 'Great job! Strong structural alignment and perspective accuracy.';
         } else if (score >= 40) {
           rank = 'B Class 👍';
           msg = 'Solid effort! Next level is now unlocked.';
         } else {
           rank = 'C Class ✏️';
-          msg = 'Keep practicing! Draw complete strokes across all guide points.';
+          msg = 'Keep practicing! Re-trace the guidelines to build precision.';
         }
 
         rankText.textContent = rank;
@@ -1041,7 +1163,7 @@
 
         if (state.level < 3 && state.unlockedLevels[state.level + 1]) {
           nextLevelBtn.disabled = false;
-          nextLevelBtn.textContent = `Proceed to Point ${state.level + 1} ➔`;
+          nextLevelBtn.textContent = `Proceed to Level ${state.level + 1} ➔`;
         } else if (state.level === 3) {
           nextLevelBtn.disabled = false;
           nextLevelBtn.textContent = `Restart Challenge 🔄`;
@@ -1103,7 +1225,9 @@
         guideCanvas.style.display = 'block';
         ctxGuide.globalAlpha = 0.8;
         ctxGuide.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-        geometries[state.level].drawGuide(ctxGuide);
+        if (loadedImages[state.level].trace) {
+          ctxGuide.drawImage(loadedImages[state.level].trace, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
+        }
 
         let secondsLeft = 3;
         peekTimerSpan.textContent = `(${secondsLeft}s)`;
@@ -1146,8 +1270,10 @@
       evalSplitInput.addEventListener('input', (e) => updateEvaluationSplit(e.target.value));
 
       // --- INITIAL STARTUP ---
-      updateLevelDropdownUI();
-      switchLevel(1);
+      preloadImages(() => {
+        updateLevelDropdownUI();
+        switchLevel(1);
+      });
     });
   </script>
 </body>

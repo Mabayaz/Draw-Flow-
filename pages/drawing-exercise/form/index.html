@@ -13,6 +13,8 @@
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/assets/js/progression.js"></script>
+  <script>if (window.DrawFlowProgression) DrawFlowProgression.guardPage('form');</script>
   <script>
     tailwind.config = {
       theme: {
@@ -986,6 +988,13 @@
           } else if (state.level === 2 && !state.unlockedLevels[3]) {
             state.unlockedLevels[3] = true;
             updateLevelDropdownUI();
+          }
+          if (window.DrawFlowProgression) {
+            if (state.level < 3) DrawFlowProgression.unlockLevel('form', state.level + 1);
+            if (state.level === 3) {
+              DrawFlowProgression.completeTopic('form');
+              setTimeout(() => DrawFlowProgression.showCompletionModal('form'), 300);
+            }
           }
         }
 
