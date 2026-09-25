@@ -1,11 +1,14 @@
 const root = document.documentElement;
 
+const brandIcon = document.querySelector('link[rel="icon"]') || document.head.appendChild(Object.assign(document.createElement('link'), { rel: 'icon' }));
+brandIcon.href = '/assets/brand/drawflow-logo.png';
+
 if (window.location.pathname.endsWith('/index.html')) {
   const cleanPath = window.location.pathname.slice(0, -'index.html'.length) || '/';
   window.history.replaceState({}, document.title, `${cleanPath}${window.location.search}${window.location.hash}`);
 }
 
-const themeToggle = document.querySelector('[data-testid="button-theme-toggle"]');
+const themeToggle = document.querySelector('[data-testid="button-theme-toggle"], #button-theme-toggle');
 const menuToggle = document.querySelector('[data-testid="button-mobile-menu"]');
 const navigation = document.querySelector('nav');
 const restartButton = document.querySelector('[data-testid="button-restart-progress"]');
@@ -18,6 +21,8 @@ const videoPlayer = document.querySelector('[data-video-player]');
 const videoSpeed = document.querySelector('[data-video-speed]');
 const videoQuality = document.querySelector('[data-video-quality]');
 const videoFullscreen = document.querySelector('[data-video-fullscreen]');
+
+if (localStorage.getItem('drawflow-theme') === 'dark') root.classList.add('dark-mode');
 
 const updatePageProgress = () => {
   const pageHeight = document.documentElement.scrollHeight - window.innerHeight;
@@ -87,6 +92,7 @@ const closeStudyDialog = () => {
 themeToggle?.addEventListener('click', () => {
   root.classList.toggle('dark-mode');
   const isDark = root.classList.contains('dark-mode');
+  localStorage.setItem('drawflow-theme', isDark ? 'dark' : 'light');
   themeToggle.setAttribute('aria-label', isDark ? 'Switch to day mode' : 'Switch to night mode');
 });
 

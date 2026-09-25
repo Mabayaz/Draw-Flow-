@@ -13,6 +13,24 @@ body {
   font-family: 'DM Sans', sans-serif;
 }
 
+header a[href="/"] > span:first-child,
+header a[href="../"] > span:first-child,
+.brand-logo {
+  width: 2.75rem;
+  height: 2.75rem;
+  flex: 0 0 auto;
+  overflow: hidden;
+  border-radius: .55rem;
+  background-color: #fff !important;
+  background-image: url('/assets/brand/drawflow-logo.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  box-shadow: none !important;
+  color: transparent !important;
+  font-size: 0 !important;
+}
+
 body::before {
   position: fixed;
   top: 0;
