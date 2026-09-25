@@ -51,10 +51,11 @@ if %errorlevel%==0 (
 )
 
 set "SITE_URL=http://127.0.0.1:%SITE_PORT%"
+set "START_URL=%SITE_URL%/?v=20260926&run=%RANDOM%%RANDOM%"
 echo Starting Draw Flow server at %SITE_URL%
 start "Draw Flow Server" cmd /c "set DRAW_FLOW_PORT=%SITE_PORT% && "%PY_EXE%" scripts\run_server.py"
 timeout /t 2 /nobreak >nul
-start "" "%SITE_URL%/?v=3"
+start "" "%START_URL%"
 exit /b 0
 
 :kill_port

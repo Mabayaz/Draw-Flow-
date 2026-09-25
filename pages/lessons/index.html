@@ -203,6 +203,7 @@
           <a href="/" class="focus-ring rounded-full px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted">Home</a>
           <a href="/pages/lessons/" aria-current="page" class="focus-ring rounded-full bg-muted px-4 py-2 text-sm font-semibold">Lessons</a>
           <a href="/pages/exercises/" class="focus-ring rounded-full px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted">Exercises</a>
+          <a href="/pages/self-check/" class="focus-ring rounded-full px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted">Self-Check</a>
           <a href="/pages/about/" class="focus-ring rounded-full px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted">About Us</a>
         </nav>
         <div class="flex items-center gap-2">
@@ -227,11 +228,15 @@
         <p class="font-mono-draw text-[10px] uppercase tracking-[.18em] text-accent">Required before lessons</p>
         <h1 id="pre-test-title" class="mt-3 font-display text-4xl">PRE-TEST EVALUATION</h1>
         <p class="mt-5 max-w-4xl text-sm leading-7 text-muted-foreground">Please answer the following questions based on your current knowledge and understanding of Solid Drawing. This pre-test will also ask about your initial perception of the DrawFlow educational website before using its lessons and activities.</p>
-        <p class="mt-4 max-w-4xl text-sm leading-7 text-muted-foreground">For each statement, select the answer that best represents your opinion using the 5-point Likert Scale: 5 – Strongly Agree | 4 – Agree | 3 – Neutral | 2 – Disagree | 1 – Strongly Disagree</p>
+        <ul class="mt-4 space-y-1 text-sm text-muted-foreground"><li>5 – Strongly Agree</li><li>4 – Agree</li><li>3 – Neutral</li><li>2 – Disagree</li><li>1 – Strongly Disagree</li></ul>
         <p class="mt-4 max-w-4xl text-sm leading-7 text-muted-foreground">Click the Google Forms link below to answer the Pre-Test Evaluation. Please answer honestly based on your own experience and understanding.</p>
-        <a class="mt-5 inline-flex rounded-full bg-primary px-5 py-3 text-sm font-bold text-primary-foreground underline-offset-4 hover:underline" href="https://forms.gle/oeTZQLCHo2tMT62G8" target="_blank" rel="noreferrer">Open Pre-Test Evaluation ➔</a>
+        <a id="pre-test-form-link" class="mt-5 inline-flex rounded-full bg-primary px-5 py-3 text-sm font-bold text-primary-foreground underline-offset-4 hover:underline" href="https://forms.gle/oeTZQLCHo2tMT62G8?utm_source=gemini" target="_blank" rel="noopener noreferrer">Open Pre-Test Evaluation ➔</a>
+        <label class="mt-5 flex items-start gap-3 text-sm text-muted-foreground">
+          <input id="pre-test-submitted" type="checkbox" class="mt-1 h-4 w-4 accent-accent" disabled>
+          <span>I have submitted the Pre-Test Evaluation.</span>
+        </label>
         <div class="mt-6 border-t border-border pt-5">
-          <button id="pre-test-complete" type="button" class="focus-ring rounded-full bg-accent px-5 py-3 text-sm font-bold text-background">Mark as Complete</button>
+          <button id="pre-test-complete" type="button" class="focus-ring rounded-full bg-accent px-5 py-3 text-sm font-bold text-background disabled:cursor-not-allowed disabled:opacity-50" disabled>Mark as Complete &amp; Unlock Lessons</button>
           <p id="pre-test-status" class="mt-3 text-xs text-muted-foreground" aria-live="polite">Complete the pre-test, then mark it complete to unlock the lessons.</p>
         </div>
       </section>
@@ -508,6 +513,10 @@
         </article>
 
       </div>
+      <section id="lessons-complete-action" class="mt-8 rounded-2xl border border-accent/40 bg-accent/10 p-6" hidden aria-live="polite">
+        <p class="font-display text-xl">Lesson Complete! You can now proceed to Exercises.</p>
+        <button id="proceed-to-exercises" type="button" class="focus-ring mt-4 rounded-full bg-primary px-5 py-3 text-sm font-bold text-primary-foreground">Proceed to Exercises &rarr;</button>
+      </section>
       </div>
     </main>
 
@@ -530,7 +539,12 @@
       const lessonContent = document.querySelector('#lesson-content');
       const preTestButton = document.querySelector('#pre-test-complete');
       const preTestStatus = document.querySelector('#pre-test-status');
-      const preTestComplete = localStorage.getItem('drawflow_pretest_completed') === 'true';
+      const preTestLink = document.querySelector('#pre-test-form-link');
+      const preTestSubmitted = document.querySelector('#pre-test-submitted');
+      const lessonCompletionAction = document.querySelector('#lessons-complete-action');
+      const proceedToExercisesButton = document.querySelector('#proceed-to-exercises');
+      const preTestComplete = localStorage.getItem('drawflow_pretest_completed') === 'true'
+        && localStorage.getItem('drawflow_pretest_submitted') === 'true';
       let openLesson = null;
 
       const unlockLessons = () => {
@@ -539,11 +553,40 @@
         preTestStatus.textContent = 'Pre-Test completed. Your lessons are unlocked.';
       };
 
-      if (preTestComplete) unlockLessons();
+      const formOpened = localStorage.getItem('drawflow_pretest_form_opened') === 'true';
+      preTestSubmitted.disabled = preTestComplete || !formOpened;
+      preTestSubmitted.checked = localStorage.getItem('drawflow_pretest_submitted') === 'true';
+      preTestButton.disabled = preTestComplete || !preTestSubmitted.checked;
+      if (preTestComplete) {
+        unlockLessons();
+        preTestButton.textContent = 'Pre-Test Complete';
+      }
+      preTestLink.addEventListener('click', () => {
+        localStorage.setItem('drawflow_pretest_form_opened', 'true');
+        if (!preTestComplete) {
+          preTestSubmitted.disabled = false;
+          preTestStatus.textContent = 'Submit the form, then confirm above to unlock the lessons.';
+        }
+      });
+      preTestSubmitted.addEventListener('change', () => {
+        if (preTestSubmitted.checked) localStorage.setItem('drawflow_pretest_submitted', 'true');
+        else localStorage.removeItem('drawflow_pretest_submitted');
+        preTestButton.disabled = !preTestSubmitted.checked;
+        preTestStatus.textContent = preTestSubmitted.checked
+          ? 'Confirm below to unlock the lessons.'
+          : 'Submit the form, then confirm above to unlock the lessons.';
+      });
       preTestButton.addEventListener('click', () => {
+        if (preTestButton.disabled) return;
         localStorage.setItem('drawflow_pretest_completed', 'true');
         unlockLessons();
         document.querySelector('#lesson-content')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+
+      proceedToExercisesButton.addEventListener('click', () => {
+        if (!order.every((lesson) => completed.has(lesson))) return;
+        localStorage.setItem('drawflow_lesson_completed', 'true');
+        window.location.href = '/pages/drawing-exercise/exercises/';
       });
 
       const isUnlocked = (index) => order.slice(0, index).every((lesson) => completed.has(lesson));
@@ -582,6 +625,7 @@
           progressionCard.setAttribute('aria-disabled', String(!unlocked));
           progressionCard.querySelector('[data-progression-status]').textContent = complete ? 'Complete' : unlocked ? 'Ready' : 'Locked';
         });
+        lessonCompletionAction.hidden = !order.every((lesson) => completed.has(lesson));
         updateProgress();
       };
 

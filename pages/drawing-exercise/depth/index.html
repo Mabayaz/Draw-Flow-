@@ -412,8 +412,8 @@
           </div>
           <div id="form-completion-actions" class="challenge-card" hidden>
             <p class="font-mono text-[10px] uppercase tracking-[0.15em] text-accent font-bold">Exercises complete</p>
-            <p class="mt-2 text-sm leading-relaxed text-muted">Congratulations! You finished every topic and every level.</p>
-            <button id="form-review-exercises" class="challenge-button secondary mt-2 w-full" type="button">Exit / Review Exercises</button>
+            <p class="mt-2 text-sm leading-relaxed text-muted">Exercises Complete! You can now take your Post-Test.</p>
+            <button id="form-proceed-self-check" class="challenge-button primary mt-2 w-full" type="button">Proceed to Self-Check →</button>
           </div>
         </aside>
       </section>
@@ -460,6 +460,7 @@
       const submitBtn = document.getElementById('form-submit');
       const nextLevelBtn = document.getElementById('form-next-level');
       const completionActions = document.getElementById('form-completion-actions');
+      const proceedSelfCheckBtn = document.getElementById('form-proceed-self-check');
       const optLvl2 = document.getElementById('opt-lvl-2');
       const levelBadge = document.getElementById('form-level-badge');
       const stageBadge = document.getElementById('form-stage-badge');
@@ -467,6 +468,14 @@
       const rankText = document.getElementById('form-rank');
       const messageText = document.getElementById('form-message');
       const progressText = document.getElementById('form-progress');
+
+      proceedSelfCheckBtn.addEventListener('click', () => {
+        const progression = DrawFlowProgression.load();
+        const allTopicsComplete = DrawFlowProgression.TOPIC_ORDER.every((topic) => progression[topic]?.completed === true);
+        if (!allTopicsComplete) return;
+        localStorage.setItem('drawflow_exercises_completed', 'true');
+        window.location.href = '/pages/self-check/';
+      });
 
       const drawingWrap = document.getElementById('main-drawing-area');
       const evalWrap = document.getElementById('form-evaluation');

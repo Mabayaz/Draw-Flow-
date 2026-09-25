@@ -9,6 +9,11 @@
     depth: '/pages/drawing-exercise/depth/'
   };
   const TOPIC_LABELS = { form: 'Form', shadow: 'Shadow', perspective: 'Perspective', depth: 'Depth' };
+  const navigateInternally = (url, replace = false) => {
+    sessionStorage.setItem('drawflow-internal-navigation', 'true');
+    if (replace) window.location.replace(url);
+    else window.location.href = url;
+  };
 
   function defaultProgression() {
     return {
@@ -68,12 +73,31 @@
     return TOPIC_PAGES[last];
   }
 
+  function lessonsComplete() {
+    if (localStorage.getItem('drawflow_lesson_completed') !== 'true') return false;
+    try {
+      const completed = JSON.parse(localStorage.getItem('drawflow_completed_lessons') || '[]');
+      return ['form', 'shadow', 'perspective', 'depth'].every((lesson) => completed.includes(lesson));
+    } catch (e) {
+      return false;
+    }
+  }
+
   // Redirects away from a locked topic page back to the highest unlocked one.
   function guardPage(topic) {
+    if (localStorage.getItem('drawflow_pretest_completed') !== 'true'
+      || localStorage.getItem('drawflow_pretest_submitted') !== 'true') {
+      navigateInternally('/pages/lessons/?locked=pretest', true);
+      return false;
+    }
+    if (!lessonsComplete()) {
+      navigateInternally('/pages/lessons/?locked=lessons', true);
+      return false;
+    }
     const state = load();
     if (state[topic] && state[topic].unlocked) return true;
     alert('Complete the previous topic to unlock ' + (TOPIC_LABELS[topic] || topic) + '.');
-    window.location.href = highestUnlockedPage(state) || '/pages/drawing-exercise/exercises/';
+    navigateInternally(highestUnlockedPage(state) || '/pages/drawing-exercise/exercises/');
     return false;
   }
 
@@ -104,11 +128,11 @@
 
     if (next) {
       card.querySelector('#progression-continue').addEventListener('click', () => {
-        window.location.href = TOPIC_PAGES[next];
+        navigateInternally(TOPIC_PAGES[next]);
       });
     }
     card.querySelector('#progression-quit').addEventListener('click', () => {
-      window.location.href = '/pages/drawing-exercise/exercises/';
+      navigateInternally('/pages/drawing-exercise/exercises/');
     });
     card.querySelector('#progression-replay').addEventListener('click', () => {
       overlay.remove();
