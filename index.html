@@ -19,6 +19,9 @@
     .home-progress__fill { width: 0%; height: 100%; border-radius: inherit; background: #e86f45; transition: width .35s ease; }
     .lesson-status { display: inline-flex; align-items: center; border-radius: 999px; background: #e8e2d7; padding: .3rem .55rem; color: #68716c; font-family: 'DM Mono', monospace; font-size: .58rem; letter-spacing: .04em; text-transform: uppercase; }
     .lesson-status.is-complete { background: rgba(47, 137, 108, .14); color: #2f896c; }
+    .course-celebration { position: relative; overflow: hidden; border: 1px solid #d9d5c9; border-radius: 1.25rem; background: radial-gradient(ellipse at 90% 0%, rgba(232, 111, 69, .2), transparent 42%), linear-gradient(120deg, #fffdf8, #f1eee4); }
+    .course-celebration::after { position: absolute; top: 1.25rem; right: 1.5rem; content: '\2726  \2727  \2726'; color: #e86f45; font-size: 1.3rem; letter-spacing: .8rem; transform: rotate(10deg); }
+    @media (prefers-reduced-motion: no-preference) { .course-celebration { animation: celebration-enter .7s ease-out both; } @keyframes celebration-enter { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } } }
   </style>
 </head>
 <body class="bg-background text-foreground antialiased selection:bg-accent selection:text-background">
@@ -55,6 +58,13 @@
 
     <!-- Main Content -->
     <main class="mx-auto max-w-7xl px-5 sm:px-8 flex-1">
+
+      <section id="course-celebration" class="course-celebration mb-2 mt-8 p-6 sm:p-9" hidden aria-live="polite">
+        <p class="font-mono text-xs font-bold uppercase tracking-widest text-accent">A journey well drawn</p>
+        <h2 class="mt-3 max-w-3xl font-display text-3xl font-bold leading-tight sm:text-5xl">Congratulations, you completed the DrawFlow course!</h2>
+        <p class="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">You learned, practiced, and brought solid drawing principles to life. Carry that confidence into every sketch and every story you create next.</p>
+        <p class="mt-5 font-display text-lg font-semibold text-primary">Keep drawing. Keep growing. Let your creativity flow.</p>
+      </section>
       
       <!-- HERO SECTION -->
       <section class="grid gap-12 pb-16 pt-12 lg:grid-cols-2 lg:items-center lg:pt-20">
@@ -275,6 +285,12 @@
   <script src="/assets/js/site.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      const celebration = document.getElementById('course-celebration');
+      const isCourseComplete = localStorage.getItem('drawflow_course_completed') === 'true';
+      if (celebration && isCourseComplete && new URLSearchParams(window.location.search).get('course-complete') === '1') {
+        celebration.hidden = false;
+      }
+
       // 1. VIDEO CONTROLS
       const video = document.getElementById('intro-video');
       const speedSelect = document.getElementById('video-speed');
