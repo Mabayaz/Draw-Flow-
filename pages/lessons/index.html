@@ -62,6 +62,68 @@
       color: #e86f45;
     }
 
+    .lesson-progression {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .lesson-progression__card {
+      display: block;
+      min-height: 7rem;
+      border: 1px solid #d9d5c9;
+      border-radius: 1rem;
+      background: #fffdf8;
+      padding: 1.25rem;
+      text-align: left;
+      transition: border-color .2s ease, box-shadow .2s ease, opacity .2s ease;
+    }
+
+    .lesson-progression__card:hover,
+    .lesson-progression__card.is-active {
+      border-color: #e86f45;
+      box-shadow: 0 10px 24px rgba(61, 57, 53, .08);
+    }
+
+    .lesson-progression__card[aria-disabled="true"] {
+      cursor: not-allowed;
+      opacity: .55;
+    }
+
+    .lesson-progression__card:focus-visible {
+      outline: 3px solid rgba(232, 111, 69, .35);
+      outline-offset: 3px;
+    }
+
+    .lesson-progression__meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .5rem;
+      color: #e86f45;
+      font-family: 'DM Mono', monospace;
+      font-size: .62rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .lesson-progression__title {
+      display: block;
+      margin-top: 1rem;
+      color: #3d3935;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    @media (max-width: 760px) {
+      .lesson-progression { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 460px) {
+      .lesson-progression { grid-template-columns: 1fr; }
+    }
+
     .lesson-panel {
       overflow: hidden;
       padding: 0;
@@ -168,13 +230,28 @@
         <p class="mt-7 max-w-3xl text-base leading-7 text-muted-foreground">In this section, you will learn the basic principles of Solid Drawing through four lessons: Form, Shadow, Perspective, and Depth. Each lesson provides simple explanations, visual examples, and video tutorials to help you understand how these principles are used in 2D animation. Read and watch each lesson carefully, then apply what you have learned in the exercises provided. Try to complete each lesson in order to build your Solid Drawing skills step by step.</p>
       </section>
 
-      <nav aria-label="Lesson contents" class="lesson-contents sticky z-30 -mx-5 mb-12 overflow-x-auto border-y border-border bg-background/90 px-5 py-3 backdrop-blur-md sm:-mx-8 sm:px-8">
-        <div class="flex min-w-max items-center gap-2 text-xs font-semibold">
-          <span class="mr-2 font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Jump to</span>
-          <a href="#form" class="focus-ring rounded-full border border-border px-3 py-2 hover:border-accent hover:text-accent">01 Form</a>
-          <a href="#shadow" class="focus-ring rounded-full border border-border px-3 py-2 hover:border-accent hover:text-accent">02 Shadow</a>
-          <a href="#perspective" class="focus-ring rounded-full border border-border px-3 py-2 hover:border-accent hover:text-accent">03 Perspective</a>
-          <a href="#depth" class="focus-ring rounded-full border border-border px-3 py-2 hover:border-accent hover:text-accent">04 Depth</a>
+      <nav aria-label="Lesson progression" class="lesson-contents sticky z-30 -mx-5 mb-12 border-y border-border bg-background/90 px-5 py-5 backdrop-blur-md sm:-mx-8 sm:px-8">
+        <div class="mb-4 flex items-center justify-between gap-3">
+          <span class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Your learning path</span>
+          <span class="text-xs text-muted-foreground">Read each lesson in order</span>
+        </div>
+        <div class="lesson-progression">
+          <a href="#form" data-lesson-index="0" class="lesson-progression__card" aria-label="Open Form lesson">
+            <span class="lesson-progression__meta"><span>Lesson 01</span><span data-progression-status>Ready</span></span>
+            <span class="lesson-progression__title">Form</span>
+          </a>
+          <a href="#shadow" data-lesson-index="1" class="lesson-progression__card" aria-label="Open Shadow lesson">
+            <span class="lesson-progression__meta"><span>Lesson 02</span><span data-progression-status>Locked</span></span>
+            <span class="lesson-progression__title">Shadow</span>
+          </a>
+          <a href="#perspective" data-lesson-index="2" class="lesson-progression__card" aria-label="Open Perspective lesson">
+            <span class="lesson-progression__meta"><span>Lesson 03</span><span data-progression-status>Locked</span></span>
+            <span class="lesson-progression__title">Perspective</span>
+          </a>
+          <a href="#depth" data-lesson-index="3" class="lesson-progression__card" aria-label="Open Depth lesson">
+            <span class="lesson-progression__meta"><span>Lesson 04</span><span data-progression-status>Locked</span></span>
+            <span class="lesson-progression__title">Depth</span>
+          </a>
         </div>
       </nav>
 
@@ -408,6 +485,7 @@
       const progressTrack = document.querySelector('.reading-progress__track');
       const order = ['form', 'shadow', 'perspective', 'depth'];
       const panels = order.map((lesson) => document.getElementById(lesson)).filter(Boolean);
+      const progressionCards = [...document.querySelectorAll('[data-lesson-index]')];
       const completed = new Set(JSON.parse(localStorage.getItem('drawflow_completed_lessons') || '[]'));
       let openLesson = null;
 
@@ -433,6 +511,7 @@
           const header = panel.querySelector('.lesson-card__header');
           const body = panel.querySelector('.lesson-card__body');
           const completeButton = panel.querySelector('[data-lesson-complete]');
+          const progressionCard = progressionCards[index];
           panel.classList.toggle('is-locked', !unlocked);
           panel.classList.toggle('is-open', openLesson === lesson && unlocked);
           header.disabled = !unlocked;
@@ -442,6 +521,9 @@
           completeButton.textContent = complete ? 'Lesson complete' : `Mark ${lesson} complete and continue`;
           completeButton.classList.toggle('is-complete', complete);
           body.setAttribute('aria-hidden', String(!(openLesson === lesson && unlocked)));
+          progressionCard.classList.toggle('is-active', openLesson === lesson && unlocked);
+          progressionCard.setAttribute('aria-disabled', String(!unlocked));
+          progressionCard.querySelector('[data-progression-status]').textContent = complete ? 'Complete' : unlocked ? 'Ready' : 'Locked';
         });
         updateProgress();
       };
@@ -483,7 +565,7 @@
         });
       });
 
-      document.querySelectorAll('.lesson-contents a').forEach((link, index) => {
+      progressionCards.forEach((link, index) => {
         link.addEventListener('click', (event) => {
           if (!isUnlocked(index)) {
             event.preventDefault();
