@@ -64,7 +64,7 @@ const topicCards = [...document.querySelectorAll('[data-topic-card]')];
 const TRACE_THRESHOLD = 75;
 const FREEHAND_THRESHOLD = 70;
 const progressKey = 'drawflow-exercise-progress';
-const topicOrder = ['form', 'perspective', 'shadow', 'depth'];
+const topicOrder = ['form', 'shadow', 'perspective', 'depth'];
 
 if (subjectSelect && levelSelect && drawingCanvas && referenceCanvas && differenceCanvas && drawingContext && referenceContext && differenceContext) {
   let currentStep = 'trace';

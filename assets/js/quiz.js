@@ -28,6 +28,16 @@ quizForm?.addEventListener('submit', (event) => {
 
   const message = score === 10 ? 'Excellent. You have a strong grasp of the foundations.' : score >= 7 ? 'Good work. Review the highlighted answers to sharpen the details.' : 'Keep practicing. Revisit the lessons and try again.';
   scoreText.textContent = `You scored ${score} out of 10. ${message}`;
+  const quizState = (() => {
+    try {
+      return JSON.parse(localStorage.getItem('drawflow_quiz')) || { score: null, attempts: [] };
+    } catch {
+      return { score: null, attempts: [] };
+    }
+  })();
+  quizState.score = score;
+  quizState.attempts.push({ score, completedAt: new Date().toISOString() });
+  localStorage.setItem('drawflow_quiz', JSON.stringify(quizState));
   resultsBox.classList.remove('hidden');
   resultsBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 });

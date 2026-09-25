@@ -11,6 +11,13 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="/assets/js/tailwind-config.js"></script>
+  <script>
+    try {
+      if (!localStorage.getItem('drawflow_account')) window.location.replace('/pages/login/');
+    } catch {
+      window.location.replace('/pages/login/');
+    }
+  </script>
   <link rel="stylesheet" href="/assets/css/site.css">
   <style>
     .home-progress { border: 1px solid #d9d5c9; border-radius: 1.25rem; background: rgba(255, 253, 248, .72); padding: 1.25rem; }
@@ -38,6 +45,7 @@
           <a href="/pages/lessons/" class="focus-ring flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted/70 hover:text-foreground transition-all">Lessons</a>
           <a href="/pages/drawing-exercise/exercises/" class="focus-ring flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted/70 hover:text-foreground transition-all">Exercises</a>
           <a href="/pages/self-check/" class="focus-ring flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted/70 hover:text-foreground transition-all">Self-Check</a>
+          <a href="/pages/login/index.html" class="focus-ring flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted/70 hover:text-foreground transition-all">Sign In</a>
           <a href="/pages/about/" class="focus-ring flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted/70 hover:text-foreground transition-all">About Us</a>
         </nav>
 
@@ -205,27 +213,10 @@
             </div>
           </a>
 
-          <!-- Card 2: Perspective -->
-          <a href="/pages/lessons/#perspective" data-lesson-card="perspective" class="group relative overflow-hidden rounded-2xl border border-card-border bg-card p-6 transition-all duration-300 hover:border-accent hover:shadow-xl cursor-pointer">
-            <div class="flex items-center justify-between">
-              <p class="font-mono text-xs font-bold text-accent">Lesson 02</p>
-              <span class="flex items-center gap-3">
-                <span data-lesson-status class="lesson-status">Not started</span>
-                <span class="text-xl leading-none text-muted-foreground group-hover:text-accent">➔</span>
-              </span>
-            </div>
-            <h3 class="mt-3 font-display text-2xl font-bold">Perspective</h3>
-            <div class="mt-4 border-t border-transparent pt-4 transition-all duration-300 group-hover:border-accent">
-              <p class="text-xs leading-relaxed text-muted-foreground group-hover:text-foreground font-medium">
-                Master 1-Point, 2-Point, and 3-Point perspective box geometry alignment.
-              </p>
-            </div>
-          </a>
-
-          <!-- Card 3: Shadow -->
+          <!-- Card 2: Shadow -->
           <a href="/pages/lessons/#shadow" data-lesson-card="shadow" class="group relative overflow-hidden rounded-2xl border border-card-border bg-card p-6 transition-all duration-300 hover:border-accent hover:shadow-xl cursor-pointer">
             <div class="flex items-center justify-between">
-              <p class="font-mono text-xs font-bold text-accent">Lesson 03</p>
+              <p class="font-mono text-xs font-bold text-accent">Lesson 02</p>
               <span class="flex items-center gap-3">
                 <span data-lesson-status class="lesson-status">Not started</span>
                 <span class="text-xl leading-none text-muted-foreground group-hover:text-accent">➔</span>
@@ -235,6 +226,23 @@
             <div class="mt-4 border-t border-transparent pt-4 transition-all duration-300 group-hover:border-accent">
               <p class="text-xs leading-relaxed text-muted-foreground group-hover:text-foreground font-medium">
                 Project light sources and construct precise cast shadows across 3D surfaces.
+              </p>
+            </div>
+          </a>
+
+          <!-- Card 3: Perspective -->
+          <a href="/pages/lessons/#perspective" data-lesson-card="perspective" class="group relative overflow-hidden rounded-2xl border border-card-border bg-card p-6 transition-all duration-300 hover:border-accent hover:shadow-xl cursor-pointer">
+            <div class="flex items-center justify-between">
+              <p class="font-mono text-xs font-bold text-accent">Lesson 03</p>
+              <span class="flex items-center gap-3">
+                <span data-lesson-status class="lesson-status">Not started</span>
+                <span class="text-xl leading-none text-muted-foreground group-hover:text-accent">➔</span>
+              </span>
+            </div>
+            <h3 class="mt-3 font-display text-2xl font-bold">Perspective</h3>
+            <div class="mt-4 border-t border-transparent pt-4 transition-all duration-300 group-hover:border-accent">
+              <p class="text-xs leading-relaxed text-muted-foreground group-hover:text-foreground font-medium">
+                Master 1-Point, 2-Point, and 3-Point perspective box geometry alignment.
               </p>
             </div>
           </a>
@@ -299,7 +307,7 @@
       }
 
       // 2. PROGRESS TRACKING FROM LOCALSTORAGE
-      const lessons = ['form', 'perspective', 'shadow', 'depth'];
+      const lessons = ['form', 'shadow', 'perspective', 'depth'];
       let completed = [];
       
       try {

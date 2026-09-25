@@ -342,9 +342,6 @@
               <button id="form-clear" class="challenge-button" type="button" title="Clear Canvas">
                 🗑️ Clear
               </button>
-              <button id="form-guide-toggle" class="challenge-button" type="button" title="Toggle Guide">
-                👁️ Guide On
-              </button>
             </div>
           </div>
 
@@ -412,6 +409,12 @@
               Next Level ➔
             </button>
           </div>
+          <div id="form-completion-actions" class="challenge-card" hidden>
+            <p class="font-mono text-[10px] uppercase tracking-[0.15em] text-accent font-bold">Topic complete</p>
+            <p class="mt-2 text-sm leading-relaxed text-muted">Congratulations! You finished every level in Form.</p>
+            <button id="form-continue-topic" class="challenge-button primary mt-4 w-full" type="button">Next Topic: Shadow ➔</button>
+            <button id="form-review-exercises" class="challenge-button secondary mt-2 w-full" type="button">Exit / Review Exercises</button>
+          </div>
         </aside>
       </section>
     </main>
@@ -454,12 +457,12 @@
       const undoBtn = document.getElementById('form-undo');
       const redoBtn = document.getElementById('form-redo');
       const clearBtn = document.getElementById('form-clear');
-      const guideToggleBtn = document.getElementById('form-guide-toggle');
       const peekBtn = document.getElementById('form-peek');
       const peekCountSpan = document.getElementById('peek-count');
       const peekTimerSpan = document.getElementById('form-peek-timer');
       const submitBtn = document.getElementById('form-submit');
       const nextLevelBtn = document.getElementById('form-next-level');
+      const completionActions = document.getElementById('form-completion-actions');
 
       const levelBadge = document.getElementById('form-level-badge');
       const stageBadge = document.getElementById('form-stage-badge');
@@ -774,8 +777,7 @@
         state.level = parseInt(newLevel, 10);
         state.stage = 'trace';
         state.guideVisible = true;
-        guideToggleBtn.classList.remove('secondary');
-        guideToggleBtn.textContent = '👁️ Guide On';
+        completionActions.hidden = true;
 
         drawingWrap.hidden = false;
         evalWrap.hidden = true;
@@ -978,7 +980,6 @@
         evalSplitInput.value = 50;
 
         const score = state.calculatedAccuracy;
-        let rank = 'S';
         let msg = '';
 
         if (score >= 40) {
@@ -993,26 +994,22 @@
             if (state.level < 3) DrawFlowProgression.unlockLevel('form', state.level + 1);
             if (state.level === 3) {
               DrawFlowProgression.completeTopic('form');
-              setTimeout(() => DrawFlowProgression.showCompletionModal('form'), 300);
+              completionActions.hidden = false;
             }
           }
         }
 
         if (score >= 90) {
-          rank = 'S Class ⭐';
-          msg = 'Masterful spatial precision! Your perspective geometry is spot on.';
+          msg = 'Excellent precision! Your geometry is carefully aligned.';
         } else if (score >= 70) {
-          rank = 'A Class 🎯';
-          msg = 'Great job! Strong structural alignment and proportion control.';
+          msg = 'Strong attempt! Your structure and line control are coming together.';
         } else if (score >= 40) {
-          rank = 'B Class 👍';
-          msg = 'Solid effort! Next level is now unlocked.';
+          msg = 'Good effort! Keep following each guide line and refine your accuracy.';
         } else {
-          rank = 'C Class ✏️';
-          msg = 'Keep practicing! Draw complete strokes across all guide points.';
+          msg = 'Keep practicing! Slow down and aim carefully along each guide point.';
         }
 
-        rankText.textContent = rank;
+        rankText.textContent = `${score}/100`;
         messageText.textContent = msg;
 
         if (state.level < 3 && state.unlockedLevels[state.level + 1]) {
@@ -1058,18 +1055,6 @@
       redoBtn.addEventListener('click', redo);
       clearBtn.addEventListener('click', () => resetCanvasState(true));
 
-      guideToggleBtn.addEventListener('click', () => {
-        state.guideVisible = !state.guideVisible;
-        if (state.guideVisible) {
-          guideToggleBtn.classList.remove('secondary');
-          guideToggleBtn.textContent = '👁️ Guide On';
-        } else {
-          guideToggleBtn.classList.add('secondary');
-          guideToggleBtn.textContent = '🙈 Guide Off';
-        }
-        renderLevel();
-      });
-
       peekBtn.addEventListener('click', () => {
         if (state.peekCount <= 0 || state.peekTimer !== null) return;
 
@@ -1081,7 +1066,7 @@
         ctxGuide.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
         geometries[state.level].drawGuide(ctxGuide);
 
-        let secondsLeft = 3;
+        let secondsLeft = 10;
         peekTimerSpan.textContent = `(${secondsLeft}s)`;
 
         state.peekTimer = setInterval(() => {
@@ -1111,6 +1096,9 @@
           switchLevel(1);
         }
       });
+
+      document.getElementById('form-continue-topic').addEventListener('click', () => { window.location.href = '/pages/drawing-exercise/shadow/'; });
+      document.getElementById('form-review-exercises').addEventListener('click', () => { window.location.href = '/pages/drawing-exercise/exercises/'; });
 
       resetExerciseBtn.addEventListener('click', () => {
         state.unlockedLevels = { 1: true, 2: false, 3: false };

@@ -76,15 +76,15 @@
             <p class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Your path</p>
             <h2 class="mt-2 font-display text-3xl">Solid Drawing foundations</h2>
           </div>
-          <p id="progress-label" class="font-mono-draw text-xs text-muted-foreground">4 of 4 modules ready</p>
+          <p id="progress-label" class="font-mono-draw text-xs text-muted-foreground">0 of 4 complete</p>
         </div>
         <div class="progress-track mt-5">
           <div id="progress-fill" class="progress-fill"></div>
         </div>
         <div class="mt-3 flex justify-between text-[10px] font-semibold uppercase tracking-[.12em] text-muted-foreground">
           <span>Form</span>
-          <span>Perspective</span>
           <span>Shadow</span>
+          <span>Perspective</span>
           <span>Depth</span>
         </div>
       </section>
@@ -107,18 +107,18 @@
             <span class="topic-card__meta">Build volume from simple 3D primitives.</span>
           </a>
 
-          <!-- Perspective Link -->
-          <a class="topic-card" data-topic-card="perspective" href="/pages/drawing-exercise/perspective/">
-            <span class="topic-card__icon"><span>02</span><span data-topic-status="perspective" class="text-emerald-600 font-bold">READY</span></span>
-            <span class="topic-card__title">Perspective</span>
-            <span class="topic-card__meta">Practice 1-Point, 2-Point, and 3-Point boxes.</span>
-          </a>
-
           <!-- Shadow Link -->
           <a class="topic-card" data-topic-card="shadow" href="/pages/drawing-exercise/shadow/">
-            <span class="topic-card__icon"><span>03</span><span data-topic-status="shadow" class="text-emerald-600 font-bold">READY</span></span>
+            <span class="topic-card__icon"><span>02</span><span data-topic-status="shadow" class="text-emerald-600 font-bold">READY</span></span>
             <span class="topic-card__title">Shadow</span>
             <span class="topic-card__meta">Project light sources and cast shadows.</span>
+          </a>
+
+          <!-- Perspective Link -->
+          <a class="topic-card" data-topic-card="perspective" href="/pages/drawing-exercise/perspective/">
+            <span class="topic-card__icon"><span>03</span><span data-topic-status="perspective" class="text-emerald-600 font-bold">READY</span></span>
+            <span class="topic-card__title">Perspective</span>
+            <span class="topic-card__meta">Practice 1-Point, 2-Point, and 3-Point boxes.</span>
           </a>
 
           <!-- Depth Link -->
@@ -156,6 +156,21 @@
     (function () {
       if (!window.DrawFlowProgression) return;
       const state = DrawFlowProgression.load();
+
+      function updateProgressUI() {
+        const completedCount = DrawFlowProgression.getCompletedCount(state);
+        const progressLabel = document.getElementById('progress-label');
+        const progressFill = document.getElementById('progress-fill');
+
+        if (progressLabel) {
+          progressLabel.textContent = `${completedCount} of 4 complete`;
+        }
+
+        if (progressFill) {
+          progressFill.style.width = `${(completedCount / DrawFlowProgression.TOPIC_ORDER.length) * 100}%`;
+        }
+      }
+
       DrawFlowProgression.TOPIC_ORDER.forEach((topic) => {
         const card = document.querySelector('[data-topic-card="' + topic + '"]');
         const status = document.querySelector('[data-topic-status="' + topic + '"]');
@@ -175,6 +190,8 @@
           });
         }
       });
+
+      updateProgressUI();
     })();
   </script>
 <!-- Code injected by live-server -->

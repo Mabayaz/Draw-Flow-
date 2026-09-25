@@ -343,17 +343,14 @@
               <button id="form-clear" class="challenge-button" type="button" title="Clear Canvas">
                 🗑️ Clear
               </button>
-              <button id="form-guide-toggle" class="challenge-button" type="button" title="Toggle Guide">
-                👁️ Guide On
-              </button>
             </div>
           </div>
 
           <!-- Drawing Canvas Container using Direct Static PNG Layers -->
           <div id="main-drawing-area" class="w-full">
             <div class="canvas-wrap">
-              <img id="form-base-img" src="/assets/exercises/depth/level-1/freehand.png" alt="Base Geometry" />
-              <img id="form-guide-img" src="/assets/exercises/depth/level-1/trace.png" alt="Trace Guide" />
+              <img id="form-guide-img" src="/Drawing%20Exercise/DEPTH/LVL%201/Trace.png" alt="Trace Guide" />
+              <img id="form-base-img" src="/Drawing%20Exercise/DEPTH/LVL%201/Freehand.png" alt="Base Geometry" />
               <canvas id="form-drawing-canvas" width="600" height="600" aria-label="Depth drawing canvas"></canvas>
             </div>
           </div>
@@ -411,6 +408,12 @@
               Next Level ➔
             </button>
           </div>
+          <div id="form-completion-actions" class="challenge-card" hidden>
+            <p class="font-mono text-[10px] uppercase tracking-[0.15em] text-accent font-bold">Exercises complete</p>
+            <p class="mt-2 text-sm leading-relaxed text-muted">Congratulations! You finished every topic and every level.</p>
+            <button id="form-self-check" class="challenge-button primary mt-4 w-full" type="button">Proceed to Self-Check ➔</button>
+            <button id="form-review-exercises" class="challenge-button secondary mt-2 w-full" type="button">Exit / Review Exercises</button>
+          </div>
         </aside>
       </section>
     </main>
@@ -429,6 +432,8 @@
         brushColor: '#2563eb',
         guideOpacity: 0.7,
         guideVisible: true,
+        peekCount: 3,
+        peekTimer: null,
         isDrawing: false,
         lastX: 0,
         lastY: 0,
@@ -448,9 +453,12 @@
       const undoBtn = document.getElementById('form-undo');
       const redoBtn = document.getElementById('form-redo');
       const clearBtn = document.getElementById('form-clear');
-      const guideToggleBtn = document.getElementById('form-guide-toggle');
+      const peekBtn = document.getElementById('form-peek');
+      const peekCountSpan = document.getElementById('peek-count');
+      const peekTimerSpan = document.getElementById('form-peek-timer');
       const submitBtn = document.getElementById('form-submit');
       const nextLevelBtn = document.getElementById('form-next-level');
+      const completionActions = document.getElementById('form-completion-actions');
       const optLvl2 = document.getElementById('opt-lvl-2');
       const optLvl3 = document.getElementById('opt-lvl-3');
       const levelBadge = document.getElementById('form-level-badge');
@@ -485,7 +493,7 @@
       });
 
       function getLevelPath(level) {
-        return `/assets/exercises/depth/level-${level}`;
+        return `/Drawing%20Exercise/DEPTH/LVL%20${level}`;
       }
 
       // Preload blank base + complete reference images per level for Stage 3 comparison
@@ -493,11 +501,11 @@
       const completeImages = {};
       [1, 2, 3].forEach(lvl => {
         const fh = new Image();
-        fh.src = `${getLevelPath(lvl)}/freehand.png`;
+        fh.src = `${getLevelPath(lvl)}/Freehand.png`;
         freehandImages[lvl] = fh;
 
         const cp = new Image();
-        cp.src = `${getLevelPath(lvl)}/reference.png`;
+        cp.src = `${getLevelPath(lvl)}/Complete.png`;
         // Re-score/re-render if the user reaches Stage 3 before this finishes loading.
         cp.onload = () => {
           if (state.level === lvl && state.stage === 'evaluate') renderEvaluationView();
@@ -513,9 +521,9 @@
         optLvl3.disabled = !state.unlockedLevels[3];
         optLvl3.textContent = state.unlockedLevels[3] ? 'Level 3 (Layered Composition)' : '🔒 Level 3 (Layered Composition - Locked)';
 
-        // trace.png=guide, freehand.png=blank base, reference.png=complete answer.
-        baseImg.src = `${basePath}/freehand.png`;
-        guideImg.src = `${basePath}/trace.png`;
+        // Trace.png=guide, Freehand.png=blank base, Complete.png=complete answer.
+        baseImg.src = `${basePath}/Freehand.png`;
+        guideImg.src = `${basePath}/Trace.png`;
 
         if (state.stage === 'trace') {
           stageBadge.textContent = 'Stage 1: Trace';
@@ -734,22 +742,19 @@
           if (state.level < 3) DrawFlowProgression.unlockLevel('depth', state.level + 1);
           if (state.level === 3) {
             DrawFlowProgression.completeTopic('depth');
-            setTimeout(() => DrawFlowProgression.showCompletionModal('depth'), 300);
+            completionActions.hidden = false;
           }
         }
 
+        rankText.textContent = `${score}/100`;
         if (score >= 90) {
-          rankText.textContent = 'S Class ⭐';
-          messageText.textContent = 'Masterful spatial depth! Your composition reads with true dimension.';
+          messageText.textContent = 'Excellent precision! Your depth lines are carefully aligned.';
         } else if (score >= 70) {
-          rankText.textContent = 'A Class 🎯';
-          messageText.textContent = 'Great job! Strong overlap, scale, and horizon control.';
+          messageText.textContent = 'Strong attempt! Your guide coverage and control are coming together.';
         } else if (score >= 40) {
-          rankText.textContent = 'B Class 👍';
-          messageText.textContent = 'Solid effort! The next level is now unlocked.';
+          messageText.textContent = 'Good effort! Keep following each guide line and refine your accuracy.';
         } else {
-          rankText.textContent = 'C Class ✏️';
-          messageText.textContent = 'Keep practicing! Draw complete strokes across the guide points.';
+          messageText.textContent = 'Keep practicing! Slow down and aim carefully along each guide point.';
         }
 
         updateStageUI();
@@ -779,6 +784,7 @@
         state.stage = 'trace';
         drawingWrap.hidden = false;
         evalWrap.hidden = true;
+        completionActions.hidden = true;
         nextLevelBtn.disabled = true;
         nextLevelBtn.textContent = 'Next Level ➔';
         resetCanvasState(true);
@@ -794,6 +800,7 @@
         state.stage = 'trace';
         drawingWrap.hidden = false;
         evalWrap.hidden = true;
+        completionActions.hidden = true;
         nextLevelBtn.disabled = true;
         nextLevelBtn.textContent = 'Next Level ➔';
         resetCanvasState(true);
@@ -822,6 +829,33 @@
       undoBtn.addEventListener('click', undo);
       redoBtn.addEventListener('click', redo);
       clearBtn.addEventListener('click', () => resetCanvasState(true));
+
+      peekBtn.addEventListener('click', () => {
+        if (state.peekCount <= 0 || state.peekTimer !== null) return;
+
+        state.peekCount--;
+        peekCountSpan.textContent = state.peekCount;
+        guideImg.style.display = 'block';
+        guideImg.style.opacity = '0.8';
+
+        let secondsLeft = 10;
+        peekTimerSpan.textContent = `(${secondsLeft}s)`;
+        state.peekTimer = setInterval(() => {
+          secondsLeft--;
+          if (secondsLeft > 0) {
+            peekTimerSpan.textContent = `(${secondsLeft}s)`;
+          } else {
+            clearInterval(state.peekTimer);
+            state.peekTimer = null;
+            peekTimerSpan.textContent = '';
+            updateStageUI();
+          }
+        }, 1000);
+      });
+
+      document.getElementById('form-self-check').addEventListener('click', () => { window.location.href = '/pages/self-check/'; });
+      document.getElementById('form-review-exercises').addEventListener('click', () => { window.location.href = '/pages/drawing-exercise/exercises/'; });
+
       resetExerciseBtn.addEventListener('click', () => {
         state.unlockedLevels = { 1: true, 2: false, 3: false };
         localStorage.setItem('drawflow-depth-unlocked', JSON.stringify(state.unlockedLevels));
