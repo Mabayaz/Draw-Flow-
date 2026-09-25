@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fredoka:wght@500;600;700&family=Inter:wght@500;600&display=swap');
 
 :root {
   color-scheme: light;
@@ -13,7 +13,7 @@ html {
 body {
   margin: 0;
   background: #f5f1e8;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-weight: 600;
   cursor: var(--drawflow-mascot-cursor), auto;
 }
@@ -25,7 +25,7 @@ h4,
 h5,
 h6,
 .font-display {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Fredoka', sans-serif;
 }
 
 h1[class],
@@ -39,7 +39,7 @@ button,
 button[class],
 [role='button'][class],
 a.inline-flex[class*='rounded'] {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Fredoka', sans-serif;
   font-weight: 600;
 }
 
@@ -50,7 +50,7 @@ header a .font-display {
 label,
 small,
 .text-xs:not(.font-mono-draw) {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-weight: 500;
 }
 
