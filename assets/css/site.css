@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
 
 :root {
   color-scheme: light;
@@ -13,7 +13,7 @@ html {
 body {
   margin: 0;
   background: #f5f1e8;
-  font-family: 'Inter', sans-serif;
+  font-family: 'DM Sans', sans-serif;
   font-weight: 600;
   cursor: var(--drawflow-mascot-cursor), auto;
 }
@@ -25,7 +25,7 @@ h4,
 h5,
 h6,
 .font-display {
-  font-family: 'Fredoka', sans-serif;
+  font-family: 'Space Grotesk', sans-serif;
 }
 
 h1[class],
@@ -39,7 +39,7 @@ button,
 button[class],
 [role='button'][class],
 a.inline-flex[class*='rounded'] {
-  font-family: 'Fredoka', sans-serif;
+  font-family: 'Space Grotesk', sans-serif;
   font-weight: 600;
 }
 
@@ -50,7 +50,7 @@ header a .font-display {
 label,
 small,
 .text-xs:not(.font-mono-draw) {
-  font-family: 'Inter', sans-serif;
+  font-family: 'DM Sans', sans-serif;
   font-weight: 500;
 }
 
@@ -217,6 +217,33 @@ body::before {
     height: auto;
     min-height: 4.5rem;
     flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 767px) {
+  header nav[aria-label='Main navigation'].mobile-nav-open {
+    position: absolute;
+    top: calc(100% + .5rem);
+    right: .75rem;
+    z-index: 60;
+    display: flex;
+    width: min(18rem, calc(100vw - 1.5rem));
+    flex-direction: column;
+    align-items: stretch;
+    gap: .25rem;
+    border: 1px solid #d9d5c9;
+    border-radius: .75rem;
+    background: #fffdf8;
+    padding: .5rem;
+    box-shadow: 0 12px 28px rgba(29, 41, 38, .16);
+  }
+
+  header nav[aria-label='Main navigation'].mobile-nav-open a {
+    display: flex;
+    min-height: 2.75rem;
+    align-items: center;
+    border-radius: .5rem;
+    padding: .65rem .85rem;
   }
 }
 

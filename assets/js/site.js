@@ -287,19 +287,15 @@ if (themeToggle) {
 menuToggle?.addEventListener('click', () => {
   if (!navigation) return;
 
-  const isOpen = navigation.classList.toggle('!flex');
-  navigation.classList.toggle('absolute', isOpen);
-  navigation.classList.toggle('right-5', isOpen);
-  navigation.classList.toggle('top-20', isOpen);
-  navigation.classList.toggle('flex-col', isOpen);
-  navigation.classList.toggle('bg-background', isOpen);
-  navigation.classList.toggle('p-3', isOpen);
+  const isOpen = navigation.classList.toggle('mobile-nav-open');
+  navigation.classList.toggle('!flex', isOpen);
   menuToggle.setAttribute('aria-expanded', String(isOpen));
+  menuToggle.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
 });
 
 navigation?.querySelectorAll('a').forEach((link) => {
   link.addEventListener('click', () => {
-    if (!menuToggle || !navigation || !navigation.classList.contains('!flex')) return;
+    if (!menuToggle || !navigation || !navigation.classList.contains('mobile-nav-open')) return;
     menuToggle.click();
   });
 });
