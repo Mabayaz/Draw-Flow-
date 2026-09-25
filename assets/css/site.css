@@ -1,6 +1,7 @@
 :root {
   color-scheme: light;
   --page-progress: 0%;
+  --drawflow-mascot-cursor: url('/assets/images/mascot-cursor.png') 9 16;
 }
 
 html {
@@ -11,24 +12,41 @@ body {
   margin: 0;
   background: #f5f1e8;
   font-family: 'DM Sans', sans-serif;
+  cursor: var(--drawflow-mascot-cursor), auto;
+}
+
+a,
+button,
+[role='button'],
+input,
+select,
+textarea {
+  cursor: var(--drawflow-mascot-cursor), pointer;
+}
+
+canvas[id$='-drawing-canvas'] {
+  cursor: var(--drawflow-mascot-cursor), crosshair;
+  touch-action: none;
 }
 
 header a[href="/"] > span:first-child,
 header a[href="../"] > span:first-child,
 .brand-logo {
-  width: 2.75rem;
-  height: 2.75rem;
+  width: 6.5rem;
+  height: 3.5rem;
   flex: 0 0 auto;
   overflow: hidden;
-  border-radius: .55rem;
-  background-color: #fff !important;
-  background-image: url('/assets/brand/drawflow-logo.png');
-  background-position: center;
+  border-radius: 0;
+  background-color: transparent !important;
+  background-image: url('/Logo%20DF.jpg?v=20260926');
+  background-position: center center;
   background-repeat: no-repeat;
-  background-size: contain;
+  background-size: 120% auto;
+  mix-blend-mode: multiply;
   box-shadow: none !important;
   color: transparent !important;
   font-size: 0 !important;
+  transform: translateY(0);
 }
 
 body::before {

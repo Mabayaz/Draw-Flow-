@@ -1,18 +1,58 @@
 const root = document.documentElement;
+const brandVersion = '20260926';
+const mascotCursor = "url('/assets/images/mascot-cursor.png') 9 16";
 
 const brandIcon = document.querySelector('link[rel="icon"]') || document.head.appendChild(Object.assign(document.createElement('link'), { rel: 'icon' }));
-brandIcon.href = '/assets/brand/drawflow-logo.png';
+brandIcon.href = `/Logo%20DF.jpg?v=${brandVersion}`;
 
 if (window.location.pathname.endsWith('/index.html')) {
   const cleanPath = window.location.pathname.slice(0, -'index.html'.length) || '/';
   window.history.replaceState({}, document.title, `${cleanPath}${window.location.search}${window.location.hash}`);
 }
 
+const resetLearningProgress = () => {
+  Object.keys(localStorage).forEach((key) => {
+    if ((key.startsWith('drawflow_') || key.startsWith('drawflow-')) && key !== 'drawflow-theme') {
+      localStorage.removeItem(key);
+    }
+  });
+};
+
+if (!sessionStorage.getItem('drawflow-active-session')) {
+  resetLearningProgress();
+  sessionStorage.setItem('drawflow-active-session', 'true');
+}
+
+let internalNavigation = false;
+document.addEventListener('click', (event) => {
+  const link = event.target.closest?.('a[href]');
+  if (!link || link.target === '_blank' || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+  const destination = new URL(link.href, window.location.href);
+  if (destination.origin === window.location.origin) internalNavigation = true;
+});
+
+window.addEventListener('beforeunload', (event) => {
+  if (internalNavigation) return;
+  event.preventDefault();
+  event.returnValue = 'Your learning progress will be reset when you leave DrawFlow. Stay on this page to continue learning.';
+});
+
 const themeToggle = document.querySelector('[data-testid="button-theme-toggle"], #button-theme-toggle');
+document.querySelectorAll("canvas[id$='-drawing-canvas']").forEach((canvas) => {
+  canvas.style.cursor = `${mascotCursor}, crosshair`;
+  canvas.style.touchAction = 'none';
+});
 const menuToggle = document.querySelector('[data-testid="button-mobile-menu"]');
 const navigation = document.querySelector('nav');
 const restartButton = document.querySelector('[data-testid="button-restart-progress"]');
 const studyDialog = document.querySelector('#study-dialog');
+
+const setThemeIcon = () => {
+  if (!themeToggle) return;
+  const isDark = root.classList.contains('dark-mode');
+  themeToggle.innerHTML = isDark ? '☾' : '☀';
+  themeToggle.setAttribute('aria-label', isDark ? 'Switch to day mode' : 'Switch to night mode');
+};
 const studyTitle = document.querySelector('#study-dialog-title');
 const studyDescription = document.querySelector('#study-dialog-description');
 const closeDialogButton = document.querySelector('[data-close-dialog]');
@@ -23,6 +63,7 @@ const videoQuality = document.querySelector('[data-video-quality]');
 const videoFullscreen = document.querySelector('[data-video-fullscreen]');
 
 if (localStorage.getItem('drawflow-theme') === 'dark') root.classList.add('dark-mode');
+setThemeIcon();
 
 const updatePageProgress = () => {
   const pageHeight = document.documentElement.scrollHeight - window.innerHeight;
@@ -93,11 +134,11 @@ themeToggle?.addEventListener('click', () => {
   root.classList.toggle('dark-mode');
   const isDark = root.classList.contains('dark-mode');
   localStorage.setItem('drawflow-theme', isDark ? 'dark' : 'light');
-  themeToggle.setAttribute('aria-label', isDark ? 'Switch to day mode' : 'Switch to night mode');
+  setThemeIcon();
 });
 
 if (themeToggle) {
-  themeToggle.setAttribute('aria-label', root.classList.contains('dark-mode') ? 'Switch to day mode' : 'Switch to night mode');
+  setThemeIcon();
 }
 
 menuToggle?.addEventListener('click', () => {

@@ -39,7 +39,6 @@
           <a href="/" aria-current="page" class="focus-ring flex items-center gap-2 rounded-full bg-muted px-4 py-2 text-sm font-semibold text-foreground">Home</a>
           <a href="/pages/lessons/" class="focus-ring flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted/70 hover:text-foreground transition-all">Lessons</a>
           <a href="/pages/exercises/" class="focus-ring flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted/70 hover:text-foreground transition-all">Exercises</a>
-          <a href="/pages/self-check/" class="focus-ring flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted/70 hover:text-foreground transition-all">Self-Check</a>
           <a href="/pages/about/" class="focus-ring flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted/70 hover:text-foreground transition-all">About Us</a>
         </nav>
 
@@ -48,9 +47,6 @@
           <div id="auth-widget" class="flex items-center gap-2">
             <div id="logged-out-view" class="flex items-center gap-2">
               <span id="guest-indicator" class="hidden sm:inline font-mono text-[10px] text-muted">Guest Mode</span>
-              <button id="open-auth-btn" class="focus-ring rounded-full bg-primary px-4 py-2 text-xs font-bold text-primary-foreground hover:bg-primary/90 transition shadow-sm">
-                Sign In
-              </button>
             </div>
             <div id="logged-in-view" class="hidden items-center gap-2">
               <span id="user-display-name" class="font-mono text-xs font-bold text-foreground">--</span>
@@ -314,7 +310,7 @@
 
     // Modal DOM Events
     const authModal = document.getElementById('auth-modal');
-    document.getElementById('open-auth-btn').onclick = () => authModal.classList.remove('hidden');
+    document.getElementById('open-auth-btn')?.addEventListener('click', () => authModal.classList.remove('hidden'));
     document.getElementById('close-auth-modal').onclick = () => authModal.classList.add('hidden');
     document.getElementById('continue-guest-btn').onclick = () => authModal.classList.add('hidden');
 

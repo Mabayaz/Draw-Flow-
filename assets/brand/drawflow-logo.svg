@@ -1,0 +1,104 @@
+<svg width="900" height="600" viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg" aria-label="DrawFlow logo" role="img">
+  <defs>
+    <linearGradient id="redFront" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ff3a3a"/>
+      <stop offset="50%" stop-color="#f52e2e"/>
+      <stop offset="100%" stop-color="#da0b0b"/>
+    </linearGradient>
+    <linearGradient id="redDeep" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#842020"/>
+      <stop offset="100%" stop-color="#450404"/>
+    </linearGradient>
+    <linearGradient id="goldFront" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffd857"/>
+      <stop offset="50%" stop-color="#f5c12d"/>
+      <stop offset="100%" stop-color="#dca300"/>
+    </linearGradient>
+    <linearGradient id="goldEdge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e4a500"/>
+      <stop offset="100%" stop-color="#a56d00"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="180%">
+      <feDropShadow dx="18" dy="22" stdDeviation="12" flood-color="#3d0909" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#shadow)" transform="translate(18 18)">
+    <path d="M168 90
+             C205 72, 286 65, 348 78
+             L420 95
+             C494 112, 548 168, 562 240
+             L570 290
+             C580 350, 553 404, 498 444
+             L420 494
+             C349 533, 245 535, 176 492
+             L118 455
+             C65 419, 48 363, 55 299
+             L64 208
+             C72 157, 105 119, 168 90 Z"
+          fill="url(#redDeep)" opacity="0.95"/>
+
+    <path d="M170 102
+             C206 86, 281 79, 340 90
+             L416 106
+             C488 122, 538 175, 552 241
+             L560 290
+             C570 349, 543 400, 491 436
+             L424 482
+             C351 528, 248 531, 180 489
+             L124 455
+             C73 421, 58 367, 64 304
+             L73 214
+             C81 165, 110 129, 170 102 Z"
+          fill="url(#redFront)" stroke="#190d0d" stroke-width="12" stroke-linejoin="round"/>
+
+    <path d="M186 165
+             C240 151, 346 155, 410 187
+             C466 215, 487 266, 483 305
+             C479 350, 450 399, 388 421
+             C315 446, 231 439, 180 390
+             C146 356, 141 288, 167 250
+             C185 222, 212 195, 186 165 Z"
+          fill="#f4efe9" opacity="0.1"/>
+
+    <path d="M206 171
+             L208 183
+             L261 133
+             L273 153
+             L219 203
+             L205 171 Z" fill="#fff3f1" opacity="0.22"/>
+
+    <path d="M346 122
+             L454 146
+             L444 404
+             L344 421
+             L337 122 Z" fill="#d10d0d" opacity="0.25"/>
+
+    <path d="M314 122
+             L414 146
+             L412 420
+             L314 407
+             L314 122 Z" fill="#f6f1ef" opacity="0.12"/>
+
+    <path d="M220 236
+             L220 361
+             L360 361
+             C389 361, 410 343, 413 317
+             C417 285, 395 258, 360 256
+             L220 236 Z"
+          fill="#fff8f6" opacity="0.12"/>
+
+    <g transform="translate(350 130) rotate(24 260 226)">
+      <path d="M102 84 L306 84 L365 120 L240 176 L102 176 Z" fill="url(#goldDeep)" opacity="0.8"/>
+      <path d="M96 92 L300 92 L355 126 L232 182 L96 182 Z" fill="url(#goldFront)" stroke="#1b1a1a" stroke-width="12" stroke-linejoin="round"/>
+      <path d="M348 128 L428 165 L330 255 L260 214 Z" fill="#f7d34d" stroke="#1b1a1a" stroke-width="10" stroke-linejoin="round"/>
+      <path d="M240 214 L333 255 L365 238 L272 198 Z" fill="#d0930a" opacity="0.85"/>
+      <path d="M72 160 L72 194 L214 112 L214 78 Z" fill="#1d1d1d" stroke="#1b1a1a" stroke-width="8" stroke-linejoin="round"/>
+      <path d="M214 78 L243 64 L306 117 L272 130 Z" fill="#4b3a1b" opacity="0.8"/>
+      <path d="M72 142 L102 92 L88 147 Z" fill="#f0b518" opacity="0.7"/>
+      <path d="M236 182 L316 127 L268 164 Z" fill="#e9b100" opacity="0.8"/>
+      <path d="M326 250 L464 192 L485 219 L347 278 Z" fill="#2d230b" opacity="0.7"/>
+      <path d="M462 178 L496 164 L540 212 L505 232 Z" fill="#111111"/>
+    </g>
+  </g>
+</svg>

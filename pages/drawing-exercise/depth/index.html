@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="icon" href="/assets/brand/drawflow-logo.png">
+  <link rel="icon" href="/Logo%20DF.jpg?v=20260926">
   <link rel="stylesheet" href="/assets/css/site.css">
 
   <!-- Tailwind CSS CDN -->
@@ -413,7 +413,6 @@
           <div id="form-completion-actions" class="challenge-card" hidden>
             <p class="font-mono text-[10px] uppercase tracking-[0.15em] text-accent font-bold">Exercises complete</p>
             <p class="mt-2 text-sm leading-relaxed text-muted">Congratulations! You finished every topic and every level.</p>
-            <button id="form-self-check" class="challenge-button primary mt-4 w-full" type="button">Proceed to Self-Check ➔</button>
             <button id="form-review-exercises" class="challenge-button secondary mt-2 w-full" type="button">Exit / Review Exercises</button>
           </div>
         </aside>
@@ -851,7 +850,6 @@
         }, 1000);
       });
 
-      document.getElementById('form-self-check').addEventListener('click', () => { window.location.href = '/pages/self-check/'; });
       document.getElementById('form-review-exercises').addEventListener('click', () => { window.location.href = '/pages/drawing-exercise/exercises/'; });
 
       resetExerciseBtn.addEventListener('click', () => {
