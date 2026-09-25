@@ -16,8 +16,8 @@ tailwind.config = {
         accent: '#e86f45'
       },
       fontFamily: {
-        display: ['Space Grotesk', 'sans-serif'],
-        sans: ['DM Sans', 'sans-serif'],
+        display: ['Fredoka', 'sans-serif'],
+        sans: ['Inter', 'sans-serif'],
         mono: ['DM Mono', 'monospace']
       },
       boxShadow: {

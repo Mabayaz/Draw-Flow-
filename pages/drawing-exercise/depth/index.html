@@ -859,7 +859,7 @@
         }, 1000);
       });
 
-      document.getElementById('form-review-exercises').addEventListener('click', () => { window.location.href = '/pages/drawing-exercise/exercises/'; });
+      document.getElementById('form-review-exercises')?.addEventListener('click', () => { window.location.href = '/pages/drawing-exercise/exercises/'; });
 
       resetExerciseBtn.addEventListener('click', () => {
         state.unlockedLevels = { 1: true, 2: false };

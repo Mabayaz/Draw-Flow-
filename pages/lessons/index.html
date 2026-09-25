@@ -121,7 +121,18 @@
     }
 
     @media (max-width: 460px) {
-      .lesson-progression { grid-template-columns: 1fr; }
+      .lesson-contents.sticky { position: static; top: auto; }
+      .lesson-progression { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
+      .lesson-progression__card { min-height: 6.5rem; padding: .85rem; }
+      .lesson-progression__meta { align-items: flex-start; flex-wrap: wrap; font-size: .55rem; letter-spacing: .04em; }
+      .lesson-progression__title { margin-top: .55rem; font-size: 1.1rem; }
+    }
+
+    @media (max-width: 340px) {
+      header > div { padding-right: .75rem; padding-left: .75rem; }
+      header > div > a { gap: .5rem; }
+      header .font-display { font-size: 1.2rem; }
+      .lesson-progression__title { font-size: 1rem; }
     }
 
     .lesson-panel {

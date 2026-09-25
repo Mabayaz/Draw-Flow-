@@ -173,8 +173,20 @@ document.querySelectorAll("canvas[id$='-drawing-canvas']").forEach((canvas) => {
   canvas.style.cursor = `${mascotCursor}, crosshair`;
   canvas.style.touchAction = 'none';
 });
-const menuToggle = document.querySelector('[data-testid="button-mobile-menu"]');
-const navigation = document.querySelector('nav');
+let menuToggle = document.querySelector('[data-testid="button-mobile-menu"]');
+const navigation = document.querySelector('header nav');
+if (navigation && !menuToggle) {
+  menuToggle = document.createElement('button');
+  menuToggle.type = 'button';
+  menuToggle.setAttribute('aria-label', 'Open menu');
+  menuToggle.setAttribute('aria-expanded', 'false');
+  menuToggle.dataset.testid = 'button-mobile-menu';
+  menuToggle.className = 'mobile-menu-fallback focus-ring grid h-10 w-10 place-items-center rounded-full border border-border bg-card text-muted-foreground md:hidden';
+  menuToggle.textContent = '☰';
+  navigation.setAttribute('aria-label', navigation.getAttribute('aria-label') || 'Main navigation');
+  navigation.parentElement.classList.add('has-mobile-menu-fallback');
+  navigation.parentElement.append(menuToggle);
+}
 const restartButton = document.querySelector('[data-testid="button-restart-progress"]');
 const studyDialog = document.querySelector('#study-dialog');
 

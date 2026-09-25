@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@500;600&display=swap');
+
 :root {
   color-scheme: light;
   --page-progress: 0%;
@@ -11,8 +13,45 @@ html {
 body {
   margin: 0;
   background: #f5f1e8;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
   cursor: var(--drawflow-mascot-cursor), auto;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.font-display {
+  font-family: 'Fredoka', sans-serif;
+}
+
+h1[class],
+h2[class],
+h3[class],
+h4[class],
+h5[class],
+h6[class],
+button,
+[role='button'],
+button[class],
+[role='button'][class],
+a.inline-flex[class*='rounded'] {
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+}
+
+header a .font-display {
+  font-weight: 700;
+}
+
+label,
+small,
+.text-xs:not(.font-mono-draw) {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
 }
 
 a,
@@ -143,6 +182,49 @@ body::before {
 
 @media (max-width: 640px) {
   .lesson-reader-progress { padding-right: 1.25rem; padding-left: 1.25rem; }
+}
+
+@media (max-width: 360px) {
+  header a[href="/"] > span:first-child,
+  header a[href="../"] > span:first-child,
+  .brand-logo {
+    width: 4.5rem;
+    height: 2.5rem;
+  }
+}
+
+@media (max-width: 850px) {
+  .form-challenge > *,
+  .form-challenge .challenge-field {
+    min-width: 0;
+  }
+
+  .form-challenge .challenge-field select {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 520px) {
+  body[data-exercise-topic] header > div {
+    height: auto;
+    min-height: 4.5rem;
+    flex-wrap: wrap;
+    gap: .5rem;
+    padding: .5rem .75rem;
+  }
+
+  header .has-mobile-menu-fallback {
+    height: auto;
+    min-height: 4.5rem;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 360px) {
+  body[data-lesson="perspective"] main h1 {
+    font-size: 2.25rem;
+    line-height: 1;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
