@@ -306,7 +306,6 @@
               <select id="form-level" aria-label="Depth perception level">
                 <option value="1">Level 1: Basic Depth Overlap</option>
                 <option value="2" id="opt-lvl-2" disabled>🔒 Level 2 (Spatial Scale & Recession - Locked)</option>
-                <option value="3" id="opt-lvl-3" disabled>🔒 Level 3 (Complex Atmospheric Depth - Locked)</option>
               </select>
             </div>
 
@@ -411,6 +410,12 @@
               Next Level ➔
             </button>
           </div>
+          <div id="form-completion-actions" class="challenge-card" hidden>
+            <p class="font-mono text-[10px] uppercase tracking-[0.15em] text-accent font-bold">Exercises complete</p>
+            <p class="mt-2 text-sm leading-relaxed text-muted">Congratulations! You finished every topic and every level.</p>
+            <button id="form-self-check" class="challenge-button primary mt-4 w-full" type="button">Proceed to Self-Check ➔</button>
+            <button id="form-review-exercises" class="challenge-button secondary mt-2 w-full" type="button">Exit / Review Exercises</button>
+          </div>
         </aside>
       </section>
     </main>
@@ -435,18 +440,12 @@
           freehand: "/Drawing Exercise/DEPTH/LVL 2/Freehand.png",
           complete: "/Drawing Exercise/DEPTH/LVL 2/Complete.png"
         },
-        3: {
-          name: "Level 3: Complex Atmospheric Depth",
-          trace: "/Drawing Exercise/DEPTH/LVL 3/Trace.png",
-          freehand: "/Drawing Exercise/DEPTH/LVL 3/Freehand.png",
-          complete: "/Drawing Exercise/DEPTH/LVL 3/Complete.png"
-        }
       };
 
       // State Object
       const state = {
-        level: 1,           // 1, 2, 3
-        unlockedLevels: { 1: true, 2: false, 3: false },
+        level: 1,           // 1, 2
+        unlockedLevels: { 1: true, 2: false },
         stage: 'trace',     // 'trace', 'freehand', 'evaluate'
         tool: 'pen',        // 'pen', 'eraser'
         brushSize: 6,
@@ -467,7 +466,6 @@
       const loadedImages = {
         1: { trace: null, freehand: null, complete: null },
         2: { trace: null, freehand: null, complete: null },
-        3: { trace: null, freehand: null, complete: null },
       };
 
       // Preload all depth assets
@@ -488,7 +486,6 @@
       // --- DOM ELEMENTS ---
       const levelSelect = document.getElementById('form-level');
       const optLvl2 = document.getElementById('opt-lvl-2');
-      const optLvl3 = document.getElementById('opt-lvl-3');
       const resetExerciseBtn = document.getElementById('form-reset-exercise');
 
       const brushSizeInput = document.getElementById('form-brush-size');
@@ -505,6 +502,7 @@
       const peekTimerSpan = document.getElementById('form-peek-timer');
       const submitBtn = document.getElementById('form-submit');
       const nextLevelBtn = document.getElementById('form-next-level');
+      const completionActions = document.getElementById('form-completion-actions');
 
       const levelBadge = document.getElementById('form-level-badge');
       const stageBadge = document.getElementById('form-stage-badge');
@@ -545,13 +543,6 @@
           optLvl2.textContent = "🔒 Level 2 (Spatial Scale & Recession - Locked)";
         }
 
-        if (state.unlockedLevels[3]) {
-          optLvl3.disabled = false;
-          optLvl3.textContent = "Level 3: Complex Atmospheric Depth";
-        } else {
-          optLvl3.disabled = true;
-          optLvl3.textContent = "🔒 Level 3 (Complex Atmospheric Depth - Locked)";
-        }
       }
 
       function renderLevel() {
@@ -790,13 +781,26 @@
         return Math.min(100, Math.max(0, finalScore));
       }
 
-      function handleStageTransition() {
+      function waitForImage(image) {
+        if (image && image.complete && image.naturalWidth > 0) return Promise.resolve();
+        return new Promise(resolve => {
+          if (!image) {
+            resolve();
+            return;
+          }
+          image.addEventListener('load', resolve, { once: true });
+          image.addEventListener('error', resolve, { once: true });
+        });
+      }
+
+      async function handleStageTransition() {
         if (state.stage === 'trace') {
           state.stage = 'freehand';
           state.guideVisible = false;
           resetCanvasState(true);
           renderLevel();
         } else if (state.stage === 'freehand') {
+          await waitForImage(loadedImages[state.level]?.complete);
           state.stage = 'evaluate';
           state.calculatedAccuracy = evaluateDrawing();
           renderEvaluationView();
@@ -839,40 +843,34 @@
         evalSplitInput.value = 50;
 
         const score = state.calculatedAccuracy;
-        let rank = 'S';
         let msg = '';
 
         if (score >= 40) {
           if (state.level === 1 && !state.unlockedLevels[2]) {
             state.unlockedLevels[2] = true;
-            updateLevelDropdownUI();
-          } else if (state.level === 2 && !state.unlockedLevels[3]) {
-            state.unlockedLevels[3] = true;
+            localStorage.setItem('drawflow-depth-unlocked', JSON.stringify(state.unlockedLevels));
             updateLevelDropdownUI();
           }
+          if (state.level === 2) completionActions.hidden = false;
         }
 
         if (score >= 90) {
-          rank = 'S Class ⭐';
-          msg = 'Masterful spatial depth! Your overlapping contours and atmospheric scale are spot on.';
+          msg = 'Excellent precision! Your guide coverage and control are coming together.';
         } else if (score >= 70) {
-          rank = 'A Class 🎯';
-          msg = 'Great job! Strong spatial recession and line precision.';
+          msg = 'Strong attempt! Your guide coverage and control are coming together.';
         } else if (score >= 40) {
-          rank = 'B Class 👍';
-          msg = 'Solid effort! The next depth level is now unlocked.';
+          msg = 'Good effort! Keep following each guide line and refine your accuracy.';
         } else {
-          rank = 'C Class ✏️';
-          msg = 'Keep practicing! Focus on establishing clear front-to-back overlap boundaries.';
+          msg = 'Keep practicing! Slow down and aim carefully along each guide point.';
         }
 
-        rankText.textContent = rank;
+        rankText.textContent = `${score}/100`;
         messageText.textContent = msg;
 
-        if (state.level < 3 && state.unlockedLevels[state.level + 1]) {
+        if (state.level < 2 && state.unlockedLevels[state.level + 1]) {
           nextLevelBtn.disabled = false;
           nextLevelBtn.textContent = `Proceed to Level ${state.level + 1} ➔`;
-        } else if (state.level === 3) {
+        } else if (state.level === 2) {
           nextLevelBtn.disabled = false;
           nextLevelBtn.textContent = `Restart Challenge 🔄`;
         } else {
@@ -956,13 +954,16 @@
 
       submitBtn.addEventListener('click', handleStageTransition);
 
+      document.getElementById('form-self-check').addEventListener('click', () => { window.location.href = '/pages/self-check/'; });
+      document.getElementById('form-review-exercises').addEventListener('click', () => { window.location.href = '/pages/drawing-exercise/exercises/'; });
+
       nextLevelBtn.addEventListener('click', () => {
-        if (state.level < 3) {
+        if (state.level < 2) {
           const nextLvl = state.level + 1;
           levelSelect.value = nextLvl;
           switchLevel(nextLvl);
         } else {
-          state.unlockedLevels = { 1: true, 2: false, 3: false };
+          state.unlockedLevels = { 1: true, 2: false };
           updateLevelDropdownUI();
           levelSelect.value = 1;
           switchLevel(1);
@@ -970,9 +971,10 @@
       });
 
       resetExerciseBtn.addEventListener('click', () => {
-        state.unlockedLevels = { 1: true, 2: false, 3: false };
+        state.unlockedLevels = { 1: true, 2: false };
         updateLevelDropdownUI();
         levelSelect.value = 1;
+        completionActions.hidden = true;
         switchLevel(1);
       });
 

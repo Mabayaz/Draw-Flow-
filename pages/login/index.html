@@ -29,11 +29,12 @@
     const error = document.getElementById('auth-error');
     const note = document.getElementById('cloud-note');
     let registerMode = false;
+    const enterSite = () => { sessionStorage.setItem('drawflow-session-access', 'granted'); window.location.href = '/'; };
     note.textContent = cloudAuthEnabled ? 'Cloud accounts are enabled.' : 'Cloud login is not configured yet. Guest Mode is available now. Add Firebase values in auth-config.js to enable sign in.';
     document.getElementById('toggle-register').addEventListener('click', () => { registerMode = !registerMode; document.getElementById('auth-title').textContent = registerMode ? 'Create your account' : 'Welcome back'; document.getElementById('email-submit').textContent = registerMode ? 'Register Account' : 'Sign In'; document.getElementById('toggle-register').textContent = registerMode ? 'Already have an account? Sign In' : 'Need an account? Register here'; });
-    document.getElementById('guest-mode').addEventListener('click', () => { continueAsGuest(); window.location.href = '/'; });
-    document.getElementById('google-auth').addEventListener('click', async () => { try { await signInWithGoogle(); window.location.href = '/'; } catch (reason) { error.textContent = reason.message; error.classList.remove('hidden'); } });
-    document.getElementById('email-auth').addEventListener('submit', async (event) => { event.preventDefault(); try { await signIn(document.getElementById('auth-email').value, document.getElementById('auth-password').value, registerMode); window.location.href = '/'; } catch (reason) { error.textContent = reason.message; error.classList.remove('hidden'); } });
+    document.getElementById('guest-mode').addEventListener('click', () => { continueAsGuest(); enterSite(); });
+    document.getElementById('google-auth').addEventListener('click', async () => { try { await signInWithGoogle(); enterSite(); } catch (reason) { error.textContent = reason.message; error.classList.remove('hidden'); } });
+    document.getElementById('email-auth').addEventListener('submit', async (event) => { event.preventDefault(); try { await signIn(document.getElementById('auth-email').value, document.getElementById('auth-password').value, registerMode); enterSite(); } catch (reason) { error.textContent = reason.message; error.classList.remove('hidden'); } });
   </script>
 </body>
 </html>

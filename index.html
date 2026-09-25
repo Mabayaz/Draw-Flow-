@@ -13,7 +13,7 @@
   <script src="/assets/js/tailwind-config.js"></script>
   <script>
     try {
-      if (!localStorage.getItem('drawflow_account')) window.location.replace('/pages/login/');
+      if (sessionStorage.getItem('drawflow-session-access') !== 'granted') window.location.replace('/pages/login/');
     } catch {
       window.location.replace('/pages/login/');
     }

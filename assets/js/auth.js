@@ -113,6 +113,7 @@ async function signOut() {
   const api = await loadFirebase();
   if (api) await api.authModule.signOut(api.auth);
   localStorage.removeItem(ACCOUNT_KEY);
+  sessionStorage.removeItem('drawflow-session-access');
 }
 
 function continueAsGuest() {

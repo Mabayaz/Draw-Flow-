@@ -27,8 +27,7 @@ const exerciseData = {
     label: 'Depth',
     levels: [
       { label: 'Level 1', trace: '/assets/exercises/depth/level-1/trace.png', freehand: '/assets/exercises/depth/level-1/freehand.png', reference: '/assets/exercises/depth/level-1/reference.png' },
-      { label: 'Level 2', trace: '/assets/exercises/depth/level-2/trace.png', freehand: '/assets/exercises/depth/level-2/freehand.png', reference: '/assets/exercises/depth/level-2/reference.png' },
-      { label: 'Level 3', trace: '/assets/exercises/depth/level-3/trace.png', freehand: '/assets/exercises/depth/level-3/freehand.png', reference: '/assets/exercises/depth/level-3/reference.png' }
+      { label: 'Level 2', trace: '/assets/exercises/depth/level-2/trace.png', freehand: '/assets/exercises/depth/level-2/freehand.png', reference: '/assets/exercises/depth/level-2/reference.png' }
     ]
   }
 };
@@ -81,7 +80,7 @@ if (subjectSelect && levelSelect && drawingCanvas && referenceCanvas && differen
   const challengeComplete = (subject) => {
     try {
       const challenge = JSON.parse(localStorage.getItem(`drawflow-${subject}-challenge`) || '{}');
-      return [1, 2, 3].every((level) => challenge.levels?.[level]?.freehand >= FREEHAND_THRESHOLD);
+      return exerciseData[subject].levels.every((_, index) => challenge.levels?.[index + 1]?.freehand >= FREEHAND_THRESHOLD);
     } catch {
       return false;
     }
@@ -176,8 +175,9 @@ if (subjectSelect && levelSelect && drawingCanvas && referenceCanvas && differen
       const completedLevels = exerciseData[subject].levels.filter((_, index) => progress[`${subject}-${index}`]?.freehand >= FREEHAND_THRESHOLD).length;
       const card = document.createElement('div');
       card.className = `topic-progress-card${subject === subjectSelect.value ? ' is-current' : ''}${topicUnlocked(subject) ? '' : ' is-locked'}`;
-      card.title = topicUnlocked(subject) ? `${completedLevels} of 3 levels completed` : `Complete all ${exerciseData[topicOrder[topicOrder.indexOf(subject) - 1]].label} levels to unlock.`;
-      card.innerHTML = `<strong>${exerciseData[subject].label}</strong><span>${completedLevels} / 3 levels${topicUnlocked(subject) ? '' : ' - locked'}</span>`;
+      const levelCount = exerciseData[subject].levels.length;
+      card.title = topicUnlocked(subject) ? `${completedLevels} of ${levelCount} levels completed` : `Complete all ${exerciseData[topicOrder[topicOrder.indexOf(subject) - 1]].label} levels to unlock.`;
+      card.innerHTML = `<strong>${exerciseData[subject].label}</strong><span>${completedLevels} / ${levelCount} levels${topicUnlocked(subject) ? '' : ' - locked'}</span>`;
       topicProgress.append(card);
     });
   };

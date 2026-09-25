@@ -308,7 +308,6 @@
               <select id="form-level" aria-label="Depth level">
                 <option value="1">Level 1 (Depth Basics)</option>
                 <option value="2" id="opt-lvl-2" disabled>🔒 Level 2 (Atmospheric Perspective - Locked)</option>
-                <option value="3" id="opt-lvl-3" disabled>🔒 Level 3 (Layered Composition - Locked)</option>
               </select>
             </div>
 
@@ -424,8 +423,8 @@
       const CANVAS_SIZE = 600;
 
       const state = {
-        level: 1, // 1: Depth Basics, 2: Atmospheric Perspective, 3: Layered Composition
-        unlockedLevels: JSON.parse(localStorage.getItem('drawflow-depth-unlocked') || '{"1":true,"2":false,"3":false}'),
+        level: 1, // 1: Depth Basics, 2: Atmospheric Perspective
+        unlockedLevels: JSON.parse(localStorage.getItem('drawflow-depth-unlocked') || '{"1":true,"2":false}'),
         stage: 'trace', // 'trace' -> 'freehand' -> 'evaluate'
         tool: 'pen',
         brushSize: 6,
@@ -460,7 +459,6 @@
       const nextLevelBtn = document.getElementById('form-next-level');
       const completionActions = document.getElementById('form-completion-actions');
       const optLvl2 = document.getElementById('opt-lvl-2');
-      const optLvl3 = document.getElementById('opt-lvl-3');
       const levelBadge = document.getElementById('form-level-badge');
       const stageBadge = document.getElementById('form-stage-badge');
       const hintBanner = document.getElementById('form-hint-banner');
@@ -499,7 +497,7 @@
       // Preload blank base + complete reference images per level for Stage 3 comparison
       const freehandImages = {};
       const completeImages = {};
-      [1, 2, 3].forEach(lvl => {
+      [1, 2].forEach(lvl => {
         const fh = new Image();
         fh.src = `${getLevelPath(lvl)}/Freehand.png`;
         freehandImages[lvl] = fh;
@@ -518,9 +516,6 @@
 
         optLvl2.disabled = !state.unlockedLevels[2];
         optLvl2.textContent = state.unlockedLevels[2] ? 'Level 2 (Atmospheric Perspective)' : '🔒 Level 2 (Atmospheric Perspective - Locked)';
-        optLvl3.disabled = !state.unlockedLevels[3];
-        optLvl3.textContent = state.unlockedLevels[3] ? 'Level 3 (Layered Composition)' : '🔒 Level 3 (Layered Composition - Locked)';
-
         // Trace.png=guide, Freehand.png=blank base, Complete.png=complete answer.
         baseImg.src = `${basePath}/Freehand.png`;
         guideImg.src = `${basePath}/Trace.png`;
@@ -541,7 +536,7 @@
           baseImg.style.display = 'block';
           guideImg.style.display = 'none';
         } else {
-          stageBadge.textContent = 'Stage 3: Complete';
+          stageBadge.textContent = 'Complete';
           hintBanner.textContent = 'Level complete. Review your drawing against the true depth geometry.';
           baseImg.style.display = 'none';
           guideImg.style.display = 'none';
@@ -549,7 +544,7 @@
           progressText.textContent = 'Stage 3: Complete';
         }
 
-        levelBadge.textContent = state.level === 1 ? 'Level 1: Depth Basics' : state.level === 2 ? 'Level 2: Atmospheric Perspective' : 'Level 3: Layered Composition';
+        levelBadge.textContent = state.level === 1 ? 'Level 1: Depth Basics' : 'Level 2: Atmospheric Perspective';
       }
 
       function evaluateDrawing() {
@@ -734,13 +729,13 @@
 
         state.calculatedAccuracy = evaluateDrawing();
         const score = state.calculatedAccuracy;
-        if (score >= 40 && state.level < 3) {
+        if (score >= 40 && state.level < 2) {
           state.unlockedLevels[state.level + 1] = true;
           localStorage.setItem('drawflow-depth-unlocked', JSON.stringify(state.unlockedLevels));
         }
         if (window.DrawFlowProgression && score >= 40) {
-          if (state.level < 3) DrawFlowProgression.unlockLevel('depth', state.level + 1);
-          if (state.level === 3) {
+          if (state.level < 2) DrawFlowProgression.unlockLevel('depth', state.level + 1);
+          if (state.level === 2) {
             DrawFlowProgression.completeTopic('depth');
             completionActions.hidden = false;
           }
@@ -758,10 +753,10 @@
         }
 
         updateStageUI();
-        if (state.level < 3 && state.unlockedLevels[state.level + 1]) {
+        if (state.level < 2 && state.unlockedLevels[state.level + 1]) {
           nextLevelBtn.disabled = false;
           nextLevelBtn.textContent = `Proceed to Level ${state.level + 1} ➔`;
-        } else if (state.level === 3) {
+        } else if (state.level === 2) {
           nextLevelBtn.disabled = false;
           nextLevelBtn.textContent = 'Restart Challenge 🔄';
         } else {
@@ -771,13 +766,13 @@
       }
 
       nextLevelBtn.addEventListener('click', () => {
-        if (state.level < 3) {
+        if (state.level < 2) {
           if (!state.unlockedLevels[state.level + 1]) return;
           state.level++;
           levelSelect.value = String(state.level);
         } else {
           state.level = 1;
-          state.unlockedLevels = { 1: true, 2: false, 3: false };
+          state.unlockedLevels = { 1: true, 2: false };
           localStorage.setItem('drawflow-depth-unlocked', JSON.stringify(state.unlockedLevels));
           levelSelect.value = '1';
         }
@@ -857,7 +852,7 @@
       document.getElementById('form-review-exercises').addEventListener('click', () => { window.location.href = '/pages/drawing-exercise/exercises/'; });
 
       resetExerciseBtn.addEventListener('click', () => {
-        state.unlockedLevels = { 1: true, 2: false, 3: false };
+        state.unlockedLevels = { 1: true, 2: false };
         localStorage.setItem('drawflow-depth-unlocked', JSON.stringify(state.unlockedLevels));
         levelSelect.value = '1';
         state.level = 1;
