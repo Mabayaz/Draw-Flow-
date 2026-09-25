@@ -62,6 +62,63 @@
       color: #e86f45;
     }
 
+    .lesson-panel {
+      overflow: hidden;
+      padding: 0;
+      transition: border-color .2s ease, box-shadow .2s ease, opacity .2s ease;
+    }
+
+    .lesson-panel.is-open {
+      border-color: #e86f45;
+      box-shadow: 0 16px 36px rgba(61, 57, 53, .08);
+    }
+
+    .lesson-panel.is-locked { opacity: .62; }
+
+    .lesson-card__header {
+      display: block;
+      width: 100%;
+      border: 0;
+      background: transparent;
+      padding: 1.5rem 1.75rem;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .lesson-card__header:disabled { cursor: not-allowed; }
+
+    .lesson-card__header:focus-visible {
+      outline: 3px solid rgba(232, 111, 69, .35);
+      outline-offset: -3px;
+    }
+
+    .lesson-card__body {
+      border-top: 1px solid #d9d5c9;
+      padding: 1.75rem;
+    }
+
+    .lesson-panel:not(.is-open) .lesson-card__body { display: none; }
+
+    .lesson-card__status {
+      float: right;
+      color: #68716c;
+      font-family: 'DM Mono', monospace;
+      font-size: .62rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .lesson-card__complete {
+      margin-top: 2rem;
+      border-top: 1px solid #d9d5c9;
+      padding-top: 1.25rem;
+    }
+
+    .lesson-card__complete button.is-complete {
+      background: #2f896c;
+      color: #fffdf8;
+    }
+
     @media (max-width: 640px) {
       .reading-progress { padding-right: 1.25rem; padding-left: 1.25rem; }
       .lesson-contents { top: 5.35rem; }
@@ -114,10 +171,10 @@
       <nav aria-label="Lesson contents" class="lesson-contents sticky z-30 -mx-5 mb-12 overflow-x-auto border-y border-border bg-background/90 px-5 py-3 backdrop-blur-md sm:-mx-8 sm:px-8">
         <div class="flex min-w-max items-center gap-2 text-xs font-semibold">
           <span class="mr-2 font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Jump to</span>
-          <a href="/pages/form/" class="focus-ring rounded-full border border-border px-3 py-2 hover:border-accent hover:text-accent">01 Form</a>
-          <a href="/pages/shadow/" class="focus-ring rounded-full border border-border px-3 py-2 hover:border-accent hover:text-accent">02 Shadow</a>
-          <a href="/pages/perspective/" class="focus-ring rounded-full border border-border px-3 py-2 hover:border-accent hover:text-accent">03 Perspective</a>
-          <a href="/pages/depth/" class="focus-ring rounded-full border border-border px-3 py-2 hover:border-accent hover:text-accent">04 Depth</a>
+          <a href="#form" class="focus-ring rounded-full border border-border px-3 py-2 hover:border-accent hover:text-accent">01 Form</a>
+          <a href="#shadow" class="focus-ring rounded-full border border-border px-3 py-2 hover:border-accent hover:text-accent">02 Shadow</a>
+          <a href="#perspective" class="focus-ring rounded-full border border-border px-3 py-2 hover:border-accent hover:text-accent">03 Perspective</a>
+          <a href="#depth" class="focus-ring rounded-full border border-border px-3 py-2 hover:border-accent hover:text-accent">04 Depth</a>
         </div>
       </nav>
 
@@ -349,42 +406,96 @@
       const progressFill = document.querySelector('#reading-progress-fill');
       const progressLabel = document.querySelector('#reading-progress-label');
       const progressTrack = document.querySelector('.reading-progress__track');
-      const lessonSections = [...document.querySelectorAll('[data-lesson-link]')]
-        .map((link) => ({ link, section: document.getElementById(link.dataset.lessonLink) }))
-        .filter(({ section }) => section);
-      let ticking = false;
+      const order = ['form', 'shadow', 'perspective', 'depth'];
+      const panels = order.map((lesson) => document.getElementById(lesson)).filter(Boolean);
+      const completed = new Set(JSON.parse(localStorage.getItem('drawflow_completed_lessons') || '[]'));
+      let openLesson = null;
 
-      const updateReadingProgress = () => {
-        const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
-        const percentage = scrollableHeight > 0
-          ? Math.round((window.scrollY / scrollableHeight) * 100)
-          : 100;
-        const boundedPercentage = Math.max(0, Math.min(100, percentage));
+      const isUnlocked = (index) => order.slice(0, index).every((lesson) => completed.has(lesson));
 
-        progressFill.style.width = `${boundedPercentage}%`;
-        progressLabel.textContent = `${boundedPercentage}% read`;
-        progressTrack.setAttribute('aria-valuenow', String(boundedPercentage));
-
-        if (lessonSections.length) {
-          const readingLine = window.scrollY + window.innerHeight * .3;
-          let activeSection = lessonSections[0];
-          lessonSections.forEach((item) => {
-            if (item.section.offsetTop <= readingLine) activeSection = item;
-          });
-          lessonSections.forEach(({ link }) => link.classList.toggle('is-reading', link === activeSection.link));
-        }
-        ticking = false;
+      const saveProgress = () => {
+        localStorage.setItem('drawflow_completed_lessons', JSON.stringify(order.filter((lesson) => completed.has(lesson))));
       };
 
-      const requestProgressUpdate = () => {
-        if (ticking) return;
-        ticking = true;
-        window.requestAnimationFrame(updateReadingProgress);
+      const updateProgress = () => {
+        const completedCount = order.filter((lesson) => completed.has(lesson)).length;
+        const percentage = Math.round((completedCount / order.length) * 100);
+        progressFill.style.width = `${percentage}%`;
+        progressLabel.textContent = `${completedCount} of ${order.length} complete`;
+        progressTrack.setAttribute('aria-valuenow', String(percentage));
       };
 
-      window.addEventListener('scroll', requestProgressUpdate, { passive: true });
-      window.addEventListener('resize', requestProgressUpdate);
-      updateReadingProgress();
+      const renderPanels = () => {
+        panels.forEach((panel, index) => {
+          const lesson = order[index];
+          const unlocked = isUnlocked(index);
+          const complete = completed.has(lesson);
+          const header = panel.querySelector('.lesson-card__header');
+          const body = panel.querySelector('.lesson-card__body');
+          const completeButton = panel.querySelector('[data-lesson-complete]');
+          panel.classList.toggle('is-locked', !unlocked);
+          panel.classList.toggle('is-open', openLesson === lesson && unlocked);
+          header.disabled = !unlocked;
+          header.setAttribute('aria-expanded', String(openLesson === lesson && unlocked));
+          header.querySelector('.lesson-card__status').textContent = complete ? 'Complete' : unlocked ? 'Ready to read' : `Locked - finish ${order[index - 1]}`;
+          completeButton.disabled = complete;
+          completeButton.textContent = complete ? 'Lesson complete' : `Mark ${lesson} complete and continue`;
+          completeButton.classList.toggle('is-complete', complete);
+          body.setAttribute('aria-hidden', String(!(openLesson === lesson && unlocked)));
+        });
+        updateProgress();
+      };
+
+      panels.forEach((panel, index) => {
+        const lesson = order[index];
+        const children = [...panel.children];
+        const header = document.createElement('button');
+        header.type = 'button';
+        header.className = 'lesson-card__header';
+        header.append(children[0], children[1], children[2]);
+        const status = document.createElement('span');
+        status.className = 'lesson-card__status';
+        header.append(status);
+
+        const body = document.createElement('div');
+        body.className = 'lesson-card__body';
+        children.slice(3).forEach((child) => body.append(child));
+        const completion = document.createElement('div');
+        completion.className = 'lesson-card__complete';
+        completion.innerHTML = `<p class="text-xs text-muted-foreground">Read this lesson before continuing to the next topic.</p><button type="button" data-lesson-complete class="mt-3 rounded-full bg-primary px-4 py-3 text-xs font-bold text-primary-foreground">Mark ${lesson} complete and continue</button>`;
+        body.append(completion);
+
+        panel.classList.add('lesson-panel');
+        panel.replaceChildren(header, body);
+        header.addEventListener('click', () => {
+          if (!isUnlocked(index)) return;
+          openLesson = openLesson === lesson ? null : lesson;
+          renderPanels();
+          if (openLesson === lesson) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+        completion.querySelector('button').addEventListener('click', () => {
+          completed.add(lesson);
+          saveProgress();
+          const nextLesson = order[index + 1];
+          openLesson = nextLesson || lesson;
+          renderPanels();
+          document.getElementById(nextLesson || lesson)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
+
+      document.querySelectorAll('.lesson-contents a').forEach((link, index) => {
+        link.addEventListener('click', (event) => {
+          if (!isUnlocked(index)) {
+            event.preventDefault();
+            return;
+          }
+          openLesson = order[index];
+          renderPanels();
+        });
+      });
+
+      openLesson = order.find((lesson, index) => isUnlocked(index) && !completed.has(lesson)) || order[order.length - 1];
+      renderPanels();
     })();
   </script>
 </body>
