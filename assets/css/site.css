@@ -458,56 +458,48 @@ body footer {
 }
 
 #pre-test-gate {
-  display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(18rem, .85fr);
-  grid-template-areas:
-    'eyebrow scale'
-    'title scale'
-    'intro scale'
-    'intro instruction'
-    '. link'
-    '. confirm'
-    '. action';
-  align-items: start;
-  gap: .75rem 4rem;
-  margin-top: 2rem !important;
+  width: min(100%, 48rem);
+  margin: 2.5rem auto 0 !important;
   border: 0 !important;
-  border-top: 1px solid var(--df-line) !important;
-  border-bottom: 1px solid var(--df-line) !important;
   border-radius: 0 !important;
   background: transparent !important;
-  padding: 2.5rem 0 !important;
+  padding: 2rem 0 3rem !important;
   box-shadow: none !important;
 }
 
-#pre-test-gate > p:first-of-type { grid-area: eyebrow; margin: 0; }
-#pre-test-gate > h1 { grid-area: title; margin: 0; }
-#pre-test-gate > p:nth-of-type(2) { grid-area: intro; margin: .4rem 0 0; }
+#pre-test-gate > p:first-of-type { margin: 0; }
+#pre-test-gate > h1 { margin: .7rem 0 0; }
+#pre-test-gate > p:nth-of-type(2) { margin: 1rem 0 1.5rem; }
+
+#pre-test-gate > h2 {
+  margin: 0;
+  border-top: 1px solid var(--df-line);
+  padding-top: 1.25rem;
+}
 
 #pre-test-gate > ul {
   display: grid;
-  grid-area: scale;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: .45rem;
+  gap: .15rem 1rem;
   width: 100%;
-  margin: .3rem 0 0;
+  margin: .45rem 0 0;
   padding: 0;
   list-style: none;
 }
 
 #pre-test-gate > ul li {
-  border-left: 2px solid var(--df-coral);
-  background: var(--df-card);
-  padding: .65rem .75rem;
-  color: var(--df-ink);
-  font-size: .8rem;
+  color: var(--df-muted);
+  font-size: .85rem;
 }
 
-#pre-test-gate > p:nth-of-type(3) { grid-area: instruction; margin: .5rem 0 0; }
+#pre-test-gate > p:nth-of-type(3) {
+  margin: .9rem 0 0;
+  border-bottom: 1px solid var(--df-line);
+  padding-bottom: 1.25rem;
+}
 
 #pre-test-gate > a {
-  grid-area: link;
-  justify-self: start;
+  margin-top: 1.25rem;
   border-radius: .5rem;
   background: var(--df-green);
   padding: .8rem 1.1rem;
@@ -517,19 +509,14 @@ body footer {
 }
 
 #pre-test-gate > label {
-  grid-area: confirm;
-  margin: 0;
-  border: 1px solid var(--df-line);
-  border-radius: .55rem;
-  background: var(--df-card);
-  padding: .8rem;
+  margin-top: 1rem;
+  color: var(--df-muted);
 }
 
 #pre-test-gate > div:last-child {
-  grid-area: action;
-  margin: 0;
+  margin-top: 1rem;
   border-top: 1px solid var(--df-line);
-  padding-top: .85rem;
+  padding-top: 1rem;
 }
 
 #pre-test-gate > div:last-child button {
@@ -543,12 +530,7 @@ body footer {
   body main .page-intro h1,
   body main #pre-test-gate h1 { font-size: 3.5rem; }
 
-  #pre-test-gate {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: 'eyebrow' 'title' 'intro' 'scale' 'instruction' 'link' 'confirm' 'action';
-    gap: .85rem;
-    padding: 2rem 0 !important;
-  }
+  #pre-test-gate { padding: 2rem 0 !important; }
 }
 
 @media (max-width: 480px) {
