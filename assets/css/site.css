@@ -44,7 +44,16 @@ a.inline-flex[class*='rounded'] {
 }
 
 header a .font-display {
+  font-family: 'Fredoka', sans-serif;
   font-weight: 700;
+}
+
+body .font-display {
+  font-family: 'Fredoka', sans-serif;
+}
+
+body .font-sans {
+  font-family: 'Inter', sans-serif;
 }
 
 label,
