@@ -267,6 +267,307 @@ body::before {
   .lesson-reader-progress__track > div { transition: none; }
 }
 
+:root {
+  --df-paper: #f5f1e8;
+  --df-card: #fffdf8;
+  --df-ink: #1d2926;
+  --df-green: #173e36;
+  --df-coral: #e86f45;
+  --df-line: #d9d5c9;
+  --df-shadow: 0 14px 34px rgba(29, 41, 38, .07);
+}
+
+body {
+  background: var(--df-paper);
+  color: var(--df-ink);
+  line-height: 1.6;
+}
+
+.texture {
+  background-color: var(--df-paper);
+  background-image:
+    linear-gradient(rgba(23, 62, 54, .025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(23, 62, 54, .025) 1px, transparent 1px),
+    radial-gradient(rgba(23, 62, 54, .04) .65px, transparent .65px);
+  background-size: 36px 36px, 36px 36px, 8px 8px;
+}
+
+body header.sticky {
+  border-color: rgba(217, 213, 201, .8) !important;
+  background: rgba(250, 248, 241, .92) !important;
+  box-shadow: 0 1px 0 rgba(29, 41, 38, .025);
+  backdrop-filter: blur(16px);
+}
+
+body header nav[aria-label='Main navigation'] a {
+  min-height: 2.5rem;
+  transition: background-color .18s ease, color .18s ease, transform .18s ease;
+}
+
+body header nav[aria-label='Main navigation'] a:hover {
+  color: var(--df-green);
+  transform: translateY(-1px);
+}
+
+body header nav[aria-label='Main navigation'] a[aria-current='page'] {
+  background: var(--df-green) !important;
+  color: var(--df-card) !important;
+}
+
+body main {
+  line-height: 1.65;
+}
+
+body main .page-intro {
+  max-width: 62rem;
+  border-bottom: 1px solid var(--df-line);
+  padding: 4rem 0 2.5rem;
+}
+
+body main .page-intro > p:first-child,
+body main #pre-test-gate > p:first-child {
+  color: var(--df-coral);
+  font-family: 'DM Mono', monospace;
+  font-size: .66rem;
+  font-weight: 500;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+body main .page-intro h1,
+body main #pre-test-gate h1 {
+  max-width: 15ch;
+  color: var(--df-green);
+  font-size: 4.5rem;
+  font-weight: 700;
+  line-height: .98;
+}
+
+body main .page-intro > p:not(:first-child) {
+  max-width: 68ch;
+  line-height: 1.8;
+}
+
+body .home-progress,
+body .course-celebration,
+body .lesson-progression__card,
+body .lesson-panel,
+body .module-card,
+body .topic-card,
+body .challenge-card,
+body .score-box,
+body #lesson-content article,
+body #course-complete {
+  border-color: var(--df-line);
+  border-radius: .8rem;
+  box-shadow: var(--df-shadow);
+}
+
+body .lesson-progression__card,
+body .topic-card {
+  background: var(--df-card);
+  padding: 1.2rem;
+}
+
+body .lesson-progression__card:hover,
+body .lesson-progression__card.is-active,
+body .topic-card:hover {
+  border-color: var(--df-coral);
+  box-shadow: 0 14px 30px rgba(29, 41, 38, .11);
+  transform: translateY(-2px);
+}
+
+body .module-card.is-active,
+body .lesson-panel.is-open {
+  border-color: var(--df-coral);
+  box-shadow: var(--df-shadow);
+}
+
+body #lesson-content article {
+  background: rgba(255, 253, 248, .9);
+  padding: 2rem;
+}
+
+body #lesson-content article > h2 {
+  border-bottom: 1px solid var(--df-line);
+  color: var(--df-green);
+  padding-bottom: .75rem;
+}
+
+body #lesson-content article > div.rounded-xl {
+  border: 0;
+  border-left: 3px solid var(--df-green);
+  border-radius: 0 .5rem .5rem 0;
+  background: #eaf1eb;
+  padding: 1.1rem 1.25rem;
+}
+
+body #lesson-content article > div.mt-8 {
+  max-width: 76ch;
+}
+
+body #lesson-content article h3 {
+  color: var(--df-green);
+}
+
+body .challenge-card,
+body .score-box {
+  box-shadow: 0 8px 24px rgba(29, 41, 38, .055);
+}
+
+body .canvas-wrap,
+body .evaluation-frame {
+  border-color: var(--df-line);
+  border-radius: .7rem;
+  box-shadow: 0 10px 28px rgba(29, 41, 38, .08);
+}
+
+body button:not(:disabled),
+body a.inline-flex[class*='rounded'] {
+  transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease;
+}
+
+body button:not(:disabled):hover,
+body a.inline-flex[class*='rounded']:hover {
+  box-shadow: 0 7px 18px rgba(29, 41, 38, .12);
+  transform: translateY(-1px);
+}
+
+body button:disabled {
+  cursor: not-allowed;
+}
+
+body input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='color']),
+body textarea,
+body select {
+  border-color: var(--df-line);
+  border-radius: .45rem;
+}
+
+body input:focus-visible,
+body textarea:focus-visible,
+body select:focus-visible,
+body button:focus-visible,
+body a:focus-visible {
+  outline: 3px solid rgba(232, 111, 69, .4);
+  outline-offset: 3px;
+}
+
+body footer {
+  border-color: var(--df-line);
+}
+
+#pre-test-gate {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(18rem, .85fr);
+  grid-template-areas:
+    'eyebrow scale'
+    'title scale'
+    'intro scale'
+    'intro instruction'
+    '. link'
+    '. confirm'
+    '. action';
+  align-items: start;
+  gap: .75rem 4rem;
+  margin-top: 2rem !important;
+  border: 0 !important;
+  border-top: 1px solid var(--df-line) !important;
+  border-bottom: 1px solid var(--df-line) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  padding: 2.5rem 0 !important;
+  box-shadow: none !important;
+}
+
+#pre-test-gate > p:first-of-type { grid-area: eyebrow; margin: 0; }
+#pre-test-gate > h1 { grid-area: title; margin: 0; }
+#pre-test-gate > p:nth-of-type(2) { grid-area: intro; margin: .4rem 0 0; }
+
+#pre-test-gate > ul {
+  display: grid;
+  grid-area: scale;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .45rem;
+  width: 100%;
+  margin: .3rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+#pre-test-gate > ul li {
+  border-left: 2px solid var(--df-coral);
+  background: var(--df-card);
+  padding: .65rem .75rem;
+  color: var(--df-ink);
+  font-size: .8rem;
+}
+
+#pre-test-gate > p:nth-of-type(3) { grid-area: instruction; margin: .5rem 0 0; }
+
+#pre-test-gate > a {
+  grid-area: link;
+  justify-self: start;
+  border-radius: .5rem;
+  background: var(--df-green);
+  padding: .8rem 1.1rem;
+  color: var(--df-card);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+#pre-test-gate > label {
+  grid-area: confirm;
+  margin: 0;
+  border: 1px solid var(--df-line);
+  border-radius: .55rem;
+  background: var(--df-card);
+  padding: .8rem;
+}
+
+#pre-test-gate > div:last-child {
+  grid-area: action;
+  margin: 0;
+  border-top: 1px solid var(--df-line);
+  padding-top: .85rem;
+}
+
+#pre-test-gate > div:last-child button {
+  border-radius: .5rem;
+  background: var(--df-coral);
+  color: var(--df-ink);
+}
+
+@media (max-width: 760px) {
+  body main .page-intro { padding: 3rem 0 2rem; }
+  body main .page-intro h1,
+  body main #pre-test-gate h1 { font-size: 3.5rem; }
+
+  #pre-test-gate {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'eyebrow' 'title' 'intro' 'scale' 'instruction' 'link' 'confirm' 'action';
+    gap: .85rem;
+    padding: 2rem 0 !important;
+  }
+}
+
+@media (max-width: 480px) {
+  body main .page-intro h1,
+  body main #pre-test-gate h1 { font-size: 2.8rem; }
+
+  body #lesson-content article { padding: 1.25rem; }
+  #pre-test-gate > ul { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+
 [data-reveal] {
   opacity: 0;
   transform: translateY(18px);
@@ -311,4 +612,144 @@ body::before {
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   [data-reveal] { opacity: 1; transform: none; transition: none; }
+}
+
+html { scroll-padding-top: 5.5rem; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+body main h1,
+body main h2,
+body main h3 {
+  color: var(--df-green);
+  letter-spacing: 0;
+  text-wrap: balance;
+}
+
+body main > section[class*='border-t'],
+body main > section[class*='border-y'] {
+  border-color: var(--df-line);
+}
+
+body main > section[class*='py-12'] {
+  padding-top: 3.5rem;
+  padding-bottom: 3.5rem;
+}
+
+body main .page-intro {
+  padding-top: 4.5rem;
+  padding-bottom: 2.75rem;
+}
+
+body main .page-intro h1,
+body main #pre-test-gate h1 {
+  max-width: 16ch;
+  color: var(--df-green);
+  line-height: 1.02;
+}
+
+body main .page-intro > p:not(:first-child) {
+  color: #59645f;
+}
+
+body main article,
+body main .home-progress,
+body main .course-celebration,
+body main .lesson-progression__card,
+body main .lesson-panel,
+body main .module-card,
+body main .topic-card,
+body main .challenge-card,
+body main .score-box,
+body main #lesson-content article,
+body main #course-complete,
+body main #video-container {
+  border-color: var(--df-line);
+  border-radius: .65rem;
+  box-shadow: var(--df-shadow);
+}
+
+body main article,
+body main .home-progress,
+body main .module-card,
+body main .challenge-card,
+body main .score-box,
+body main #course-complete {
+  background-color: var(--df-card);
+}
+
+body main #course-complete {
+  padding: 1.5rem;
+}
+
+body main .lesson-progression__card,
+body main .topic-card {
+  min-width: 0;
+  padding: 1.1rem;
+}
+
+body main .lesson-progression__card:hover,
+body main .lesson-progression__card.is-active,
+body main .topic-card:hover,
+body main .module-card.is-active {
+  border-color: var(--df-coral);
+  box-shadow: 0 12px 26px rgba(29, 41, 38, .1);
+}
+
+body main #video-container {
+  overflow: hidden;
+  background: var(--df-card);
+}
+
+body main [class*='rounded-3xl'][class*='border'] {
+  border-color: var(--df-line);
+  border-radius: .75rem;
+  box-shadow: var(--df-shadow);
+}
+
+body main #video-container video { display: block; }
+
+body main .canvas-wrap,
+body main .evaluation-frame {
+  background-color: #fffdf8;
+}
+
+body main button:disabled {
+  box-shadow: none;
+  transform: none;
+}
+
+body footer { color: #68716c; }
+
+@media (max-width: 760px) {
+  body main .page-intro {
+    padding-top: 3rem;
+    padding-bottom: 2rem;
+  }
+
+  body main > section[class*='py-12'] {
+    padding-top: 2.5rem;
+    padding-bottom: 2.5rem;
+  }
+
+  body main #lesson-content article { padding: 1.5rem; }
+}
+
+@media (max-width: 480px) {
+  body main .page-intro h1,
+  body main #pre-test-gate h1 {
+    font-size: 2.5rem;
+    line-height: 1.05;
+  }
+
+  body main > section[class*='py-12'] {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+
+  body main article,
+  body main .module-card { padding: 1.1rem; }
 }
