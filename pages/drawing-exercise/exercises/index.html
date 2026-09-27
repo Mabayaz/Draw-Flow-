@@ -35,8 +35,9 @@
     .topic-card__icon { display: flex; align-items: center; justify-content: space-between; color: #e86f45; font-family: 'DM Mono', monospace; font-size: .72rem; }
     .topic-card__title { margin-top: 1.25rem; font-family: 'Fredoka', sans-serif; font-size: 1.35rem; font-weight: 600; }
     .topic-card__meta { color: #68716c; font-size: .72rem; line-height: 1.45; }
-    .topic-card.is-locked { position: relative; isolation: isolate; box-shadow: 0 4px 14px rgba(29, 41, 38, .04); }
+    .topic-card.is-locked { position: relative; isolation: isolate; box-shadow: 0 8px 20px rgba(29, 41, 38, .12); }
     .topic-card.is-locked::before { position: absolute; z-index: 0; inset: 0; border-radius: inherit; background: rgba(29, 41, 38, .12); content: ''; pointer-events: none; }
+    .topic-card.is-locked::after { position: absolute; z-index: 2; top: .75rem; right: .75rem; display: grid; width: 2.25rem; aspect-ratio: 1; place-items: center; border: 1px solid #d9d5c9; border-radius: 50%; background: #fffdf8; box-shadow: 0 4px 12px rgba(29, 41, 38, .18); content: '\1F512'; font-size: 1rem; }
     .topic-card.is-locked > * { position: relative; z-index: 1; }
     .topic-card__lock-note { display: flex; align-items: flex-start; gap: .4rem; border-radius: .5rem; background: #173e36; padding: .55rem; color: #fffdf8; font-size: .68rem; line-height: 1.4; }
     .topic-card__lock-icon { display: inline-block; flex: 0 0 auto; animation: lock-pulse 1.8s ease-in-out infinite; }
@@ -74,7 +75,7 @@
         <p class="font-mono-draw text-[10px] uppercase tracking-[.18em] text-accent">Progressive practice</p>
         <h1 class="mt-4 max-w-4xl font-display text-4xl leading-[.95] sm:text-6xl lg:text-8xl">Build the form, then make it believable.</h1>
         <p class="mt-7 max-w-3xl text-base leading-7 text-muted-foreground">Move through four focused stages. Each module gives you a dedicated canvas workspace to test and refine your technique.</p>
-        <p class="mt-4 inline-flex rounded-md border border-accent/40 bg-accent/10 px-3 py-2 text-sm font-semibold text-foreground" role="note">Passing Score: 70% required to unlock the next practical.</p>
+        <p class="mt-4 inline-flex rounded-md border border-accent/40 bg-accent/10 px-3 py-2 text-sm font-semibold text-foreground" role="note">Minimum passing score required to complete a practical: 50%.</p>
       </section>
 
       <!-- Progress Track Banner -->
@@ -189,10 +190,13 @@
         const status = document.querySelector('[data-topic-status="' + topic + '"]');
         if (!card || !status) return;
         const unlocked = state[topic] && state[topic].unlocked;
+        card.setAttribute('aria-disabled', String(!unlocked));
         if (unlocked) {
           status.textContent = state[topic].completed ? 'COMPLETE' : 'READY';
           status.className = state[topic].completed ? 'text-primary font-bold' : 'text-emerald-600 font-bold';
           card.classList.remove('is-locked');
+          card.removeAttribute('aria-describedby');
+          card.removeAttribute('title');
         } else {
           const previousTopic = DrawFlowProgression.TOPIC_ORDER[DrawFlowProgression.TOPIC_ORDER.indexOf(topic) - 1];
           const prerequisite = DrawFlowProgression.TOPIC_LABELS[previousTopic] || 'previous';
@@ -203,13 +207,13 @@
           if (lockNote) {
             lockNote.hidden = false;
             lockNote.id = 'lock-note-' + topic;
-            lockNote.innerHTML = '<span class="topic-card__lock-icon" aria-hidden="true">🔒</span><span>Prerequisite Required: Complete the ' + prerequisite + ' lesson and practical with a passing grade (70%) to unlock.</span>';
+            lockNote.innerHTML = '<span class="topic-card__lock-icon" aria-hidden="true">🔒</span><span>Prerequisite Required: Complete the ' + prerequisite + ' lesson and practical with a passing grade (50%) to unlock.</span>';
             card.setAttribute('aria-describedby', lockNote.id);
           }
-          card.title = 'Prerequisite Required: Complete the ' + prerequisite + ' lesson and practical with a passing grade (70%) to unlock.';
+          card.title = 'Prerequisite Required: Complete the ' + prerequisite + ' lesson and practical with a passing grade (50%) to unlock.';
           card.addEventListener('click', (e) => {
             e.preventDefault();
-            alert('Prerequisite Required: Complete the ' + prerequisite + ' lesson and practical with a passing grade (70%) to unlock.');
+            alert('Prerequisite Required: Complete the ' + prerequisite + ' lesson and practical with a passing grade (50%) to unlock.');
           });
         }
       });

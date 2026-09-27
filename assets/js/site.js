@@ -32,7 +32,7 @@ document.addEventListener('click', (event) => {
     }
     return;
   }
-  if (event.target.closest?.('[data-internal-navigation], #proceed-to-exercises, #form-proceed-self-check, #form-continue-topic, #form-review-exercises, #progression-continue, #progression-quit')) {
+  if (event.target.closest?.('[data-internal-navigation], #proceed-to-exercises, #form-proceed-self-check, #form-continue-topic, #form-review-lesson, #form-review-exercises, #progression-continue, #progression-quit')) {
     sessionStorage.setItem(INTERNAL_NAVIGATION_KEY, 'true');
   }
 }, true);
@@ -125,16 +125,7 @@ const showGateMessage = (message) => {
 
 if (lockedStep && gateMessages[lockedStep]) showGateMessage(gateMessages[lockedStep]);
 
-if (currentRouteStatus.isSelfCheck && !currentRouteStatus.preTestComplete) {
-  sessionStorage.setItem(INTERNAL_NAVIGATION_KEY, 'true');
-  window.location.replace('/pages/lessons/?locked=pretest');
-} else if (currentRouteStatus.isSelfCheck && !currentRouteStatus.lessonsComplete) {
-  sessionStorage.setItem(INTERNAL_NAVIGATION_KEY, 'true');
-  window.location.replace('/pages/lessons/?locked=lessons');
-} else if (currentRouteStatus.isSelfCheck && !currentRouteStatus.exercisesComplete) {
-  sessionStorage.setItem(INTERNAL_NAVIGATION_KEY, 'true');
-  window.location.replace('/pages/drawing-exercise/exercises/?locked=exercises');
-} else if (currentRouteStatus.requiresPreTest && !currentRouteStatus.preTestComplete) {
+if (currentRouteStatus.requiresPreTest && !currentRouteStatus.preTestComplete) {
   sessionStorage.setItem(INTERNAL_NAVIGATION_KEY, 'true');
   window.location.replace('/pages/lessons/?locked=pretest');
 } else if (currentRouteStatus.requiresLessonsCompletion && !currentRouteStatus.lessonsComplete) {
@@ -149,8 +140,7 @@ document.querySelectorAll('header nav a[href]').forEach((link) => {
   if (status.isLessonsPage && !status.preTestComplete) link.textContent = 'Pre-Test/Lesson';
   if (status.isSelfCheck) link.textContent = 'Post-Test';
   const locked = (status.requiresPreTest && !status.preTestComplete)
-    || (status.requiresLessonsCompletion && (!status.preTestComplete || !status.lessonsComplete))
-    || (status.isSelfCheck && (!status.preTestComplete || !status.lessonsComplete || !status.exercisesComplete));
+    || (status.requiresLessonsCompletion && (!status.preTestComplete || !status.lessonsComplete));
   if (!locked) return;
   link.setAttribute('aria-disabled', 'true');
   let lockReason;

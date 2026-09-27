@@ -24,7 +24,6 @@ const differenceCanvas = document.querySelector('#form-difference-canvas');
 const guideContext = guideCanvas?.getContext('2d', { willReadFrequently: true });
 const drawingContext = drawingCanvas?.getContext('2d', { willReadFrequently: true });
 const differenceContext = differenceCanvas?.getContext('2d', { willReadFrequently: true });
-const opacityInput = document.querySelector('#form-trace-opacity');
 const brushSizeInput = document.querySelector('#form-brush-size');
 const brushColorInput = document.querySelector('#form-brush-color');
 const scoreOutput = document.querySelector('#form-score');
@@ -47,7 +46,6 @@ const peekButton = document.querySelector('#form-peek');
 const coverageBar = document.querySelector('#form-coverage-bar');
 const coverageLabel = document.querySelector('#form-coverage-label');
 const peekTimer = document.querySelector('#form-peek-timer');
-const guideOpacityControl = document.querySelector('#form-guide-opacity-control');
 const readyBanner = document.querySelector('#form-ready-banner');
 const stageBadge = document.querySelector('#form-stage-badge');
 const hintBanner = document.querySelector('#form-hint-banner');
@@ -91,7 +89,7 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
 
   const saveState = () => localStorage.setItem(formStateKey, JSON.stringify(formProgress));
   const levelRecord = () => formProgress.levels[level] || {};
-  const completedCount = () => Object.values(formProgress.levels).filter((record) => record.freehand >= 70).length;
+  const completedCount = () => Object.values(formProgress.levels).filter((record) => record.freehand >= 50).length;
   const drawImage = (context, image) => {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
     const scale = Math.min(context.canvas.width / image.naturalWidth, context.canvas.height / image.naturalHeight);
@@ -211,9 +209,9 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     stageButtons.forEach((button) => {
       const name = button.dataset.formStage;
       button.classList.toggle('is-active', name === stage);
-      button.disabled = name === 'freehand' ? stage === 'trace' : name === 'compare' ? !(levelRecord().freehand >= 70) : false;
+      button.disabled = name === 'freehand' ? stage === 'trace' : name === 'compare' ? !(levelRecord().freehand >= 50) : false;
     });
-    const guideOpacity = stage === 'freehand' ? (peekActive ? 0.4 : 1) : guideVisible ? (stage === 'trace' ? Number(opacityInput.value) : stage === 'compare' ? 1 : 0) : 0;
+    const guideOpacity = stage === 'freehand' ? (peekActive ? 0.4 : 1) : guideVisible ? (stage === 'trace' ? 0.7 : stage === 'compare' ? 1 : 0) : 0;
     guideCanvas.style.opacity = String(guideOpacity);
     guideCanvas.style.visibility = guideOpacity === 0 ? 'hidden' : 'visible';
     differenceCanvas.style.opacity = stage === 'compare' ? '1' : '0';
@@ -227,7 +225,6 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
     peekButton.hidden = stage !== 'freehand';
     peekButton.textContent = `💡 Hint (${peekUses} Left)`;
     guideToggle.hidden = stage !== 'trace';
-    guideOpacityControl.hidden = stage !== 'trace';
     if (coverageBar) coverageBar.style.width = `${traceCoverage}%`;
     if (coverageLabel) coverageLabel.textContent = `${Math.round(traceCoverage)}%`;
     messageOutput.textContent = stage === 'trace' ? 'Practice the faint perspective guides, then continue when ready.' : stage === 'freehand' ? 'The guide is hidden. Draw the form from memory.' : 'Review the red marks and compare your drawing with the complete reference.';
@@ -430,7 +427,6 @@ if (levelSelect && guideCanvas && drawingCanvas && differenceCanvas && guideCont
 
   stageButtons.forEach((button) => button.addEventListener('click', () => { if (!button.disabled) { stage = button.dataset.formStage; if (stage === 'freehand') loadImage(images.blank).then((image) => drawImage(guideContext, image)); if (stage === 'compare') loadImage(images.complete).then((image) => drawImage(guideContext, image)); renderStage(); } }));
   levelSelect.addEventListener('change', loadLevel);
-  opacityInput.addEventListener('input', renderStage);
   guideToggle.addEventListener('click', () => { guideVisible = !guideVisible; guideToggle.textContent = guideVisible ? 'Guide On' : 'Guide Off'; guideToggle.classList.toggle('primary', guideVisible); renderStage(); });
   peekButton.addEventListener('click', startPeek);
   submitButton.addEventListener('click', async () => {

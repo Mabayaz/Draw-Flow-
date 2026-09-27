@@ -34,7 +34,6 @@ const exerciseData = {
 
 const subjectSelect = document.querySelector('#studio-subject');
 const levelSelect = document.querySelector('#studio-level');
-const opacityInput = document.querySelector('#studio-opacity');
 const brushSizeInput = document.querySelector('#studio-brush-size');
 const brushColorInput = document.querySelector('#studio-brush-color');
 const drawingCanvas = document.querySelector('#studio-drawing-canvas');
@@ -61,7 +60,7 @@ const formIntroProgress = document.querySelector('#form-intro-progress');
 const topicCards = [...document.querySelectorAll('[data-topic-card]')];
 
 const TRACE_THRESHOLD = 75;
-const FREEHAND_THRESHOLD = 70;
+const FREEHAND_THRESHOLD = 50;
 const progressKey = 'drawflow-exercise-progress';
 const topicOrder = ['form', 'shadow', 'perspective', 'depth'];
 
@@ -192,7 +191,8 @@ if (subjectSelect && levelSelect && drawingCanvas && referenceCanvas && differen
     freehandButton.disabled = !tracePassed;
     compareButton.disabled = !freehandPassed;
     const traceMode = currentStep === 'trace';
-    referenceCanvas.style.opacity = traceMode ? opacityInput.value : currentStep === 'compare' ? '.45' : '0';
+    referenceCanvas.style.opacity = traceMode ? '.7' : currentStep === 'compare' ? '.45' : '0';
+    referenceCanvas.style.visibility = Number(referenceCanvas.style.opacity) > 0 ? 'visible' : 'hidden';
     differenceCanvas.style.opacity = currentStep === 'compare' ? '1' : '0';
     checkButton.textContent = currentStep === 'trace' ? 'Check trace accuracy' : currentStep === 'freehand' ? 'Check freehand accuracy' : 'Recheck accuracy';
     levelStatus.textContent = `${exerciseData[subjectSelect.value].label} / ${levelSelect.options[levelSelect.selectedIndex].textContent}`;
@@ -206,7 +206,7 @@ if (subjectSelect && levelSelect && drawingCanvas && referenceCanvas && differen
     const imageSource = step === 'trace' ? currentImages.trace : step === 'freehand' ? currentImages.freehand : currentImages.reference;
     loadImage(imageSource).then((image) => {
       drawCentered(referenceContext, image);
-      referenceCanvas.style.opacity = step === 'trace' ? opacityInput.value : '0';
+      referenceCanvas.style.opacity = step === 'trace' ? '.7' : '0';
       scoreMessage.textContent = step === 'compare' ? 'Compare your drawing with the original reference.' : 'Draw over the guide, then check your work.';
       updateControls();
     });
@@ -351,7 +351,6 @@ if (subjectSelect && levelSelect && drawingCanvas && referenceCanvas && differen
 
   subjectSelect.addEventListener('change', () => { populateLevels(); loadLevel(); });
   levelSelect.addEventListener('change', loadLevel);
-  opacityInput.addEventListener('input', updateControls);
   stepButtons.forEach((button) => button.addEventListener('click', () => setStep(button.dataset.studioStep)));
   checkButton.addEventListener('click', scoreDrawing);
   undoButton.addEventListener('click', () => { if (historyIndex > 0) { historyIndex -= 1; restoreSnapshot(history[historyIndex]); } });

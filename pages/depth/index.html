@@ -322,10 +322,6 @@
               <input id="form-brush-color" type="color" value="#2563eb" aria-label="Brush color">
             </div>
 
-            <div id="form-guide-opacity-control" class="challenge-field">
-              <label for="form-trace-opacity">Guide Opacity</label>
-              <input id="form-trace-opacity" type="range" min="0" max="1" step="0.05" value="0.7" aria-label="Guide opacity">
-            </div>
 
             <div class="flex flex-wrap items-center gap-1.5 ml-auto">
               <button id="form-pen" class="challenge-button active-tool" type="button" title="Pen Tool">
@@ -452,7 +448,6 @@
         tool: 'pen',        // 'pen', 'eraser'
         brushSize: 6,
         brushColor: '#2563eb',
-        guideOpacity: 0.7,
         guideVisible: true,
         peekCount: 3,
         peekTimer: null,
@@ -492,7 +487,6 @@
 
       const brushSizeInput = document.getElementById('form-brush-size');
       const brushColorInput = document.getElementById('form-brush-color');
-      const opacityInput = document.getElementById('form-trace-opacity');
       const penBtn = document.getElementById('form-pen');
       const eraserBtn = document.getElementById('form-eraser');
       const undoBtn = document.getElementById('form-undo');
@@ -561,7 +555,7 @@
         // Render tracing guide overlay
         if (state.stage === 'trace' && state.guideVisible) {
           guideCanvas.style.display = 'block';
-          ctxGuide.globalAlpha = state.guideOpacity;
+          ctxGuide.globalAlpha = 0.7;
           if (imgs && imgs.trace) {
             ctxGuide.drawImage(imgs.trace, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
           }
@@ -847,7 +841,7 @@
         const score = state.calculatedAccuracy;
         let msg = '';
 
-        if (score >= 40) {
+        if (score >= 50) {
           if (state.level === 1 && !state.unlockedLevels[2]) {
             state.unlockedLevels[2] = true;
             localStorage.setItem('drawflow-depth-unlocked', JSON.stringify(state.unlockedLevels));
@@ -890,11 +884,6 @@
       brushSizeInput.addEventListener('input', (e) => state.brushSize = parseInt(e.target.value, 10));
       brushColorInput.addEventListener('input', (e) => state.brushColor = e.target.value);
       
-      opacityInput.addEventListener('input', (e) => {
-        state.guideOpacity = parseFloat(e.target.value);
-        renderLevel();
-      });
-
       penBtn.addEventListener('click', () => {
         state.tool = 'pen';
         penBtn.classList.add('active-tool');

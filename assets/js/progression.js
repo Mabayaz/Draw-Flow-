@@ -58,6 +58,8 @@
     if (next) {
       state[next].unlocked = true;
       state[next].level1 = true;
+    } else {
+      localStorage.setItem('drawflow_exercises_completed', 'true');
     }
     save(state);
     return state;

@@ -11,6 +11,11 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="/assets/js/tailwind-config.js?v=20260926-fonts"></script>
   <link rel="stylesheet" href="/assets/css/site.css?v=20260926-layout">
+  <style>
+    #learning-path-warning::backdrop { background: rgba(20, 31, 29, .58); backdrop-filter: blur(3px); }
+    #learning-path-warning { width: min(100% - 2rem, 34rem); border: 1px solid #a8b2ac; border-radius: .75rem; padding: 0; color: #1d2926; background: #fffdf8; box-shadow: 0 24px 80px rgba(0, 0, 0, .3); }
+    #learning-path-warning-message { color: #263631; font-size: 1rem; font-weight: 500; line-height: 1.65; }
+  </style>
 </head>
 <body>
   <div class="texture page-shell min-h-screen bg-background text-foreground">
@@ -75,6 +80,17 @@
       </section>
     </main>
   </div>
+  <dialog id="learning-path-warning" aria-labelledby="learning-path-warning-title" aria-describedby="learning-path-warning-message">
+    <div class="p-6 sm:p-8">
+      <p class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Before you begin</p>
+      <h2 id="learning-path-warning-title" class="mt-2 font-display text-2xl">Recommended Learning Path</h2>
+      <p id="learning-path-warning-message" class="mt-3">For the best learning experience, we recommend completing the lessons and practical exercises first. Would you like to proceed anyway?</p>
+      <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+        <button type="button" id="proceed-to-posttest" class="focus-ring rounded-md border border-border px-4 py-3 text-sm font-semibold text-foreground hover:bg-muted">Proceed to Post-Test Anyway</button>
+        <a href="/pages/lessons/" class="focus-ring rounded-md bg-primary px-4 py-3 text-center text-sm font-bold text-primary-foreground hover:bg-primary/90">Go to Lessons</a>
+      </div>
+    </div>
+  </dialog>
   <script src="/assets/js/site.js"></script>
   <script>
     (() => {
@@ -82,7 +98,29 @@
       const completeButton = document.querySelector('#post-test-complete');
       const status = document.querySelector('#post-test-status');
       const completion = document.querySelector('#course-complete');
+      const learningPathWarning = document.querySelector('#learning-path-warning');
       const isComplete = localStorage.getItem('drawflow_course_completed') === 'true';
+      const lessonsComplete = (() => {
+        try {
+          const completed = JSON.parse(localStorage.getItem('drawflow_completed_lessons') || '[]');
+          return localStorage.getItem('drawflow_lesson_completed') === 'true'
+            && ['form', 'shadow', 'perspective', 'depth'].every((lesson) => completed.includes(lesson));
+        } catch {
+          return false;
+        }
+      })();
+      const exercisesComplete = (() => {
+        try {
+          const progression = JSON.parse(localStorage.getItem('drawflow_progression') || '{}');
+          return localStorage.getItem('drawflow_exercises_completed') === 'true'
+            && ['form', 'shadow', 'perspective', 'depth'].every((topic) => progression[topic]?.completed === true);
+        } catch {
+          return false;
+        }
+      })();
+
+      if (!lessonsComplete || !exercisesComplete) learningPathWarning.showModal();
+      document.querySelector('#proceed-to-posttest').addEventListener('click', () => learningPathWarning.close());
 
       completeButton.disabled = isComplete || localStorage.getItem('drawflow_posttest_form_opened') !== 'true';
       if (isComplete) {
