@@ -35,6 +35,13 @@
     .topic-card__icon { display: flex; align-items: center; justify-content: space-between; color: #e86f45; font-family: 'DM Mono', monospace; font-size: .72rem; }
     .topic-card__title { margin-top: 1.25rem; font-family: 'Fredoka', sans-serif; font-size: 1.35rem; font-weight: 600; }
     .topic-card__meta { color: #68716c; font-size: .72rem; line-height: 1.45; }
+    .topic-card.is-locked { position: relative; isolation: isolate; box-shadow: 0 4px 14px rgba(29, 41, 38, .04); }
+    .topic-card.is-locked::before { position: absolute; z-index: 0; inset: 0; border-radius: inherit; background: rgba(29, 41, 38, .12); content: ''; pointer-events: none; }
+    .topic-card.is-locked > * { position: relative; z-index: 1; }
+    .topic-card__lock-note { display: flex; align-items: flex-start; gap: .4rem; border-radius: .5rem; background: #173e36; padding: .55rem; color: #fffdf8; font-size: .68rem; line-height: 1.4; }
+    .topic-card__lock-icon { display: inline-block; flex: 0 0 auto; animation: lock-pulse 1.8s ease-in-out infinite; }
+    @keyframes lock-pulse { 50% { transform: translateY(-2px); } }
+    @media (prefers-reduced-motion: reduce) { .topic-card__lock-icon { animation: none; } }
     @media (max-width: 800px) { .topic-card-grid { grid-template-columns: 1fr 1fr; } }
     @media (max-width: 520px) { .topic-card-grid { grid-template-columns: 1fr; } }
   </style>
@@ -67,6 +74,7 @@
         <p class="font-mono-draw text-[10px] uppercase tracking-[.18em] text-accent">Progressive practice</p>
         <h1 class="mt-4 max-w-4xl font-display text-4xl leading-[.95] sm:text-6xl lg:text-8xl">Build the form, then make it believable.</h1>
         <p class="mt-7 max-w-3xl text-base leading-7 text-muted-foreground">Move through four focused stages. Each module gives you a dedicated canvas workspace to test and refine your technique.</p>
+        <p class="mt-4 inline-flex rounded-md border border-accent/40 bg-accent/10 px-3 py-2 text-sm font-semibold text-foreground" role="note">Passing Score: 70% required to unlock the next practical.</p>
       </section>
 
       <!-- Progress Track Banner -->
@@ -105,6 +113,7 @@
             <span class="topic-card__icon"><span>01</span><span data-topic-status="form" class="text-emerald-600 font-bold">READY</span></span>
             <span class="topic-card__title">Form</span>
             <span class="topic-card__meta">Build volume from simple 3D primitives.</span>
+            <span class="topic-card__lock-note" id="lock-note-form" hidden></span>
           </a>
 
           <!-- Shadow Link -->
@@ -112,6 +121,7 @@
             <span class="topic-card__icon"><span>02</span><span data-topic-status="shadow" class="text-emerald-600 font-bold">READY</span></span>
             <span class="topic-card__title">Shadow</span>
             <span class="topic-card__meta">Project light sources and cast shadows.</span>
+            <span class="topic-card__lock-note" id="lock-note-shadow" hidden></span>
           </a>
 
           <!-- Perspective Link -->
@@ -119,6 +129,7 @@
             <span class="topic-card__icon"><span>03</span><span data-topic-status="perspective" class="text-emerald-600 font-bold">READY</span></span>
             <span class="topic-card__title">Perspective</span>
             <span class="topic-card__meta">Practice 1-Point, 2-Point, and 3-Point boxes.</span>
+            <span class="topic-card__lock-note" id="lock-note-perspective" hidden></span>
           </a>
 
           <!-- Depth Link -->
@@ -126,6 +137,7 @@
             <span class="topic-card__icon"><span>04</span><span data-topic-status="depth" class="text-emerald-600 font-bold">READY</span></span>
             <span class="topic-card__title">Depth</span>
             <span class="topic-card__meta">Master overlaps and spatial scale cues.</span>
+            <span class="topic-card__lock-note" id="lock-note-depth" hidden></span>
           </a>
         </div>
       </section>
@@ -182,12 +194,22 @@
           status.className = state[topic].completed ? 'text-primary font-bold' : 'text-emerald-600 font-bold';
           card.classList.remove('is-locked');
         } else {
+          const previousTopic = DrawFlowProgression.TOPIC_ORDER[DrawFlowProgression.TOPIC_ORDER.indexOf(topic) - 1];
+          const prerequisite = DrawFlowProgression.TOPIC_LABELS[previousTopic] || 'previous';
           status.textContent = 'LOCKED';
           status.className = 'text-muted-foreground font-bold';
           card.classList.add('is-locked');
+          const lockNote = card.querySelector('.topic-card__lock-note');
+          if (lockNote) {
+            lockNote.hidden = false;
+            lockNote.id = 'lock-note-' + topic;
+            lockNote.innerHTML = '<span class="topic-card__lock-icon" aria-hidden="true">🔒</span><span>Prerequisite Required: Complete the ' + prerequisite + ' lesson and practical with a passing grade (70%) to unlock.</span>';
+            card.setAttribute('aria-describedby', lockNote.id);
+          }
+          card.title = 'Prerequisite Required: Complete the ' + prerequisite + ' lesson and practical with a passing grade (70%) to unlock.';
           card.addEventListener('click', (e) => {
             e.preventDefault();
-            alert('Complete the previous topic to unlock ' + (DrawFlowProgression.TOPIC_LABELS[topic] || topic) + '.');
+            alert('Prerequisite Required: Complete the ' + prerequisite + ' lesson and practical with a passing grade (70%) to unlock.');
           });
         }
       });

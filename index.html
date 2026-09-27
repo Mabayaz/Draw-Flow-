@@ -76,7 +76,7 @@
             Where your Solid Drawing Journey Starts Here
           </p>
           <p class="mt-6 text-base leading-relaxed text-muted-foreground max-w-lg">
-            Welcome to DrawFlow—where your Solid Drawing journey begins. Start by learning the fundamentals, explore essential drawing techniques, and put your skills into practice through interactive exercises.
+            DrawFlow supports learners in the BTVTED (Bachelor of Technical-Vocational Teacher Education) program, especially Animation majors, as they build the technical drawing skills needed to teach and create believable 2D forms.
           </p>
           <p class="mt-4 font-mono text-xs font-medium text-accent tracking-wide">
             Learn the basics. Practice your skills. Grow as an animator.
@@ -164,12 +164,13 @@
           <h2 class="font-display text-3xl font-bold tracking-tight">WHAT IS SOLID DRAWING PRINCIPLE?</h2>
           
           <div class="mt-6 space-y-4 text-sm leading-relaxed text-muted-foreground">
-            <p>
-              <strong class="text-foreground">Solid Drawing</strong>—The skill of conveying a 3D character or object in a 2D drawing. It emphasizes drawing what will appear solid, balanced and believable by demonstrating key elements of form, weight, proportion, structure, and depth. Solid Drawing is an important part of 2D Animation because it allows animators to create consistent and believable character animation from various angles and poses. It also enables artists to become aware of the use of objects and the human body in space in relation to light and movement.
-            </p>
-            <p>
-              In DrawFlow, you will learn four important lessons: <strong>Form</strong>, <strong>Shadow</strong>, <strong>Perspective</strong>, and <strong>Depth</strong>. Every lesson contains straightforward explanations, illustrations and videos to help you grasp each concept. You will also have drawing practice activities which will allow you to put into practice your learning. Learn the lessons step by step and practice each technique to continue to develop your Solid Drawing skills and draw more believable objects for animation.
-            </p>
+            <p><strong class="text-foreground">Solid Drawing</strong> makes objects and characters feel three-dimensional, balanced, and believable on a flat page. Artists build that clarity through form, proportion, structure, weight, light, and depth. In animation, these skills keep a character convincing across changing poses and viewpoints.</p>
+            <ul class="grid gap-2 text-sm sm:grid-cols-3" aria-label="Solid Drawing key ideas">
+              <li class="rounded-lg border border-border bg-background p-3"><strong class="text-foreground">Build form</strong><br>Turn simple shapes into volume.</li>
+              <li class="rounded-lg border border-border bg-background p-3"><strong class="text-foreground">Show space</strong><br>Use perspective and depth cues.</li>
+              <li class="rounded-lg border border-border bg-background p-3"><strong class="text-foreground">Keep it consistent</strong><br>Draw believable forms from new angles.</li>
+            </ul>
+            <p>DrawFlow develops these skills through four connected topics: <strong>Form, Shadow, Perspective, and Depth</strong>, supported by demonstrations and hands-on practice.</p>
           </div>
 
           <div class="mt-6 pt-4 border-t border-border/60 text-xs font-mono text-muted-foreground">
@@ -268,6 +269,64 @@
 
         </div>
       </section>
+
+      <section class="border-t border-border py-12" aria-labelledby="glossary-title">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Quick reference</p>
+            <h2 id="glossary-title" class="mt-2 font-display text-3xl font-bold">Drawing glossary</h2>
+          </div>
+          <label class="grid gap-1 text-xs font-semibold text-muted-foreground" for="glossary-search">
+            Search terms
+            <input id="glossary-search" type="search" class="focus-ring rounded-md border border-border bg-card px-3 py-2 text-sm text-foreground" placeholder="Try “vanishing point”" autocomplete="off">
+          </label>
+        </div>
+        <dl id="glossary-list" class="mt-6 grid gap-x-8 gap-y-4 sm:grid-cols-2">
+          <div data-glossary-term="form"><dt class="font-display text-lg font-semibold">Form</dt><dd class="text-sm leading-6 text-muted-foreground">A three-dimensional object, or the illusion of volume in a drawing.</dd></div>
+          <div data-glossary-term="horizon line"><dt class="font-display text-lg font-semibold">Horizon line</dt><dd class="text-sm leading-6 text-muted-foreground">The viewer's eye-level line in a perspective drawing.</dd></div>
+          <div data-glossary-term="vanishing point"><dt class="font-display text-lg font-semibold">Vanishing point</dt><dd class="text-sm leading-6 text-muted-foreground">A point where receding parallel lines appear to meet.</dd></div>
+          <div data-glossary-term="orthogonal lines"><dt class="font-display text-lg font-semibold">Orthogonal lines</dt><dd class="text-sm leading-6 text-muted-foreground">Guidelines that recede toward a vanishing point.</dd></div>
+          <div data-glossary-term="cast shadow"><dt class="font-display text-lg font-semibold">Cast shadow</dt><dd class="text-sm leading-6 text-muted-foreground">A shadow an object projects onto another surface when it blocks light.</dd></div>
+          <div data-glossary-term="overlap"><dt class="font-display text-lg font-semibold">Overlap</dt><dd class="text-sm leading-6 text-muted-foreground">A depth cue where one shape covers part of another.</dd></div>
+          <div data-glossary-term="proportion"><dt class="font-display text-lg font-semibold">Proportion</dt><dd class="text-sm leading-6 text-muted-foreground">The relative size of parts compared with one another or the whole.</dd></div>
+          <div data-glossary-term="value"><dt class="font-display text-lg font-semibold">Value</dt><dd class="text-sm leading-6 text-muted-foreground">The lightness or darkness of a tone, used to describe form and light.</dd></div>
+        </dl>
+        <p id="glossary-empty" class="mt-4 text-sm text-muted-foreground" hidden>No matching terms. Try another search.</p>
+      </section>
+
+      <section class="border-t border-border py-12" aria-labelledby="specs-title">
+        <p class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Set up your workspace</p>
+        <h2 id="specs-title" class="mt-2 font-display text-3xl font-bold">Recommended Specs &amp; Tools</h2>
+        <div class="mt-6 grid gap-8 md:grid-cols-3">
+          <div><h3 class="font-display text-xl font-semibold">Supported devices</h3><ul class="mt-2 space-y-1 text-sm text-muted-foreground"><li>PC/Desktop (recommended)</li><li>Tablet</li><li>Mobile</li></ul></div>
+          <div><h3 class="font-display text-xl font-semibold">Input tools</h3><ul class="mt-2 space-y-1 text-sm text-muted-foreground"><li>Mouse for precise line work (recommended)</li><li>Drawing tablet or stylus</li><li>Touchscreen support</li></ul></div>
+          <div><h3 class="font-display text-xl font-semibold">Browsers</h3><p class="mt-2 text-sm leading-6 text-muted-foreground">Best experienced in a current desktop version of Chrome, Microsoft Edge, or Firefox.</p></div>
+        </div>
+      </section>
+
+      <section class="border-t border-border py-12" aria-labelledby="faq-title">
+        <p class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Good to know</p>
+        <h2 id="faq-title" class="mt-2 font-display text-3xl font-bold">Frequently asked questions</h2>
+        <div class="mt-5 divide-y divide-border border-y border-border">
+          <details class="py-4"><summary class="focus-ring cursor-pointer font-semibold">What is DrawFlow for?</summary><p class="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">DrawFlow is a learning and practice platform for Solid Drawing, with lessons and interactive exercises in Form, Shadow, Perspective, and Depth.</p></details>
+          <details class="py-4"><summary class="focus-ring cursor-pointer font-semibold">Who is BTVTED for?</summary><p class="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">BTVTED means Bachelor of Technical-Vocational Teacher Education. DrawFlow is especially relevant to Animation majors developing technical drawing knowledge they can apply in practice and future teaching.</p></details>
+          <details class="py-4"><summary class="focus-ring cursor-pointer font-semibold">Do I need a drawing tablet?</summary><p class="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">No. A mouse, stylus, or touchscreen can be used. A mouse or drawing tablet is recommended when precision matters.</p></details>
+          <details class="py-4"><summary class="focus-ring cursor-pointer font-semibold">How do I unlock the next practical?</summary><p class="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">Complete the required lesson and previous practical. Scored drawing rounds require at least 70% to unlock the next practical level.</p></details>
+        </div>
+      </section>
+
+      <section class="border-t border-border py-12" aria-labelledby="team-title">
+        <p class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">About the developers</p>
+        <h2 id="team-title" class="mt-2 font-display text-3xl font-bold">Made by the DrawFlow team</h2>
+        <p class="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">We are proud to make technical drawing practice more approachable and visual for Animation learners. The project brings our research, design, writing, and development work into one place.</p>
+        <ul class="mt-6 grid gap-x-8 gap-y-5 sm:grid-cols-2 lg:grid-cols-3">
+          <li class="flex items-center gap-3"><span aria-hidden="true" class="grid size-12 shrink-0 place-items-center rounded-full bg-primary font-display font-bold text-primary-foreground">MM</span><span><strong class="block text-sm">Mark Anthony A. Magnaye</strong><span class="text-xs text-muted-foreground">Project Leader / Researcher</span></span></li>
+          <li class="flex items-center gap-3"><span aria-hidden="true" class="grid size-12 shrink-0 place-items-center rounded-full bg-accent font-display font-bold text-background">JM</span><span><strong class="block text-sm">John Cedrick P. Magtuba</strong><span class="text-xs text-muted-foreground">Researcher / Creative Designer</span></span></li>
+          <li class="flex items-center gap-3"><span aria-hidden="true" class="grid size-12 shrink-0 place-items-center rounded-full bg-muted font-display font-bold">ML</span><span><strong class="block text-sm">Ma. Lyn D. Lapada</strong><span class="text-xs text-muted-foreground">Researcher / Content Writer</span></span></li>
+          <li class="flex items-center gap-3"><span aria-hidden="true" class="grid size-12 shrink-0 place-items-center rounded-full bg-primary font-display font-bold text-primary-foreground">JA</span><span><strong class="block text-sm">Joreld James P. Aliyacyac</strong><span class="text-xs text-muted-foreground">Researcher / Manuscript Head</span></span></li>
+          <li class="flex items-center gap-3"><span aria-hidden="true" class="grid size-12 shrink-0 place-items-center rounded-full bg-accent font-display font-bold text-background">JJ</span><span><strong class="block text-sm">Jans Carlo Jandayan</strong><span class="text-xs text-muted-foreground">Researcher</span></span></li>
+        </ul>
+      </section>
     </main>
 
     <!-- Footer -->
@@ -340,6 +399,20 @@
           status.textContent = isComplete ? 'Completed' : 'Not started';
           status.classList.toggle('is-complete', isComplete);
         }
+      });
+
+      const glossarySearch = document.getElementById('glossary-search');
+      const glossaryTerms = [...document.querySelectorAll('[data-glossary-term]')];
+      const glossaryEmpty = document.getElementById('glossary-empty');
+      glossarySearch?.addEventListener('input', () => {
+        const query = glossarySearch.value.trim().toLowerCase();
+        let visibleCount = 0;
+        glossaryTerms.forEach(term => {
+          const matches = term.textContent.toLowerCase().includes(query);
+          term.hidden = !matches;
+          if (matches) visibleCount += 1;
+        });
+        if (glossaryEmpty) glossaryEmpty.hidden = visibleCount > 0;
       });
     });
   </script>
