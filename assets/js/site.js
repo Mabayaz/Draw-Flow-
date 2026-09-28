@@ -32,7 +32,7 @@ document.addEventListener('click', (event) => {
     }
     return;
   }
-  if (event.target.closest?.('[data-internal-navigation], #proceed-to-exercises, #form-proceed-self-check, #form-continue-topic, #form-review-lesson, #form-review-exercises, #progression-continue, #progression-quit')) {
+  if (event.target.closest?.('[data-internal-navigation], #proceed-to-exercises, #form-continue-topic, #form-review-lesson, #form-review-exercises, #progression-continue, #progression-quit')) {
     sessionStorage.setItem(INTERNAL_NAVIGATION_KEY, 'true');
   }
 }, true);
@@ -54,16 +54,6 @@ if (window.location.pathname.endsWith('/index.html')) {
   window.history.replaceState({}, document.title, `${cleanPath}${window.location.search}${window.location.hash}`);
 }
 
-const hasCompletedAllExercises = () => {
-  if (localStorage.getItem('drawflow_exercises_completed') !== 'true') return false;
-  try {
-    const progression = JSON.parse(localStorage.getItem('drawflow_progression') || '{}');
-    return ['form', 'shadow', 'perspective', 'depth'].every((topic) => progression[topic]?.completed === true);
-  } catch {
-    return false;
-  }
-};
-
 const hasCompletedAllLessons = () => {
   try {
     const completed = JSON.parse(localStorage.getItem('drawflow_completed_lessons') || '[]');
@@ -78,75 +68,109 @@ const hasCompletedLessonStep = () => (
   && hasCompletedAllLessons()
 );
 
-const hasCompletedPreTest = () => (
-  localStorage.getItem('drawflow_pretest_completed') === 'true'
-  && localStorage.getItem('drawflow_pretest_submitted') === 'true'
-);
-
 const routeStatus = (pathname) => {
   const path = pathname.replace(/index\.html$/, '').replace(/\/$/, '') || '/';
-  const isSelfCheck = path === '/pages/self-check';
-  const isLessonsPage = path === '/pages/lessons';
   const isExercisePage = path.startsWith('/pages/drawing-exercise') || path === '/pages/exercises' || path === '/pages/exercises.html';
-  const isStandaloneLesson = [
-    '/pages/lessons.html',
-    '/pages/form', '/pages/form.html',
-    '/pages/shadow', '/pages/shadow.html',
-    '/pages/perspective', '/pages/perspective.html',
-    '/pages/depth', '/pages/depth.html'
-  ].includes(path);
-  const preTestComplete = hasCompletedPreTest();
   return {
-    isLessonsPage,
-    isSelfCheck,
-    requiresPreTest: isExercisePage || isStandaloneLesson,
     requiresLessonsCompletion: isExercisePage,
-    preTestComplete,
     lessonsComplete: hasCompletedLessonStep(),
-    exercisesComplete: hasCompletedAllExercises()
   };
 };
 
 const currentRouteStatus = routeStatus(window.location.pathname);
 const lockedStep = new URLSearchParams(window.location.search).get('locked');
 const gateMessages = {
-  pretest: 'Please complete the Pre-Test Evaluation first before accessing the lessons.',
-  lessons: 'Please finish the Lessons first to unlock Exercises.',
-  exercises: 'Please finish all Exercises first to unlock the Post-Test Evaluation.'
+  lessons: 'Please finish the Lessons first to unlock Exercises.'
 };
 const showGateMessage = (message) => {
   const notice = document.createElement('div');
+  notice.className = 'drawflow-lock-notice';
   notice.setAttribute('role', 'status');
   notice.setAttribute('aria-live', 'polite');
-  notice.textContent = message;
-  notice.style.cssText = 'position:fixed;left:50%;bottom:1.5rem;z-index:10000;max-width:min(34rem,calc(100vw - 2rem));transform:translateX(-50%);border-radius:.75rem;background:#173e36;padding:.9rem 1.2rem;color:#f8f4eb;box-shadow:0 10px 30px rgba(0,0,0,.2);font-size:.875rem;text-align:center;';
+  notice.innerHTML = `<span class="drawflow-lock-notice__icon" aria-hidden="true">🔒</span><span>${message}</span>`;
   document.body.append(notice);
+  window.setTimeout(() => notice.remove(), 3200);
 };
+
+const enhanceLessonAccordions = () => {
+  const accordionHeadings = {
+    form: ['I. Definition', 'II. Three Basic Shapes of Form', 'III. Background Sources'],
+    shadow: ['I. Definition', 'II. Key Elements of Shadow', 'III. Background Sources'],
+    perspective: ['I. Definition', 'II. Key Elements of Perspective', 'III. Types of Perspective', 'IV. Background Sources'],
+    depth: ['I. Definition', 'II. Key Elements of Depth', 'III. Background Sources']
+  };
+  const articles = [...document.querySelectorAll('article[id]')];
+  const fetchedContent = document.querySelector('[data-lesson-content]');
+  if (fetchedContent) articles.push(fetchedContent);
+
+  articles.forEach((article) => {
+    const lessonId = accordionHeadings[article.id] ? article.id : document.body.dataset.lesson;
+    const expectedHeadings = accordionHeadings[lessonId];
+    const content = article.querySelector('.mt-8.space-y-6');
+    if (!expectedHeadings || !content) return;
+
+    [...content.children].forEach((section) => {
+      const heading = section.querySelector(':scope > h3');
+      if (!heading) return;
+      const title = heading.textContent.trim().replace(/\s+/g, ' ');
+      if (/^[IVX]+\. Example$/i.test(title)) {
+        section.remove();
+        return;
+      }
+      const headingIndex = expectedHeadings.findIndex((expected) => (
+        expected.toLowerCase() === title.toLowerCase()
+        || (expected.startsWith('II. Key Elements of ') && title === 'II. Key Elements')
+      ));
+      if (headingIndex === -1 || section.matches('details')) return;
+
+      const accordion = document.createElement('details');
+      accordion.className = 'lesson-accordion';
+      accordion.name = `lesson-${lessonId}`;
+      accordion.dataset.lessonAccordion = '';
+      const summary = document.createElement('summary');
+      summary.className = 'lesson-accordion__summary font-display text-xl text-foreground';
+      summary.textContent = expectedHeadings[headingIndex];
+      const body = document.createElement('div');
+      body.className = 'lesson-accordion__content';
+      [...section.childNodes].forEach((child) => {
+        if (child !== heading) body.append(child);
+      });
+      accordion.append(summary, body);
+      section.replaceWith(accordion);
+      accordion.addEventListener('toggle', () => {
+        if (!accordion.open) return;
+        content.querySelectorAll('details[name="' + accordion.name + '"]').forEach((sibling) => {
+          if (sibling !== accordion) sibling.open = false;
+        });
+      });
+    });
+  });
+};
+
+enhanceLessonAccordions();
+window.addEventListener('lessoncontentloaded', enhanceLessonAccordions);
 
 if (lockedStep && gateMessages[lockedStep]) showGateMessage(gateMessages[lockedStep]);
 
-if (currentRouteStatus.requiresPreTest && !currentRouteStatus.preTestComplete) {
-  sessionStorage.setItem(INTERNAL_NAVIGATION_KEY, 'true');
-  window.location.replace('/pages/lessons/?locked=pretest');
-} else if (currentRouteStatus.requiresLessonsCompletion && !currentRouteStatus.lessonsComplete) {
+if (currentRouteStatus.requiresLessonsCompletion && !currentRouteStatus.lessonsComplete) {
   sessionStorage.setItem(INTERNAL_NAVIGATION_KEY, 'true');
   window.location.replace('/pages/lessons/?locked=lessons');
 }
 
-document.querySelectorAll('header nav a[href]').forEach((link) => {
+document.querySelectorAll('a[href]').forEach((link) => {
   const destination = new URL(link.href, window.location.href);
+  if (destination.pathname.replace(/\/$/, '') === '/pages/self-check') {
+    link.remove();
+    return;
+  }
+  if (link.textContent.trim() === 'About Us') link.textContent = 'About';
   if (destination.origin !== window.location.origin) return;
   const status = routeStatus(destination.pathname);
-  if (status.isLessonsPage && !status.preTestComplete) link.textContent = 'Pre-Test/Lesson';
-  if (status.isSelfCheck) link.textContent = 'Post-Test';
-  const locked = (status.requiresPreTest && !status.preTestComplete)
-    || (status.requiresLessonsCompletion && (!status.preTestComplete || !status.lessonsComplete));
+  const locked = status.requiresLessonsCompletion && !status.lessonsComplete;
   if (!locked) return;
   link.setAttribute('aria-disabled', 'true');
   let lockReason;
-  if (!status.preTestComplete) lockReason = gateMessages.pretest;
-  else if (!status.lessonsComplete) lockReason = gateMessages.lessons;
-  else lockReason = gateMessages.exercises;
+  lockReason = gateMessages.lessons;
   link.setAttribute('title', lockReason);
   const lock = document.createElement('span');
   lock.setAttribute('aria-hidden', 'true');
@@ -157,6 +181,21 @@ document.querySelectorAll('header nav a[href]').forEach((link) => {
     showGateMessage(lockReason);
   });
 });
+
+const mainNavigation = document.querySelector('header nav[aria-label="Main navigation"]');
+if (mainNavigation && ![...mainNavigation.querySelectorAll('a[href]')].some((link) => (
+  new URL(link.href, window.location.href).pathname.replace(/\/$/, '') === '/pages/about'
+))) {
+  const aboutLink = document.createElement('a');
+  aboutLink.href = '/pages/about/';
+  aboutLink.textContent = 'About';
+  aboutLink.className = 'focus-ring rounded-full px-3 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted';
+  if (window.location.pathname.replace(/\/$/, '') === '/pages/about') {
+    aboutLink.setAttribute('aria-current', 'page');
+    aboutLink.className = 'focus-ring rounded-full bg-muted px-3 py-2 text-sm font-semibold';
+  }
+  mainNavigation.append(aboutLink);
+}
 
 const themeToggle = document.querySelector('[data-testid="button-theme-toggle"], #button-theme-toggle');
 document.querySelectorAll("canvas[id$='-drawing-canvas']").forEach((canvas) => {

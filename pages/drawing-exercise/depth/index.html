@@ -409,8 +409,8 @@
           </div>
           <div id="form-completion-actions" class="challenge-card" hidden>
             <p class="font-mono text-[10px] uppercase tracking-[0.15em] text-accent font-bold">Exercises complete</p>
-            <p class="mt-2 text-sm leading-relaxed text-muted">Exercises Complete! You can now take your Post-Test.</p>
-            <button id="form-proceed-self-check" class="challenge-button primary mt-2 w-full" type="button">Take Post-Test Now</button>
+            <p class="mt-2 text-sm leading-relaxed text-muted">All exercise topics are complete.</p>
+            <a href="/pages/about/" class="challenge-button primary mt-2 w-full">Go to About Us</a>
             <a href="/pages/lessons/#depth" class="challenge-button secondary mt-2 w-full">Review Lesson</a>
             <a href="/pages/drawing-exercise/exercises/" class="challenge-button secondary mt-2 w-full">Return to Module Overview</a>
           </div>
@@ -457,7 +457,6 @@
       const submitBtn = document.getElementById('form-submit');
       const nextLevelBtn = document.getElementById('form-next-level');
       const completionActions = document.getElementById('form-completion-actions');
-      const proceedSelfCheckBtn = document.getElementById('form-proceed-self-check');
       const optLvl2 = document.getElementById('opt-lvl-2');
       const levelBadge = document.getElementById('form-level-badge');
       const stageBadge = document.getElementById('form-stage-badge');
@@ -465,10 +464,6 @@
       const rankText = document.getElementById('form-rank');
       const messageText = document.getElementById('form-message');
       const progressText = document.getElementById('form-progress');
-
-      proceedSelfCheckBtn.addEventListener('click', () => {
-        window.location.href = '/pages/self-check/';
-      });
 
       const drawingWrap = document.getElementById('main-drawing-area');
       const evalWrap = document.getElementById('form-evaluation');

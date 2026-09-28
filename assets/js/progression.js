@@ -60,6 +60,7 @@
       state[next].level1 = true;
     } else {
       localStorage.setItem('drawflow_exercises_completed', 'true');
+      localStorage.setItem('drawflow_course_completed', 'true');
     }
     save(state);
     return state;
@@ -87,11 +88,6 @@
 
   // Redirects away from a locked topic page back to the highest unlocked one.
   function guardPage(topic) {
-    if (localStorage.getItem('drawflow_pretest_completed') !== 'true'
-      || localStorage.getItem('drawflow_pretest_submitted') !== 'true') {
-      navigateInternally('/pages/lessons/?locked=pretest', true);
-      return false;
-    }
     if (!lessonsComplete()) {
       navigateInternally('/pages/lessons/?locked=lessons', true);
       return false;
