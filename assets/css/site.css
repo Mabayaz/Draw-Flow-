@@ -948,3 +948,17 @@ body footer { color: #68716c; }
   body main article,
   body main .module-card { padding: 1.1rem; }
 }
+
+@media (max-width: 360px) {
+  body header > div.px-5 { padding-right: .75rem !important; padding-left: .75rem !important; }
+  header > div > a[href="/"],
+  header > div > a[href="../"] { gap: .5rem; }
+  header a[href="/"] > span:first-child,
+  header a[href="../"] > span:first-child,
+  .brand-logo { width: 3.5rem; height: 2.25rem; }
+  header .font-display { font-size: 1.15rem; }
+  header > div > div.flex.items-center { gap: .5rem; }
+  header button[data-testid="button-theme-toggle"],
+  header button[data-testid="button-mobile-menu"],
+  header #button-theme-toggle { width: 2.25rem; height: 2.25rem; }
+}
