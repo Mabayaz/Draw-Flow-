@@ -52,10 +52,6 @@
       transition: width .12s ease-out;
     }
 
-    .lesson-contents {
-      top: 5.35rem;
-    }
-
     .lesson-contents a.is-reading {
       border-color: #e86f45;
       background: rgba(232, 111, 69, .1);
@@ -121,7 +117,6 @@
     }
 
     @media (max-width: 460px) {
-      .lesson-contents.sticky { position: static; top: auto; }
       .lesson-progression { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
       .lesson-progression__card { min-height: 6.5rem; padding: .85rem; }
       .lesson-progression__meta { align-items: flex-start; flex-wrap: wrap; font-size: .55rem; letter-spacing: .04em; }
@@ -211,7 +206,9 @@
 
     .gif-gallery__frame {
       display: grid;
+      width: 50%;
       aspect-ratio: 16 / 9;
+      margin-inline: auto;
       place-items: center;
       overflow: hidden;
     }
@@ -233,7 +230,6 @@
 
     @media (max-width: 640px) {
       .reading-progress { padding-right: 1.25rem; padding-left: 1.25rem; }
-      .lesson-contents { top: 5.35rem; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -280,7 +276,7 @@
         <p class="mt-7 max-w-3xl text-base leading-7 text-muted-foreground">In this section, you will learn the basic principles of Solid Drawing through four lessons: Form, Shadow, Perspective, and Depth. Each lesson provides simple explanations, visual examples, and video tutorials to help you understand how these principles are used in 2D animation. Read and watch each lesson carefully, then apply what you have learned in the exercises provided. Try to complete each lesson in order to build your Solid Drawing skills step by step.</p>
       </section>
 
-      <nav aria-label="Lesson progression" class="lesson-contents sticky z-30 -mx-5 mb-12 border-y border-border bg-background/90 px-5 py-5 backdrop-blur-md sm:-mx-8 sm:px-8">
+      <nav aria-label="Lesson progression" class="lesson-contents z-30 -mx-5 mb-12 border-y border-border bg-background/90 px-5 py-5 backdrop-blur-md sm:-mx-8 sm:px-8">
         <div class="mb-4 flex items-center justify-between gap-3">
           <span class="font-mono-draw text-[10px] uppercase tracking-[.15em] text-accent">Your learning path</span>
           <span class="text-xs text-muted-foreground">Read each lesson in order</span>
@@ -338,8 +334,8 @@
                 <div class="flex flex-wrap gap-2" role="group" aria-label="Form animation examples">
                   <button type="button" class="gif-gallery__button focus-ring rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground transition hover:border-accent" data-gif-src="/GIF/FORM/Cube%20%231%20(1).gif" data-gif-label="Cube" aria-pressed="false">Cube</button>
                   <button type="button" class="gif-gallery__button focus-ring rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground transition hover:border-accent" data-gif-src="/GIF/FORM/Animation%20-%20360%20Rotation%2030Fps%20(1).gif" data-gif-label="Sphere" aria-pressed="false">Sphere</button>
-                  <button type="button" class="gif-gallery__button focus-ring rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground transition hover:border-accent" data-gif-src="/GIF/FORM/Animation%20Cylinder%20(1).gif" data-gif-label="Cylinder" aria-pressed="false">Cylinder</button>
-                  <button type="button" class="gif-gallery__button focus-ring rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground transition hover:border-accent" data-gif-src="/GIF/FORM/Pose%20-%20Form%20Finalized%20(1).gif" data-gif-label="Pose of Forms" aria-pressed="false">Pose of Forms</button>
+                  <button type="button" class="gif-gallery__button focus-ring rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground transition hover:border-accent" data-gif-src="/GIF/FORM/Pose%20-%20Form%20Finalized%20(1).gif" data-gif-label="Cylinder" aria-pressed="false">Cylinder</button>
+                  <button type="button" class="gif-gallery__button focus-ring rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground transition hover:border-accent" data-gif-src="/GIF/FORM/Animation%20Cylinder%20(1).gif" data-gif-label="Pose of Forms" aria-pressed="false">Pose of Forms</button>
                 </div>
                 <div class="mt-4 rounded-xl border border-border bg-background p-3 sm:p-4" data-gif-viewer hidden>
                   <div class="gif-gallery__frame rounded-lg bg-card">

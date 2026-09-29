@@ -765,8 +765,9 @@ body footer { color: #68716c; }
 }
 
 .lesson-activity__diagram svg {
-  width: min(100%, 15rem);
-  height: 7rem;
+  width: min(100%, 12rem);
+  height: auto;
+  aspect-ratio: 5 / 4;
 }
 
 .lesson-activity__diagram path[pathLength] {
@@ -918,6 +919,9 @@ body footer { color: #68716c; }
 }
 
 @media (max-width: 760px) {
+  .lesson-flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lesson-flow__step:not(:last-child)::after { display: none; }
+
   body main .page-intro {
     padding-top: 3rem;
     padding-bottom: 2rem;
