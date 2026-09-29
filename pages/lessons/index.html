@@ -192,6 +192,45 @@
       color: #fffdf8;
     }
 
+    .gif-gallery__button.bg-card {
+      border-color: #e86f45;
+      background: #e86f45;
+      color: #fffdf8;
+    }
+
+    .gif-gallery__button.bg-card:hover:not(:disabled) {
+      border-color: #d75d36;
+      background: #d75d36;
+    }
+
+    .gif-gallery__button.bg-card[aria-pressed="true"] {
+      border-color: #b8492b;
+      background: #c95431;
+      box-shadow: 0 0 0 3px rgba(232, 111, 69, .2);
+    }
+
+    .gif-gallery__frame {
+      display: grid;
+      aspect-ratio: 16 / 9;
+      place-items: center;
+      overflow: hidden;
+    }
+
+    .gif-gallery__image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .gif-gallery__image--enter {
+      animation: gif-preview-enter .18s ease-out both;
+    }
+
+    @keyframes gif-preview-enter {
+      from { opacity: .35; }
+      to { opacity: 1; }
+    }
+
     @media (max-width: 640px) {
       .reading-progress { padding-right: 1.25rem; padding-left: 1.25rem; }
       .lesson-contents { top: 5.35rem; }
@@ -199,6 +238,7 @@
 
     @media (prefers-reduced-motion: reduce) {
       .reading-progress__fill { transition: none; }
+      .gif-gallery__image--enter { animation: none; }
     }
   </style>
 </head>
@@ -294,6 +334,20 @@
 
             <div>
               <h3 class="font-display text-2xl text-foreground">II. Three Basic Shapes of Form</h3>
+              <div class="mt-4" data-gif-gallery>
+                <div class="flex flex-wrap gap-2" role="group" aria-label="Form animation examples">
+                  <button type="button" class="gif-gallery__button focus-ring rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground transition hover:border-accent" data-gif-src="/GIF/FORM/Cube%20%231%20(1).gif" data-gif-label="Cube" aria-pressed="false">Cube</button>
+                  <button type="button" class="gif-gallery__button focus-ring rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground transition hover:border-accent" data-gif-src="/GIF/FORM/Animation%20-%20360%20Rotation%2030Fps%20(1).gif" data-gif-label="Sphere" aria-pressed="false">Sphere</button>
+                  <button type="button" class="gif-gallery__button focus-ring rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground transition hover:border-accent" data-gif-src="/GIF/FORM/Animation%20Cylinder%20(1).gif" data-gif-label="Cylinder" aria-pressed="false">Cylinder</button>
+                  <button type="button" class="gif-gallery__button focus-ring rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground transition hover:border-accent" data-gif-src="/GIF/FORM/Pose%20-%20Form%20Finalized%20(1).gif" data-gif-label="Pose of Forms" aria-pressed="false">Pose of Forms</button>
+                </div>
+                <div class="mt-4 rounded-xl border border-border bg-background p-3 sm:p-4" data-gif-viewer hidden>
+                  <div class="gif-gallery__frame rounded-lg bg-card">
+                    <img class="gif-gallery__image rounded-lg" data-gif-image alt="" hidden>
+                  </div>
+                  <p class="mt-2 text-center text-xs text-muted-foreground" data-gif-caption aria-live="polite"></p>
+                </div>
+              </div>
               <ul class="mt-2 list-disc pl-5 space-y-2">
                 <li>Circles, squares, and triangles are the primary shapes that form the basis for more complex forms.</li>
                 <li>Cubes are three-dimensional forms created by adding depth and perspective to squares; begin with a square and use linear perspective to create the illusion of depth.</li>
@@ -353,6 +407,19 @@
 
             <div>
               <h3 class="font-display text-2xl text-foreground">II. Key Elements of Shadow</h3>
+              <div class="mt-4" data-gif-gallery>
+                <div class="flex flex-wrap gap-2" role="group" aria-label="Shadow animation examples">
+                  <button type="button" class="gif-gallery__button focus-ring rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground transition hover:border-accent" data-gif-src="/GIF/SHADOW/No%20Color.gif" data-gif-label="Shadow Example 1" aria-pressed="false">Shadow Example 1</button>
+                  <button type="button" class="gif-gallery__button focus-ring rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground transition hover:border-accent" data-gif-src="/GIF/SHADOW/Color%20Ball.gif" data-gif-label="Shadow Example 2" aria-pressed="false">Shadow Example 2</button>
+                  <button type="button" class="gif-gallery__button focus-ring rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground transition hover:border-accent" data-gif-src="/GIF/SHADOW/Color%20Character.gif" data-gif-label="Character Shadow" aria-pressed="false">Character Shadow</button>
+                </div>
+                <div class="mt-4 rounded-xl border border-border bg-background p-3 sm:p-4" data-gif-viewer hidden>
+                  <div class="gif-gallery__frame rounded-lg bg-card">
+                    <img class="gif-gallery__image rounded-lg" data-gif-image alt="" hidden>
+                  </div>
+                  <p class="mt-2 text-center text-xs text-muted-foreground" data-gif-caption aria-live="polite"></p>
+                </div>
+              </div>
               <ol class="mt-3 list-decimal pl-5 space-y-2">
                 <li><strong class="text-foreground">Highlight:</strong> The brightest area of an object where direct light hits.</li>
                 <li><strong class="text-foreground">Light Area:</strong> The part of the object that faces the light source and appears lighter.</li>
@@ -428,6 +495,18 @@
 
             <div>
               <h3 class="font-display text-2xl text-foreground">III. Types of Perspective</h3>
+              <div class="mt-4" data-gif-gallery>
+                <div class="flex flex-wrap gap-2" role="group" aria-label="Perspective animation examples">
+                  <button type="button" class="gif-gallery__button focus-ring rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground transition hover:border-accent" data-gif-src="/GIF/PERSPECTIVE/Two%20Point.gif" data-gif-label="Two-Point Perspective" aria-pressed="false">Two-Point Perspective</button>
+                  <button type="button" class="gif-gallery__button focus-ring rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground transition hover:border-accent" data-gif-src="/GIF/PERSPECTIVE/Three%20Point.gif" data-gif-label="Three-Point Perspective" aria-pressed="false">Three-Point Perspective</button>
+                </div>
+                <div class="mt-4 rounded-xl border border-border bg-background p-3 sm:p-4" data-gif-viewer hidden>
+                  <div class="gif-gallery__frame rounded-lg bg-card">
+                    <img class="gif-gallery__image rounded-lg" data-gif-image alt="" hidden>
+                  </div>
+                  <p class="mt-2 text-center text-xs text-muted-foreground" data-gif-caption aria-live="polite"></p>
+                </div>
+              </div>
               <p class="mt-2">There are different types of Perspective:</p>
               <div class="mt-3 space-y-4">
                 <div>
@@ -503,6 +582,17 @@
                 </div>
                 <div>
                   <strong class="text-foreground">B. Creating motion: The parallax effect</strong>
+                  <div class="mt-3" data-gif-gallery>
+                    <div class="flex flex-wrap gap-2" role="group" aria-label="Parallax animation example">
+                      <button type="button" class="gif-gallery__button focus-ring rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground transition hover:border-accent" data-gif-src="/GIF/DEPTH/Depth.gif" data-gif-label="The Parallax Effect" aria-pressed="false">The Parallax Effect</button>
+                    </div>
+                    <div class="mt-4 rounded-xl border border-border bg-background p-3 sm:p-4" data-gif-viewer hidden>
+                      <div class="gif-gallery__frame rounded-lg bg-card">
+                        <img class="gif-gallery__image rounded-lg" data-gif-image alt="" hidden>
+                      </div>
+                      <p class="mt-2 text-center text-xs text-muted-foreground" data-gif-caption aria-live="polite"></p>
+                    </div>
+                  </div>
                   <ul class="mt-1 list-disc pl-5 space-y-1">
                     <li>Parallax is a technique where objects at different distances appear to move at different speeds as the camera moves. Creates the illusion of depth and three-dimensional movement.</li>
                     <li>This is achieved by separating the scene into layers like foreground, middle ground, and background. In a sideways camera move, the foreground is moving the fastest, the middle ground is moving at a moderate speed, and the background is moving at a slow speed.</li>
@@ -566,6 +656,30 @@
   </div>
   <script src="/assets/js/site.js"></script>
   <script src="/assets/js/lesson-content.js"></script>
+  <script>
+    document.querySelectorAll('[data-gif-gallery]').forEach((gallery) => {
+      const viewer = gallery.querySelector('[data-gif-viewer]');
+      const image = gallery.querySelector('[data-gif-image]');
+      const caption = gallery.querySelector('[data-gif-caption]');
+
+      gallery.addEventListener('click', (event) => {
+        const button = event.target.closest('button[data-gif-src]');
+        if (!button || !gallery.contains(button)) return;
+
+        gallery.querySelectorAll('button[data-gif-src]').forEach((option) => {
+          option.setAttribute('aria-pressed', String(option === button));
+        });
+        image.classList.remove('gif-gallery__image--enter');
+        image.src = button.dataset.gifSrc;
+        image.alt = button.dataset.gifLabel;
+        image.hidden = false;
+        caption.textContent = button.dataset.gifLabel;
+        viewer.hidden = false;
+        void image.offsetWidth;
+        image.classList.add('gif-gallery__image--enter');
+      });
+    });
+  </script>
   <script>
     (() => {
       const progressFill = document.querySelector('#reading-progress-fill');
